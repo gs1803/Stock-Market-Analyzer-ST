@@ -81,8 +81,8 @@ class StockInformation:
             'Metric': ['dividendRate', 'dividendYield', 'payoutRatio', 'beta', 'trailingPE', 'forwardPE',
                             'bid', 'ask', 'bidSize', 'askSize', 'sharesOutstanding', 'sharesShort'],
             'Value': [infoDictionary['dividendRate'], infoDictionary['dividendYield'], infoDictionary['payoutRatio'], infoDictionary['beta'],
-                    infoDictionary['trailingPE'], infoDictionary['forwardPE'], infoDictionary['bid'], infoDictionary['ask'], infoDictionary['bidSize'],
-                    infoDictionary['askSize'], infoDictionary['sharesOutstanding'], infoDictionary['sharesShort']]
+                      infoDictionary['trailingPE'], infoDictionary['forwardPE'], infoDictionary['bid'], infoDictionary['ask'], 
+                      infoDictionary['bidSize'], infoDictionary['askSize'], infoDictionary['sharesOutstanding'], infoDictionary['sharesShort']]
         }
         infoDf = pd.DataFrame(data)
         column_names = {
