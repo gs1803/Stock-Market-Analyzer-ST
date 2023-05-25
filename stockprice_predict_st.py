@@ -80,7 +80,7 @@ class StockPricePredictor:
                           xaxis_title = 'Date', 
                           yaxis_title = 'Adj Close')
         st.subheader(f"Latest Stock Adj Close Price: {self.stock['Adj Close'].iloc[-1]:.2f}")   
-        st.plotly_chart(fig)
+        st.plotly_chart(fig, use_container_width = True)
 
         nextDayPrediction = model.predict(np.array([x_test[-1]]), verbose = 0)
         nextDayPrediction = scaler.inverse_transform(nextDayPrediction)[0][0]
