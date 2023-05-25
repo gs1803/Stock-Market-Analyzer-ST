@@ -140,7 +140,6 @@ class StockInformation:
                     st.write(" ")
                 else:
                     st.write("No Information Available for the Ticker")
-
             if not details.isascii():
                 st.write(" ")
             else:
