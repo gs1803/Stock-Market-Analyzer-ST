@@ -217,7 +217,7 @@ class StockAnalyzer:
     def stock_bollinger(self) -> None:
         self.stock['sma_20'] = TechnicalAnalysis.sma_calculations(self.stock['Close'], 20)
         self.stock['upper_bb'], self.stock['lower_bb'] = TechnicalAnalysis.bollinger_bands_calculations(self.stock['Close'], self.stock['sma_20'], 20)
-        bollinger_buy_price, bollinger_sell_price = TechnicalAnalysis.implement_bollinger_strategy(self.stock['Close'], self.stock['lower_bb'], self.stock['upper_bb'])
+        bollingerBuyPrice, bollingerSellPrice = TechnicalAnalysis.implement_bollinger_strategy(self.stock['Close'], self.stock['lower_bb'], self.stock['upper_bb'])
         fig = go.Figure()
 
         fig.add_trace(go.Scatter(
@@ -262,7 +262,7 @@ class StockAnalyzer:
 
         fig.add_trace(go.Scatter(
             x = self.stock.index,
-            y = bollinger_buy_price,
+            y = bollingerBuyPrice,
             mode = 'markers',
             marker = dict(symbol = 'triangle-up', size = 20, color = 'green'),
             name = 'Buy Signal'
@@ -270,7 +270,7 @@ class StockAnalyzer:
 
         fig.add_trace(go.Scatter(
             x = self.stock.index,
-            y = bollinger_sell_price,
+            y = bollingerSellPrice,
             mode = 'markers',
             marker = dict(symbol = 'triangle-down', size = 20, color = 'red'),
             name = 'Sell Signal'
@@ -281,7 +281,7 @@ class StockAnalyzer:
         self.stock['upper_db'], self.stock['lower_db'] = TechnicalAnalysis.donchian_breakout_calculations(self.stock['Close'],
                                                                                                           self.stock['High'],
                                                                                                           self.stock['Low'], 20)
-        donchian_buy_price, donchian_sell_price = TechnicalAnalysis.implement_donchian_strategy(self.stock['Close'], 
+        donchianBuyPrice, donchianSellPrice = TechnicalAnalysis.implement_donchian_strategy(self.stock['Close'], 
                                                                                                 self.stock['upper_db'], 
                                                                                                 self.stock['lower_db'])
         fig = go.Figure()
@@ -319,7 +319,7 @@ class StockAnalyzer:
 
         fig.add_trace(go.Scatter(
             x = self.stock.index,
-            y = donchian_buy_price,
+            y = donchianBuyPrice,
             mode = 'markers',
             marker = dict(symbol = 'triangle-up', size = 20, color = 'green'),
             name = 'Buy Signal'
@@ -327,7 +327,7 @@ class StockAnalyzer:
 
         fig.add_trace(go.Scatter(
             x = self.stock.index,
-            y = donchian_sell_price,
+            y = donchianSellPrice,
             mode = 'markers',
             marker = dict(symbol = 'triangle-down', size = 20, color = 'red'),
             name = 'Sell Signal'
