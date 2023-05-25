@@ -62,7 +62,9 @@ def div_or_split():
     st.header("Dividends and Splits")
     try:
         userStock = st.text_input("Enter the Stock Ticker:").upper().replace(" ", "")
-        if not userStock or userStock.isascii():
+        if not userStock:
+            st.write(" ")
+        elif not userStock.isascii():
             st.write(" ")
         else:
             divSplitStock = StockInformation(yf.Ticker(userStock))
@@ -84,7 +86,9 @@ def stock_price_predictor():
     try:
         userStock = st.text_input("Enter the Stock Ticker:").upper().replace(" ", "")
         end = str(date.today())
-        if not userStock or userStock.isascii():
+        if not userStock:
+            st.write(" ")
+        elif not userStock.isascii():
             st.write(" ")
         else:
             inputStock = yf.download(userStock, '2021-01-01', end, progress = False)
