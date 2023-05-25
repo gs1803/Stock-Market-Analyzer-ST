@@ -134,7 +134,7 @@ class StockInformation:
                                                           'Filter by Company'])
 
         if detailChoose == 'Ticker Details':
-            details = st.text_input("Enter the Ticker for the Stock:").upper()
+            details = st.text_input("Enter the Ticker for the Stock:").upper().replace(" ", "")
             if (df[df['Ticker'] == details].empty):
                 if not details:
                     st.write("")
