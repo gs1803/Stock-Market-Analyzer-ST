@@ -137,18 +137,21 @@ class StockInformation:
             details = st.text_input("Enter the Ticker for the Stock:").upper().replace(" ", "")
             if (df[df['Ticker'] == details].empty):
                 if not details:
-                    st.write("")
+                    st.write(" ")
                 else:
                     st.write("No Information Available for the Ticker")
 
-            detail_stock = (df[df['Ticker'] == details])
-            st.dataframe(detail_stock, use_container_width = True)
-            try:
-                userStock = StockInformation(yf.Ticker(details))
-                StockInformation.stock_info(userStock)
-                StockInformation.stock_news(userStock)
-            except KeyError:
-                st.write("News not available for that ticker.")
+            if not details.isascii():
+                st.write(" ")
+            else:
+                detail_stock = (df[df['Ticker'] == details])
+                st.dataframe(detail_stock, use_container_width = True)
+                try:
+                    userStock = StockInformation(yf.Ticker(details))
+                    StockInformation.stock_info(userStock)
+                    StockInformation.stock_news(userStock)
+                except KeyError:
+                    st.write("News not available for that ticker.")
 
         elif detailChoose == 'Filter by Industry':
             filterCol, searchCol = st.columns([5, 5])
