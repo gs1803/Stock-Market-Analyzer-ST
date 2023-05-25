@@ -78,13 +78,9 @@ class StockInformation:
     def stock_info(self) -> None:
         infoDictionary = self.stock.info
         data = {
-            'Metric': ['dividendRate', 'dividendYield', 'payoutRatio', 'beta', 'trailingPE', 'forwardPE',
-                            'bid', 'ask', 'bidSize', 'askSize', 'sharesOutstanding', 'sharesShort'],
-            'Value': [infoDictionary['dividendRate'], infoDictionary['dividendYield'], infoDictionary['payoutRatio'], infoDictionary['beta'],
-                      infoDictionary['trailingPE'], infoDictionary['forwardPE'], infoDictionary['bid'], infoDictionary['ask'], 
-                      infoDictionary['bidSize'], infoDictionary['askSize'], infoDictionary['sharesOutstanding'], infoDictionary['sharesShort']]
+            'Metric': [],
+            'Value': []
         }
-        infoDf = pd.DataFrame(data)
         column_names = {
             'dividendRate': 'Dividend Rate',
             'dividendYield': 'Dividend Yield',
@@ -99,12 +95,18 @@ class StockInformation:
             'sharesOutstanding': 'Shares Outstanding',
             'sharesShort': 'Shares Short'
         }
-        infoDf['Metric'] = infoDf['Metric'].map(column_names)
-        infoDf['Value'] = infoDf['Value'].apply(lambda x: '{:.2f}'.format(x) if isinstance(x, (int, float)) else x)
-        infoDf['Value'] = infoDf['Value'].apply(lambda x: x.replace(',', '') if isinstance(x, str) else x)
+        for key in column_names:
+            if key in infoDictionary:
+                data['Metric'].append(column_names[key])
+                value = infoDictionary[key]
+                if isinstance(value, (int, float)):
+                    value = '{:.2f}'.format(value)
+                if isinstance(value, str):
+                    value = value.replace(',', '')
+                data['Value'].append(value)
         
+        infoDf = pd.DataFrame(data)
         st.dataframe(infoDf, use_container_width = True)
-        
     
     def holder_chooser(self) -> None:
         holderOption = st.selectbox("Select an option:", ['Major Holders', 'Institutional Holders', 'Mutual Fund Holders'])
