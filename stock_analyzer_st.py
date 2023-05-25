@@ -282,8 +282,8 @@ class StockAnalyzer:
                                                                                                           self.stock['High'],
                                                                                                           self.stock['Low'], 20)
         donchianBuyPrice, donchianSellPrice = TechnicalAnalysis.implement_donchian_strategy(self.stock['Close'], 
-                                                                                                self.stock['upper_db'], 
-                                                                                                self.stock['lower_db'])
+                                                                                            self.stock['upper_db'], 
+                                                                                            self.stock['lower_db'])
         fig = go.Figure()
 
         fig.add_trace(go.Scatter(
