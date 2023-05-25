@@ -46,7 +46,9 @@ def holder_info():
     st.header("Holder Information")
     try:
         userStock = st.text_input("Enter the Stock Ticker:").upper().replace(" ", "")
-        if not userStock or userStock.isascii():
+        if not userStock:
+            st.write(" ")
+        elif not userStock.isascii():
             st.write(" ")
         else:
             holderStock = StockInformation(yf.Ticker(userStock))
