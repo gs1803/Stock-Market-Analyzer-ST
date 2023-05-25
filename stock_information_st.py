@@ -140,15 +140,15 @@ class StockInformation:
                     st.write("")
                 else:
                     st.write("No Information Available for the Ticker")
-            else:
-                detail_stock = (df[df['Ticker'] == details])
-                st.dataframe(detail_stock, use_container_width = True)
-                try:
-                    userStock = StockInformation(yf.Ticker(details))
-                    StockInformation.stock_info(userStock)
-                    StockInformation.stock_news(userStock)
-                except KeyError:
-                    st.write("News not available for that ticker.")
+
+            detail_stock = (df[df['Ticker'] == details])
+            st.dataframe(detail_stock, use_container_width = True)
+            try:
+                userStock = StockInformation(yf.Ticker(details))
+                StockInformation.stock_info(userStock)
+                StockInformation.stock_news(userStock)
+            except KeyError:
+                st.write("News not available for that ticker.")
 
         elif detailChoose == 'Filter by Industry':
             filterCol, searchCol = st.columns([5, 5])
