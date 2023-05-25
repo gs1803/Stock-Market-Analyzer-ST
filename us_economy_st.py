@@ -3,7 +3,7 @@ import plotly.graph_objects as go
 import streamlit as st
 from fredapi import Fred
 
-fred = Fred(api_key = '')
+fred = Fred(api_key = 'API_KEY')
 
 class USEconomy:
     inflationData = fred.get_series('CPIAUCSL', units = 'pc1', observation_start = '1/1/1970')
