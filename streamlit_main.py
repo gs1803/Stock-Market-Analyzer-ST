@@ -25,7 +25,7 @@ def stock_info():
         pass
     else:
         try:
-            userStock = st.text_input("Enter the Stock Ticker:").upper()
+            userStock = st.text_input("Enter the Stock Ticker:").upper().replace(" ", "")
             if not userStock:
                 st.write(" ")
             else:
