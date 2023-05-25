@@ -26,7 +26,9 @@ def stock_info():
     else:
         try:
             userStock = st.text_input("Enter the Stock Ticker:").upper().replace(" ", "")
-            if not userStock or userStock.isascii():
+            if not userStock:
+                st.write(" ")
+            elif not userStock.isascii():
                 st.write(" ")
             else:
                 inputStock = yf.download(f"{userStock}", start, end, progress = False)
