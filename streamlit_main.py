@@ -45,7 +45,7 @@ def industry_info():
 def holder_info():
     st.header("Holder Information")
     try:
-        userStock = st.text_input("Enter the Stock Ticker:").upper()
+        userStock = st.text_input("Enter the Stock Ticker:").upper().replace(" ", "")
         if not userStock:
             pass
         else:
@@ -57,7 +57,7 @@ def holder_info():
 def div_or_split():
     st.header("Dividends and Splits")
     try:
-        userStock = st.text_input("Enter the Stock Ticker:").upper()
+        userStock = st.text_input("Enter the Stock Ticker:").upper().replace(" ", "")
         if not userStock:
             pass
         else:
@@ -78,7 +78,7 @@ def us_economy():
 def stock_price_predictor():
     st.header('Stock Price Predictor')
     try:
-        userStock = st.text_input("Enter the Stock Ticker:").upper()
+        userStock = st.text_input("Enter the Stock Ticker:").upper().replace(" ", "")
         end = str(date.today())
         if not userStock:
             st.write(" ")
