@@ -1,7 +1,6 @@
 import pandas as pd
 import streamlit as st
 import yfinance as yf
-import requests
 
 class StockInformation:
     def __init__(self, stock) -> None:
@@ -150,7 +149,7 @@ class StockInformation:
                     userStock = StockInformation(yf.Ticker(details))
                     StockInformation.stock_info(userStock)
                     StockInformation.stock_news(userStock)
-                except KeyError or requests.exceptions.HTTPError:
+                except KeyError:
                     st.write("News not available for that ticker.")
 
         elif detailChoose == 'Filter by Industry':
