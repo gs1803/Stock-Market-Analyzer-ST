@@ -99,13 +99,19 @@ class StockInformation:
             if key in infoDictionary:
                 data['Metric'].append(column_names[key])
                 value = infoDictionary[key]
-                if isinstance(value, (int, float)):
+                if key == 'bid' or key == 'ask':
+                    size_key = key + 'Size'
+                    if size_key in infoDictionary:
+                        size = infoDictionary[size_key]
+                        value = f'{value:.2f} x {size}'
+                elif isinstance(value, (int, float)):
                     value = '{:.2f}'.format(value)
-                if isinstance(value, str):
+                elif isinstance(value, str):
                     value = value.replace(',', '')
                 data['Value'].append(value)
-        
+                
         infoDf = pd.DataFrame(data)
+        infoDf = infoDf[~infoDf['Metric'].isin(['Bid Size', 'Ask Size'])]
         st.dataframe(infoDf, use_container_width = True)
     
     def holder_chooser(self) -> None:
@@ -135,25 +141,21 @@ class StockInformation:
 
         if detailChoose == 'Ticker Details':
             details = st.text_input("Enter the Ticker for the Stock:").upper().replace(" ", "")
-            if not details.isascii():
+            if not details:
                 st.write(" ")
-            if (df[df['Ticker'] == details].empty):
-                if not details:
-                    st.write(" ")
-                else:
-                    st.write("No Company and Industry Information Available for the Ticker")
+            elif not details.isascii():
+                st.write(" ")
+            elif (df[df['Ticker'] == details].empty):
+                st.write("No Company and Industry Information Available for the Ticker")
             else:
                 detail_stock = (df[df['Ticker'] == details])
                 st.dataframe(detail_stock, use_container_width = True)
-            ticker = yf.Ticker(details)
-            if not ticker.history().empty:
-                userStock = StockInformation(ticker)
+            try:
+                userStock = StockInformation(yf.Ticker(details))
                 StockInformation.stock_info(userStock)
                 StockInformation.stock_news(userStock)
-            elif not details:
+            except Exception:
                 st.write(" ")
-            else:
-                st.write("No news available for that ticker.")
 
         elif detailChoose == 'Filter by Industry':
             filterCol, searchCol = st.columns([5, 5])
