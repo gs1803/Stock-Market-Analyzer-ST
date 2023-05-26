@@ -151,7 +151,7 @@ class StockInformation:
                 StockInformation.stock_info(userStock)
                 StockInformation.stock_news(userStock)
             else:
-                st.write("No news available for that ticker.")
+                st.write(" ")
 
         elif detailChoose == 'Filter by Industry':
             filterCol, searchCol = st.columns([5, 5])
