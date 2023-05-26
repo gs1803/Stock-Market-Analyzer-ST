@@ -24,21 +24,18 @@ def stock_info():
     if not start:
         pass
     else:
-        try:
-            userStock = st.text_input("Enter the Stock Ticker:").upper().replace(" ", "")
-            if not userStock:
-                st.write(" ")
-            elif not userStock.isascii():
-                st.write(" ")
+        userStock = st.text_input("Enter the Stock Ticker:").upper().replace(" ", "")
+        if not userStock:
+            st.write(" ")
+        elif not userStock.isascii():
+            st.write(" ")
+        else:
+            inputStock = yf.download(f"{userStock}", start, end, progress = False)
+            if inputStock.empty:
+                st.write("No Information Available for the Ticker.")
             else:
-                inputStock = yf.download(f"{userStock}", start, end, progress = False)
-                if inputStock.empty:
-                    pass
-                else:
-                    infoStock = StockAnalyzer(inputStock, userStock)
-                    StockAnalyzer.graph_chooser(infoStock)
-        except ValueError:
-            st.write("No Information Available for the Ticker.")
+                infoStock = StockAnalyzer(inputStock, userStock)
+                StockAnalyzer.graph_chooser(infoStock)
 
 def industry_info():
     st.header("Ticker Information")
