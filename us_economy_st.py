@@ -60,6 +60,7 @@ class USEconomy:
 
         if usdEuro:
             usdEuroDf = pd.DataFrame(USEconomy.exchangeDataUsdEuro)
+            usdEuroDf = useEuroDf.dropna(how = 'all')
             usdEuroDf.index = pd.to_datetime(usdEuroDf.index)
             usdEuroDf.columns = ['exchange_rate']
             usdEuroDf['exchange_rate'] = 1 / usdEuroDf['exchange_rate']
