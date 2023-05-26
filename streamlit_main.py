@@ -80,22 +80,19 @@ def us_economy():
 
 def stock_price_predictor():
     st.header('Stock Price Predictor')
-    try:
-        userStock = st.text_input("Enter the Stock Ticker:").upper().replace(" ", "")
-        end = str(date.today())
-        if not userStock:
-            st.write(" ")
-        elif not userStock.isascii():
-            st.write(" ")
+    userStock = st.text_input("Enter the Stock Ticker:").upper().replace(" ", "")
+    end = str(date.today())
+    if not userStock:
+        st.write(" ")
+    elif not userStock.isascii():
+        st.write(" ")
+    else:
+        inputStock = yf.download(userStock, '2021-01-01', end, progress = False)
+        if inputStock.empty:
+            st.write("No Information Available for the Ticker.")
         else:
-            inputStock = yf.download(userStock, '2021-01-01', end, progress = False)
-            if inputStock.empty:
-                pass
-            else:
-                predictStock = StockPricePredictor(inputStock, userStock)
-                StockPricePredictor.ml_model(predictStock)
-    except ValueError:
-        st.write("No Information Available for the Ticker.")
+            predictStock = StockPricePredictor(inputStock, userStock)
+            StockPricePredictor.ml_model(predictStock)
 
 def main():
     st.title("Stock Market Analyzer")
