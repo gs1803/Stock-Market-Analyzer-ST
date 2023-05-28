@@ -31,7 +31,7 @@ class TechnicalAnalysis:
     def macd_calculations(data, slow, fast, smooth) -> pd.DataFrame:
         exp1 = data.ewm(span = fast, adjust = False).mean()
         exp2 = data.ewm(span = slow, adjust = False).mean()
-        macd = pd.DataFrame(exp1 - exp2).rename(columns = {'Close': 'macd'})
+        macd = pd.DataFrame(exp1 - exp2).rename(columns = {'Adj Close': 'macd'})
         signal = pd.DataFrame(macd.ewm(span = smooth, adjust = False).mean()).rename(columns = {'macd':'signal'})
         hist = pd.DataFrame(macd['macd'] - signal['signal']).rename(columns = {0:'hist'})
         frames =  [macd, signal, hist]
