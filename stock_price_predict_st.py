@@ -9,6 +9,7 @@ import math
 from keras.models import Sequential
 from keras.layers import Dense, LSTM
 from sklearn.preprocessing import MinMaxScaler
+from sklearn.metrics import mean_squared_error
 
 tf.random.set_seed(42)
 
@@ -69,6 +70,9 @@ class StockPricePredictor:
 
         valid = valid.copy()
         valid['Predictions'] = predictions
+        actual_values = np.array(valid['Adj Close'])
+
+        rmse = np.sqrt(mean_squared_error(actual_values, predictions))
 
         fig = go.Figure()
         fig.add_trace(go.Scatter(x = train.index, y = train['Adj Close'], name = 'Actual'))
@@ -96,4 +100,6 @@ class StockPricePredictor:
 
         tomorrowDate = dt.date.today() + dt.timedelta(days = 1)
         st.write(f"Predicted Stock Adj Close Price for ({tomorrowDate}): {nextDayPrediction:.2f}")
+        st.write(f"RMSE: {rmse}")
         st.write(f"95% Confidence Interval: ±{format(predictionInterval, '0.10f')}")
+        
