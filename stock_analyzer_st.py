@@ -83,11 +83,11 @@ class StockAnalyzer:
                                  secondary_y = False)
         
         fig.add_trace(go.Scatter(x = self.stock.index, 
-                                 y = self.stock['Open'].rolling(50).mean(), name = '50 Days MA'),
+                                 y = self.stock['Adj Close'].rolling(50).mean(), name = '50 Days MA'),
                                  secondary_y = False)
         
         fig.add_trace(go.Scatter(x = self.stock.index, 
-                                 y = self.stock['Open'].rolling(200).mean(), name = '200 Days MA'), 
+                                 y = self.stock['Adj Close'].rolling(200).mean(), name = '200 Days MA'), 
                                  secondary_y = False)
                 
         fig.update_layout(title = f"Moving Average for {self.titleStock} ({self.companyStock})",
@@ -95,8 +95,8 @@ class StockAnalyzer:
         st.plotly_chart(fig, use_container_width = True)
 
     def stock_rsi(self) -> None:
-        self.stock['rsi_14'] = TechnicalAnalysis.rsi_calculation(self.stock['Close'], 14)
-        rsi_buy_price, rsi_sell_price = TechnicalAnalysis.implement_rsi_strategy(self.stock['Close'], self.stock['rsi_14'])
+        self.stock['rsi_14'] = TechnicalAnalysis.rsi_calculation(self.stock['Adj Close'], 14)
+        rsi_buy_price, rsi_sell_price = TechnicalAnalysis.implement_rsi_strategy(self.stock['Adj Close'], self.stock['rsi_14'])
         fig = make_subplots(rows = 2, cols = 1, 
                             shared_xaxes = True, 
                             vertical_spacing = 0.1, 
@@ -104,9 +104,9 @@ class StockAnalyzer:
 
         fig.add_trace(go.Scatter(
             x = self.stock.index,
-            y = self.stock['Close'],
+            y = self.stock['Adj Close'],
             mode = 'lines',
-            name = 'Close Price',
+            name = 'Adj Close Price',
             showlegend = False
         ), row = 1, col = 1)
 
@@ -128,7 +128,7 @@ class StockAnalyzer:
 
         fig.update_layout(
             title = f'RSI Trade Signals for {self.titleStock} ({self.companyStock})',
-            yaxis = dict(title = 'Close Price'),
+            yaxis = dict(title = 'Adj Close Price'),
             yaxis2 = dict(title = 'RSI'),
         )
 
@@ -149,8 +149,8 @@ class StockAnalyzer:
         st.plotly_chart(fig, use_container_width = True)
 
     def stock_macd(self) -> None:
-        df_macd = TechnicalAnalysis.macd_calculations(self.stock['Close'], 26, 12, 9)
-        macd_buy_price, macd_sell_price = TechnicalAnalysis.implement_macd_strategy(self.stock['Close'], df_macd)        
+        df_macd = TechnicalAnalysis.macd_calculations(self.stock['Adj Close'], 26, 12, 9)
+        macd_buy_price, macd_sell_price = TechnicalAnalysis.implement_macd_strategy(self.stock['Adj Close'], df_macd)        
         fig = make_subplots(rows = 2, cols = 1, 
                             shared_xaxes = True, 
                             vertical_spacing = 0.1, 
@@ -158,9 +158,9 @@ class StockAnalyzer:
         
         fig.add_trace(go.Scatter(
             x = self.stock.index,
-            y = self.stock['Close'],
+            y = self.stock['Adj Close'],
             mode = 'lines',
-            name = 'Close Price',
+            name = 'Adj Close Price',
             showlegend = False
         ), row = 1, col = 1)
 
@@ -209,22 +209,22 @@ class StockAnalyzer:
 
         fig.update_layout(
             title = f'MACD Trade Signals for {self.titleStock} ({self.companyStock})',
-            yaxis = dict(title = 'Close Price'),
+            yaxis = dict(title = 'Adj Close Price'),
             yaxis2 = dict(title = 'MACD')
         )
         st.plotly_chart(fig, use_container_width = True)
 
     def stock_bollinger(self) -> None:
-        self.stock['sma_20'] = TechnicalAnalysis.sma_calculations(self.stock['Close'], 20)
-        self.stock['upper_bb'], self.stock['lower_bb'] = TechnicalAnalysis.bollinger_bands_calculations(self.stock['Close'], self.stock['sma_20'], 20)
-        bollingerBuyPrice, bollingerSellPrice = TechnicalAnalysis.implement_bollinger_strategy(self.stock['Close'], self.stock['lower_bb'], self.stock['upper_bb'])
+        self.stock['sma_20'] = TechnicalAnalysis.sma_calculations(self.stock['Adj Close'], 20)
+        self.stock['upper_bb'], self.stock['lower_bb'] = TechnicalAnalysis.bollinger_bands_calculations(self.stock['Adj Close'], self.stock['sma_20'], 20)
+        bollingerBuyPrice, bollingerSellPrice = TechnicalAnalysis.implement_bollinger_strategy(self.stock['Adj Close'], self.stock['lower_bb'], self.stock['upper_bb'])
         fig = go.Figure()
 
         fig.add_trace(go.Scatter(
             x = self.stock.index,
-            y = self.stock['Close'],
+            y = self.stock['Adj Close'],
             mode = 'lines',
-            name = 'Close Price',
+            name = 'Adj Close Price',
             showlegend = False
         ))
     
@@ -257,7 +257,7 @@ class StockAnalyzer:
 
         fig.update_layout(
             title = f'Bollinger Bands Trade Signals for {self.titleStock} ({self.companyStock})',
-            yaxis = dict(title = 'Close Price')
+            yaxis = dict(title = 'Adj Close Price')
         )
 
         fig.add_trace(go.Scatter(
@@ -278,19 +278,19 @@ class StockAnalyzer:
         st.plotly_chart(fig, use_container_width = True)
 
     def stock_donchian(self) -> None:
-        self.stock['upper_db'], self.stock['lower_db'] = TechnicalAnalysis.donchian_breakout_calculations(self.stock['Close'],
+        self.stock['upper_db'], self.stock['lower_db'] = TechnicalAnalysis.donchian_breakout_calculations(self.stock['Adj Close'],
                                                                                                           self.stock['High'],
                                                                                                           self.stock['Low'], 20)
-        donchianBuyPrice, donchianSellPrice = TechnicalAnalysis.implement_donchian_strategy(self.stock['Close'], 
+        donchianBuyPrice, donchianSellPrice = TechnicalAnalysis.implement_donchian_strategy(self.stock['Adj Close'], 
                                                                                             self.stock['upper_db'], 
                                                                                             self.stock['lower_db'])
         fig = go.Figure()
 
         fig.add_trace(go.Scatter(
             x = self.stock.index,
-            y = self.stock['Close'],
+            y = self.stock['Adj Close'],
             mode = 'lines',
-            name = 'Close Price',
+            name = 'Adj Close Price',
             showlegend = False
         ))
 
@@ -314,7 +314,7 @@ class StockAnalyzer:
 
         fig.update_layout(
             title = f'Donchian Breakout Trade Signals for {self.titleStock} ({self.companyStock})',
-            yaxis = dict(title = 'Close Price')
+            yaxis = dict(title = 'Adj Close Price')
         )
 
         fig.add_trace(go.Scatter(
