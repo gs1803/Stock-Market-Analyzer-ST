@@ -1,6 +1,6 @@
 import streamlit as st
 import yfinance as yf
-from datetime import date
+from datetime import date, datetime
 from stock_analyzer_st import StockAnalyzer
 from stock_information_st import StockInformation
 from standard_poor_corr_st import StandardPoorCorr
@@ -20,7 +20,8 @@ def stock_info():
                              min_value = date(1960, 1, 1), 
                              max_value = date.today())
     end = str(end).replace('/', '-')
-
+    dateDiff = abs((datetime.strptime(start, "%Y-%m-%d") - datetime.strptime(end, "%Y-%m-%d")).days)
+    
     if not start:
         pass
     else:
@@ -30,7 +31,10 @@ def stock_info():
         elif not userStock.isascii():
             st.write(" ")
         else:
-            inputStock = yf.download(f"{userStock}", start, end, progress = False)
+            if dateDiff == 1 or dateDiff == 0:
+                inputStock = yf.download(f"{userStock}", start, end, interval ='1m', progress = False)
+            else:
+                inputStock = yf.download(f"{userStock}", start, end, progress = False)
             if inputStock.empty:
                 st.write("No Information Available for the Ticker.")
             else:
