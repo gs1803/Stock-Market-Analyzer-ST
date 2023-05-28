@@ -64,7 +64,7 @@ class TechnicalAnalysis:
         signal = 0
 
         for i in range(len(rsi)):
-            if rsi[i-1] > 30 and rsi[i] < 30:
+            if rsi[i - 1] > 30 and rsi[i] < 30:
                 if signal != 1:
                     rsi_buy_price.append(data[i])
                     rsi_sell_price.append(np.nan)
@@ -74,7 +74,7 @@ class TechnicalAnalysis:
                     rsi_buy_price.append(np.nan)
                     rsi_sell_price.append(np.nan)
                     rsi_signal.append(0)
-            elif rsi[i-1] < 70 and rsi[i] > 70:
+            elif rsi[i - 1] < 70 and rsi[i] > 70:
                 if signal != -1:
                     rsi_buy_price.append(np.nan)
                     rsi_sell_price.append(data[i])
