@@ -5,7 +5,7 @@ from stock_analyzer_st import StockAnalyzer
 from stock_information_st import StockInformation
 from standard_poor_corr_st import StandardPoorCorr
 from us_economy_st import USEconomy
-from stockprice_predict_st import StockPricePredictor
+from stock_price_predict_st import StockPricePredictor
 
 def stock_info():
     st.header("Graphs")
