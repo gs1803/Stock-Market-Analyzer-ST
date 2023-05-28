@@ -20,8 +20,11 @@ def stock_info():
                              min_value = date(1960, 1, 1), 
                              max_value = date.today())
     end = str(end).replace('/', '-')
-    dateDiff = abs((datetime.strptime(start, "%Y-%m-%d") - datetime.strptime(end, "%Y-%m-%d")).days)
-    
+       
+    startDate = datetime.strptime(start, '%Y-%m-%d')
+    endDate = datetime.strptime(end, '%Y-%m-%d')
+    dateDiff = abs((startDate - endDate).days)
+
     if not start:
         pass
     else:
@@ -32,7 +35,10 @@ def stock_info():
             st.write(" ")
         else:
             if dateDiff == 1 or dateDiff == 0:
-                inputStock = yf.download(f"{userStock}", start, end, interval ='1m', progress = False)
+                if startDate.isoweekday() == 6 or startDate.isoweekday == 7 and endDate.isoweekday() == 6 or endDate.isoweekday == 7:
+                    inputStock = yf.download(f"{userStock}", start, end, interval = '1m', progress = False)
+                else:
+                    inputStock = yf.download(f"{userStock}", start, end, interval = '1m', progress = False)
             else:
                 inputStock = yf.download(f"{userStock}", start, end, progress = False)
             if inputStock.empty:
