@@ -24,10 +24,11 @@ def stock_info():
                              max_value = et_now)
     end = end + timedelta(days = 1)
     end = str(end).replace('/', '-')
+    st.write(end)
        
     startDate = datetime.strptime(start, '%Y-%m-%d')
     endDate = datetime.strptime(end, '%Y-%m-%d')
-    dateDiff = abs((startDate - endDate).days)
+    dateDiff = abs((startDate - endDate).days) - 1
 
     if not start:
         pass
@@ -38,11 +39,17 @@ def stock_info():
         elif not userStock.isascii():
             st.write(" ")
         else:
-            if dateDiff == 1 or dateDiff == 0:
-                if startDate.isoweekday() == 6 or startDate.isoweekday() == 7 and endDate.isoweekday() == 6 or endDate.isoweekday() == 7:
+            if dateDiff == 0:
+                inputStock = yf.download(f"{userStock}", start, end, interval = '1m', progress = False)
+            elif dateDiff == 1:
+                end = endDate - timedelta(days = 1)
+                if startDate.isoweekday() == 6 or startDate.isoweekday() == 7 or endDate.isoweekday() == 6 or endDate.isoweekday() == 7:
                     inputStock = yf.download(f"{userStock}", start, end, interval = '1m', progress = False)
                 else:
-                    inputStock = yf.download(f"{userStock}", start, end, interval = '1m', progress = False)
+                    inputStock = yf.download(f"{userStock}", start, end, progress = False)
+            elif dateDiff == 2 and startDate.isoweekday() == 5:
+                end = endDate - timedelta(days = 2)
+                inputStock = yf.download(f"{userStock}", start, end, interval = '1m', progress = False)
             else:
                 inputStock = yf.download(f"{userStock}", start, end, progress = False)
             if inputStock.empty:
