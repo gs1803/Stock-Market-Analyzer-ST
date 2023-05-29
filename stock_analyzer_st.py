@@ -16,7 +16,7 @@ class StockAnalyzer:
                                  y = self.stock['Open'], name = 'Open'),
                                  secondary_y = False)
         fig.add_trace(go.Scatter(x = self.stock.index, 
-                                 y = self.stock['Close'], name = 'Adj Close'),
+                                 y = self.stock['Adj Close'], name = 'Adj Close'),
                                  secondary_y = False)
         fig.update_layout(title = f"Stock Price for {self.titleStock} ({self.companyStock})",
                           yaxis = dict(title = 'Price'))
