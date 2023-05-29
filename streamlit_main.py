@@ -8,7 +8,7 @@ from standard_poor_corr_st import StandardPoorCorr
 from us_economy_st import USEconomy
 from stock_price_predict_st import StockPricePredictor
 
-et_now = datetime.now(pytz.timezone('US/Eastern'))
+et_now = datetime.now(pytz.timezone('US/Eastern')).date()
 
 def stock_info():
     st.header("Graphs")
