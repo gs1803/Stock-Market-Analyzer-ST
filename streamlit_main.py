@@ -1,5 +1,6 @@
 import streamlit as st
 import yfinance as yf
+import pytz
 from datetime import date, datetime, timedelta
 from stock_analyzer_st import StockAnalyzer
 from stock_information_st import StockInformation
@@ -7,18 +8,20 @@ from standard_poor_corr_st import StandardPoorCorr
 from us_economy_st import USEconomy
 from stock_price_predict_st import StockPricePredictor
 
+et_now = datetime.now(pytz.timezone('US/Eastern'))
+
 def stock_info():
     st.header("Graphs")
     startCol, endCol = st.columns([5, 5])
     start = startCol.date_input("Select the Start Date:",
                                  value = date(2021, 1, 1), 
                                  min_value = date(1960, 1, 1), 
-                                 max_value = date.today())
+                                 max_value = et_now)
     start = str(start).replace('/', '-')
     end = endCol.date_input("Select the End Date:", 
-                             value = date.today(), 
+                             value = et_now, 
                              min_value = date(1960, 1, 1), 
-                             max_value = date.today())
+                             max_value = et_now)
     end = end + timedelta(days = 1)
     end = str(end).replace('/', '-')
        
@@ -92,7 +95,7 @@ def us_economy():
 def stock_price_predictor():
     st.header('Stock Price Predictor')
     userStock = st.text_input("Enter the Stock Ticker:").upper().replace(" ", "")
-    end = str(date.today() + timedelta(days = 1))
+    end = str(et_now + timedelta(days = 1))
     if not userStock:
         st.write(" ")
     elif not userStock.isascii():
