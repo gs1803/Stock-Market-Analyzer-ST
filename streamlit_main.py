@@ -24,7 +24,6 @@ def stock_info():
                              max_value = et_now)
     end = end + timedelta(days = 1)
     end = str(end).replace('/', '-')
-    st.write(end)
        
     startDate = datetime.strptime(start, '%Y-%m-%d')
     endDate = datetime.strptime(end, '%Y-%m-%d')
