@@ -1,6 +1,6 @@
 import streamlit as st
 import yfinance as yf
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from stock_analyzer_st import StockAnalyzer
 from stock_information_st import StockInformation
 from standard_poor_corr_st import StandardPoorCorr
@@ -19,6 +19,7 @@ def stock_info():
                              value = date.today(), 
                              min_value = date(1960, 1, 1), 
                              max_value = date.today())
+    end = end + timedelta(days = 1)
     end = str(end).replace('/', '-')
        
     startDate = datetime.strptime(start, '%Y-%m-%d')
@@ -35,7 +36,7 @@ def stock_info():
             st.write(" ")
         else:
             if dateDiff == 1 or dateDiff == 0:
-                if startDate.isoweekday() == 6 or startDate.isoweekday == 7 and endDate.isoweekday() == 6 or endDate.isoweekday == 7:
+                if startDate.isoweekday() == 6 or startDate.isoweekday() == 7 and endDate.isoweekday() == 6 or endDate.isoweekday() == 7:
                     inputStock = yf.download(f"{userStock}", start, end, interval = '1m', progress = False)
                 else:
                     inputStock = yf.download(f"{userStock}", start, end, interval = '1m', progress = False)
@@ -91,7 +92,7 @@ def us_economy():
 def stock_price_predictor():
     st.header('Stock Price Predictor')
     userStock = st.text_input("Enter the Stock Ticker:").upper().replace(" ", "")
-    end = str(date.today())
+    end = str(date.today() + timedelta(days = 1))
     if not userStock:
         st.write(" ")
     elif not userStock.isascii():
