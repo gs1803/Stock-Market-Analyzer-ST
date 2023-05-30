@@ -8,7 +8,10 @@ class StockAnalyzer:
     def __init__(self, stock, titleStock) -> None:
         self.stock = stock
         self.titleStock = titleStock
-        self.companyStock = yf.Ticker(titleStock).info['longName']
+        try:
+            self.companyStock = yf.Ticker(titleStock).info['longName']
+        except:
+            self.companyStock = ('')
         
     def stock_prices(self) -> None:
         fig = make_subplots(specs = [[{"secondary_y": True}]])
