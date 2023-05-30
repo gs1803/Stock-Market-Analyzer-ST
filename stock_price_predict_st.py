@@ -17,7 +17,10 @@ class StockPricePredictor:
     def __init__(self, stock, titleStock) -> None:
         self.stock = stock
         self.titleStock = titleStock
-        self.companyStock = yf.Ticker(titleStock).info['longName']
+        try:
+            self.companyStock = yf.Ticker(titleStock).info['longName']
+        except:
+            self.companyStock = ('')
 
     def ml_model(self) -> None:
         df = pd.DataFrame(self.stock['Adj Close'])
