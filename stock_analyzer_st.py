@@ -283,19 +283,19 @@ class StockAnalyzer:
         st.plotly_chart(fig, use_container_width = True)
 
     def stock_donchian(self) -> None:
-        self.stock['upper_db'], self.stock['lower_db'] = TechnicalAnalysis.donchian_breakout_calculations(self.stock['Close'],
+        self.stock['upper_db'], self.stock['lower_db'] = TechnicalAnalysis.donchian_breakout_calculations(self.stock['Adj Close'],
                                                                                                           self.stock['High'],
                                                                                                           self.stock['Low'], 20)
-        donchianBuyPrice, donchianSellPrice = TechnicalAnalysis.implement_donchian_strategy(self.stock['Close'], 
+        donchianBuyPrice, donchianSellPrice = TechnicalAnalysis.implement_donchian_strategy(self.stock['Adj Close'], 
                                                                                             self.stock['upper_db'], 
                                                                                             self.stock['lower_db'])
         fig = go.Figure()
 
         fig.add_trace(go.Scatter(
             x = self.stock.index,
-            y = self.stock['Close'],
+            y = self.stock['Adj Close'],
             mode = 'lines',
-            name = 'Close Price',
+            name = 'Adj Close Price',
             showlegend = False
         ))
 
@@ -319,7 +319,7 @@ class StockAnalyzer:
 
         fig.update_layout(
             title = f'Donchian Breakout Trade Signals for {self.titleStock} ({self.companyStock})',
-            yaxis = dict(title = 'Close Price')
+            yaxis = dict(title = 'Adj Close Price')
         )
 
         fig.add_trace(go.Scatter(
