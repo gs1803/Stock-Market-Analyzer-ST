@@ -57,7 +57,7 @@ class TechnicalAnalysis:
     
         return upper_channel, lower_channel
 
-    def implement_rsi_strategy(data, rsi) -> tuple:    
+    def implement_rsi(data, rsi) -> tuple:    
         rsi_buy_price = []
         rsi_sell_price = []
         rsi_signal = []
@@ -91,7 +91,7 @@ class TechnicalAnalysis:
                 
         return rsi_buy_price, rsi_sell_price
 
-    def implement_macd_strategy(data, data_macd) -> tuple:    
+    def implement_macd(data, data_macd) -> tuple:    
         macd_buy_price = []
         macd_sell_price = []
         macd_signal = []
@@ -125,7 +125,7 @@ class TechnicalAnalysis:
                 
         return macd_buy_price, macd_sell_price
     
-    def implement_bollinger_strategy(data, lower_bb, upper_bb) -> tuple:
+    def implement_bollinger(data, lower_bb, upper_bb) -> tuple:
         bollinger_buy_price = []
         bollinger_sell_price = []
         bollinger_signal = []
@@ -159,7 +159,7 @@ class TechnicalAnalysis:
                 
         return bollinger_buy_price, bollinger_sell_price
 
-    def implement_donchian_strategy(data, upper_channel, lower_channel) -> tuple:
+    def implement_donchian(data, upper_channel, lower_channel) -> tuple:
         donchian_buy_price = []
         donchian_sell_price = []
         donchian_signal = []
