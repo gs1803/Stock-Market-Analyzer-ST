@@ -14,7 +14,7 @@ def stock_info():
     st.header("Graphs")
     startCol, endCol = st.columns([5, 5])
     start = startCol.date_input("Select the Start Date:",
-                                 value = date(2021, 1, 1), 
+                                 value = et_now, 
                                  min_value = date(1960, 1, 1), 
                                  max_value = et_now)
     start = str(start).replace('/', '-')
