@@ -262,7 +262,7 @@ class StockAnalyzer:
 
         fig.update_layout(
             title = f'Bollinger Bands Trade Signals for {self.titleStock} ({self.companyStock})',
-            yaxis = dict(title = 'Close Price')
+            yaxis = dict(title = 'Adj Close Price')
         )
 
         fig.add_trace(go.Scatter(
