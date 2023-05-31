@@ -1,6 +1,7 @@
 import streamlit as st
 import yfinance as yf
 import plotly.graph_objects as go
+import pandas as pd
 from plotly.subplots import make_subplots
 from technical_analysis_st import TechnicalAnalysis
 
@@ -23,7 +24,13 @@ class StockAnalyzer:
                                  secondary_y = False)
         fig.update_layout(title = f"Stock Price for {self.titleStock} ({self.companyStock})",
                           yaxis = dict(title = 'Price'))
-        st.subheader(f"Latest Stock Open Price: {self.stock['Open'].iloc[-1]:.2f}")
+        
+        time_range = self.stock.index[-1] - self.stock.index[0]
+        if time_range <= pd.Timedelta(days = 1):
+            st.subheader(f"Latest Stock Open Price: {self.stock['Open'].iloc[0]:.2f}")
+        else:
+            st.subheader(f"First Stock Open Price: {self.stock['Open'].iloc[-1]:.2f}")
+        
         st.subheader(f"Latest Stock Adj Close Price: {self.stock['Adj Close'].iloc[-1]:.2f}")
         st.plotly_chart(fig, use_container_width = True)
 
@@ -47,7 +54,7 @@ class StockAnalyzer:
         st.plotly_chart(fig, use_container_width = True)
 
     def stock_volatility(self) -> None:
-        self.stock['returns'] = (self.stock['Close'] / self.stock['Close'].shift(1)) - 1
+        self.stock['returns'] = (self.stock['Adj Close'] / self.stock['Adj Close'].shift(1)) - 1
         fig = go.Figure(data = go.Histogram(x = self.stock['returns'], nbinsx = 100))
         fig.update_layout(title = f"Volatility of {self.titleStock} ({self.companyStock})")
         st.plotly_chart(fig, use_container_width = True)
