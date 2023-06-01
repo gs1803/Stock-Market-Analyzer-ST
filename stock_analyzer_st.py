@@ -13,6 +13,7 @@ class StockAnalyzer:
             self.companyStock = yf.Ticker(titleStock).info['longName']
         except:
             self.companyStock = ('')
+        self.dayStock = yf.download(titleStock, period = '1d', progress = False)
         
     def stock_prices(self) -> None:
         fig = make_subplots(specs = [[{"secondary_y": True}]])
@@ -28,10 +29,11 @@ class StockAnalyzer:
         time_range = self.stock.index[-1] - self.stock.index[0]
         if time_range <= pd.Timedelta(days = 1):
             st.subheader(f"Latest Stock Open Price: {self.stock['Open'].iloc[0]:.2f}")
+            st.subheader(f"Latest Stock Adj Close Price: {self.dayStock['Adj Close'].iloc[-1]:.2f}")
         else:
             st.subheader(f"Latest Stock Open Price: {self.stock['Open'].iloc[-1]:.2f}")
-        
-        st.subheader(f"Latest Stock Adj Close Price: {self.stock['Adj Close'].iloc[-1]:.2f}")
+            st.subheader(f"Latest Stock Adj Close Price: {self.stock['Adj Close'].iloc[-1]:.2f}")
+
         st.plotly_chart(fig, use_container_width = True)
 
     def stock_volume(self) -> None:
