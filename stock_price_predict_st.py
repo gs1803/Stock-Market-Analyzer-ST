@@ -8,10 +8,10 @@ import datetime as dt
 import math
 import xgboost as xgb
 from sklearn.svm import SVR
-from keras.models import Sequential
-from keras.layers import Dense, LSTM, GRU
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import mean_squared_error
+from keras.models import Sequential
+from keras.layers import Dense, LSTM, GRU
 from keras.optimizers import Adam
 
 tf.random.set_seed(42)
@@ -49,16 +49,16 @@ class StockPricePredictor:
         
         progressBar = st.progress(0)
         with st.spinner("Training model..."):
-            epochs = 32
+            epochs = 50
             for epoch in range(epochs):
                 progressBar.progress((epoch + 1) / epochs)
-                model.fit(x_train, y_train, epochs = 1, batch_size = 32, verbose = False)
+                model.fit(x_train, y_train, batch_size = 32, epochs = 1, verbose = 0)
             progressBar.empty()
 
         x_test = scaled_prices[-120:]
         x_test = np.reshape(x_test, (1, 120, 1))
 
-        predictions = model.predict(x_test, verbose = False)
+        predictions = model.predict(x_test, verbose = 0)
         predictions = scaler.inverse_transform(predictions)
 
         rmse = np.sqrt(mean_squared_error(df[-1], predictions))
@@ -105,7 +105,7 @@ class StockPricePredictor:
 
         x_train_data=[]
         y_train_data =[]
-        for i in range(120,len(train_data)):
+        for i in range(120, len(train_data)):
             x_train_data=list(x_train_data)
             y_train_data=list(y_train_data)
             x_train_data.append(train_data[i - 120:i, 0])
