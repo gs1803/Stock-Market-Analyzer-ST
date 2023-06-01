@@ -28,7 +28,7 @@ def stock_info():
     startDate = datetime.strptime(start, '%Y-%m-%d')
     endDate = datetime.strptime(end, '%Y-%m-%d')
     dateDiff = abs((startDate - endDate).days) - 1
-
+    
     if not start:
         pass
     else:
@@ -112,7 +112,7 @@ def stock_price_predictor():
             st.write("No Information Available for the Ticker.")
         else:
             predictStock = StockPricePredictor(inputStock, userStock)
-            StockPricePredictor.ml_model(predictStock)
+            StockPricePredictor.ml_model_chooser(predictStock)
 
 def main():
     st.title("Stock Market Analyzer")
