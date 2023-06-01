@@ -29,7 +29,7 @@ class StockAnalyzer:
         if time_range <= pd.Timedelta(days = 1):
             st.subheader(f"Latest Stock Open Price: {self.stock['Open'].iloc[0]:.2f}")
         else:
-            st.subheader(f"First Stock Open Price: {self.stock['Open'].iloc[-1]:.2f}")
+            st.subheader(f"Latest Stock Open Price: {self.stock['Open'].iloc[-1]:.2f}")
         
         st.subheader(f"Latest Stock Adj Close Price: {self.stock['Adj Close'].iloc[-1]:.2f}")
         st.plotly_chart(fig, use_container_width = True)
