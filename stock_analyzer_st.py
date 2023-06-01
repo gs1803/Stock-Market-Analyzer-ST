@@ -28,7 +28,7 @@ class StockAnalyzer:
         
         time_range = self.stock.index[-1] - self.stock.index[0]
         if time_range <= pd.Timedelta(days = 1):
-            st.subheader(f"Latest Stock Open Price: {self.stock['Open'].iloc[0]:.2f}")
+            st.subheader(f"Latest Stock Open Price: {self.dayStock['Open'].iloc[0]:.2f}")
             st.subheader(f"Latest Stock Adj Close Price: {self.dayStock['Adj Close'].iloc[-1]:.2f}")
         else:
             st.subheader(f"Latest Stock Open Price: {self.stock['Open'].iloc[-1]:.2f}")
