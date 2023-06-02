@@ -12,7 +12,7 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import mean_squared_error
 from keras.models import Sequential
 from keras.layers import Dense, LSTM, GRU
-from keras.optimizers import Adam
+from keras.optimizers.legacy import Adam
 
 tf.random.set_seed(42)
 
@@ -67,7 +67,7 @@ class StockPricePredictor:
         predictedDf = pd.DataFrame(predicted, index = self.stock.index[-121:], columns = ['predicted_values'])
         
         fig = go.Figure()
-        fig.add_trace(go.Scatter(x = self.stock.index[:-121], y = self.stock['Adj Close'], name = 'Actual'))
+        fig.add_trace(go.Scatter(x = self.stock.index[:-120], y = self.stock['Adj Close'], name = 'Actual'))
         fig.add_trace(go.Scatter(x = predictedDf.index, y = self.stock['Adj Close'][-121:], name = 'Actual', showlegend = False))
         fig.add_trace(go.Scatter(x = predictedDf.index, y = predictedDf['predicted_values'], name = 'Predictions',
                                  line = dict(color = 'red')))
@@ -150,7 +150,7 @@ class StockPricePredictor:
         rmse = np.sqrt(mean_squared_error(actual_values, predictions))
 
         fig = go.Figure()
-        fig.add_trace(go.Scatter(x = train.index, y = train['Adj Close'], name = 'Actual'))
+        fig.add_trace(go.Scatter(x = self.stock.index[:training_data_len + 1], y = self.stock['Adj Close'], name = 'Actual'))
         fig.add_trace(go.Scatter(x = valid.index, y = valid['Adj Close'], name = 'Actual', showlegend = False))
         fig.add_trace(go.Scatter(x = valid.index, y = valid['Predictions'], name = 'Predictions',
                                  line = dict(color = 'red')))
