@@ -15,7 +15,7 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import mean_squared_error
 from keras.models import Sequential
 from keras.layers import Dense, LSTM, GRU
-from keras.optimizers.legacy import Adam
+from keras.optimizers import Adam
 
 tf.random.set_seed(42)
 
