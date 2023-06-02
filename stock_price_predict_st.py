@@ -21,6 +21,9 @@ tf.random.set_seed(42)
 
 class StockPricePredictor:
     tomorrowDate = datetime.now(pytz.timezone('US/Eastern')).date() + dt.timedelta(days = 1)
+    
+    while tomorrowDate.isoweekday() > 5: 
+        tomorrowDate += dt.timedelta(days = 1)
 
     def __init__(self, stock, titleStock) -> None:
         self.stock = stock
