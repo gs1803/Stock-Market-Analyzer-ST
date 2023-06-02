@@ -103,15 +103,15 @@ class StockPricePredictor:
         training_data_len = math.ceil(len(df) * .7)
         train_data = scaled_data[0:training_data_len, :]
 
-        x_train_data=[]
-        y_train_data =[]
+        x_train=[]
+        y_train =[]
         for i in range(120, len(train_data)):
-            x_train_data=list(x_train_data)
-            y_train_data=list(y_train_data)
-            x_train_data.append(train_data[i - 120:i, 0])
-            y_train_data.append(train_data[i, 0])
+            x_train = list(x_train)
+            y_train = list(y_train)
+            x_train.append(train_data[i - 120:i, 0])
+            y_train.append(train_data[i, 0])
 
-            x_train_data1, y_train_data1 = np.array(x_train_data), np.array(y_train_data)
+            x_train_data1, y_train_data1 = np.array(x_train), np.array(y_train)
             x_train_data2 = np.reshape(x_train_data1, (x_train_data1.shape[0], x_train_data1.shape[1], 1))
 
         model = Sequential()
@@ -140,7 +140,6 @@ class StockPricePredictor:
         predictions = model.predict(x_test, verbose = 0)
         predictions = scaler.inverse_transform(predictions)
 
-        train = df[:training_data_len]
         valid = df[training_data_len:]
 
         valid = valid.copy()
@@ -192,19 +191,19 @@ class StockPricePredictor:
 
         split_index = int(len(features) * 0.8)
 
-        X_train = features[:split_index]
-        X_test = features[split_index:]
+        x_train = features[:split_index]
+        x_test = features[split_index:]
         y_train = labels[:split_index]
         y_test = labels[split_index:]
 
         xgb_model = xgb.XGBRegressor()
-        xgb_model.fit(X_train, y_train)
+        xgb_model.fit(x_train, y_train)
 
-        y_pred_train = xgb_model.predict(X_train)
+        y_pred_train = xgb_model.predict(x_train)
         mse_train = mean_squared_error(y_train, y_pred_train)
         rmse_train = np.sqrt(mse_train)
 
-        y_pred_test = xgb_model.predict(X_test)
+        y_pred_test = xgb_model.predict(x_test)
         mse_test = mean_squared_error(y_test, y_pred_test)
         rmse_test = np.sqrt(mse_test)
 
@@ -243,19 +242,19 @@ class StockPricePredictor:
 
         split_index = int(len(features) * 0.8)
 
-        X_train = features[:split_index]
-        X_test = features[split_index:]
+        x_train = features[:split_index]
+        x_test = features[split_index:]
         y_train = labels[:split_index]
         y_test = labels[split_index:]
 
         svm_model = SVR(kernel = 'rbf')
-        svm_model.fit(X_train, y_train)
+        svm_model.fit(x_train, y_train)
 
-        y_pred_train = svm_model.predict(X_train)
+        y_pred_train = svm_model.predict(x_train)
         mse_train = mean_squared_error(y_train, y_pred_train)
         rmse_train = np.sqrt(mse_train)
 
-        y_pred_test = svm_model.predict(X_test)
+        y_pred_test = svm_model.predict(x_test)
         mse_test = mean_squared_error(y_test, y_pred_test)
         rmse_test = np.sqrt(mse_test)
 
@@ -283,7 +282,7 @@ class StockPricePredictor:
             'GRU (Gated Recurrent Unit) Model': self.gru_ml_model,
             'LSTM (Long Short-Term Memory) Model': self.lstm_ml_model,
             'XGB (Extreme Gradient Boosting) Model': self.gb_ml_model,
-            'SVM (Support Vector Machine) Model': self.svm_ml_model
+            'SVR (Support Vector Regression) Model': self.svm_ml_model
         }
 
         mlOptionList = list(mlOptions.keys())
