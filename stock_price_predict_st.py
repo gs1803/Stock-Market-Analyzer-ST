@@ -179,7 +179,7 @@ class StockPricePredictor:
         st.write(f"RMSE: {rmse}")
         st.write(f"95% Confidence Interval: ±{format(predictionInterval, '0.10f')}")
 
-    def gb_ml_model(self) -> None:
+    def gb_ml_model(self) -> None:        
         df = self.stock['Adj Close']
         n = 5
         features = []
