@@ -8,6 +8,7 @@ import datetime as dt
 import math
 import xgboost as xgb
 from sklearn.svm import SVR
+from sklearn.ensemble import RandomForestRegressor
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import mean_squared_error
 from keras.models import Sequential
@@ -31,12 +32,12 @@ class StockPricePredictor:
         df = self.stock['Adj Close'].values.reshape(-1, 1)
         scaler = MinMaxScaler(feature_range = (0, 1))
         
-        scaled_prices = scaler.fit_transform(df)
+        scaledPrices = scaler.fit_transform(df)
         x_train = []
         y_train = []
-        for i in range(120, len(scaled_prices)):
-            x_train.append(scaled_prices[i - 120:i, 0])
-            y_train.append(scaled_prices[i, 0])
+        for i in range(120, len(scaledPrices)):
+            x_train.append(scaledPrices[i - 120:i, 0])
+            y_train.append(scaledPrices[i, 0])
         x_train, y_train = np.array(x_train), np.array(y_train)
 
         x_train = np.reshape(x_train, (x_train.shape[0], x_train.shape[1], 1))
@@ -55,7 +56,7 @@ class StockPricePredictor:
                 model.fit(x_train, y_train, batch_size = 32, epochs = 1, verbose = 0)
             progressBar.empty()
 
-        x_test = scaled_prices[-120:]
+        x_test = scaledPrices[-120:]
         x_test = np.reshape(x_test, (1, 120, 1))
 
         predictions = model.predict(x_test, verbose = 0)
@@ -189,27 +190,22 @@ class StockPricePredictor:
         features = np.array(features)
         labels = np.array(labels)
 
-        split_index = int(len(features) * 0.8)
+        splitIndex = int(len(features) * 0.8)
 
-        x_train = features[:split_index]
-        x_test = features[split_index:]
-        y_train = labels[:split_index]
-        y_test = labels[split_index:]
+        x_train = features[:splitIndex]
+        x_test = features[splitIndex:]
+        y_train = labels[:splitIndex]
+        y_test = labels[splitIndex:]
 
-        xgb_model = xgb.XGBRegressor()
-        xgb_model.fit(x_train, y_train)
+        xgbModel = xgb.XGBRegressor()
+        xgbModel.fit(x_train, y_train)
 
-        y_pred_train = xgb_model.predict(x_train)
-        mse_train = mean_squared_error(y_train, y_pred_train)
-        rmse_train = np.sqrt(mse_train)
+        y_pred_test = xgbModel.predict(x_test)
+        rmse = np.sqrt(mean_squared_error(y_test, y_pred_test))
 
-        y_pred_test = xgb_model.predict(x_test)
-        mse_test = mean_squared_error(y_test, y_pred_test)
-        rmse_test = np.sqrt(mse_test)
-
-        last_n_days = df[-n:]
-        last_n_days = np.array([last_n_days])
-        prediction = xgb_model.predict(last_n_days)
+        lastNDays = df[-n:]
+        lastNDays = np.array([lastNDays])
+        prediction = xgbModel.predict(lastNDays)
 
         fig = go.Figure()
         fig.add_trace(go.Scatter(x = self.stock.index[:-len(y_test) + 1], y = self.stock['Adj Close'], name = 'Actual'))
@@ -224,8 +220,7 @@ class StockPricePredictor:
         st.plotly_chart(fig, use_container_width = True)
 
         st.write(f"Predicted Stock Adj Close Price for ({StockPricePredictor.tomorrowDate}): {prediction[0]:.2f}")
-        st.write(f"Training RMSE: {rmse_train}")
-        st.write(f"Testing RMSE: {rmse_test}")
+        st.write(f"RMSE: {rmse}")
 
     def svm_ml_model(self) -> None:
         df = self.stock['Adj Close']
@@ -240,26 +235,21 @@ class StockPricePredictor:
         features = np.array(features)
         labels = np.array(labels)
 
-        split_index = int(len(features) * 0.8)
+        splitIndex = int(len(features) * 0.8)
 
-        x_train = features[:split_index]
-        x_test = features[split_index:]
-        y_train = labels[:split_index]
-        y_test = labels[split_index:]
+        x_train = features[:splitIndex]
+        x_test = features[splitIndex:]
+        y_train = labels[:splitIndex]
+        y_test = labels[splitIndex:]
 
-        svm_model = SVR(kernel = 'rbf')
-        svm_model.fit(x_train, y_train)
+        svmModel = SVR(kernel = 'rbf')
+        svmModel.fit(x_train, y_train)
 
-        y_pred_train = svm_model.predict(x_train)
-        mse_train = mean_squared_error(y_train, y_pred_train)
-        rmse_train = np.sqrt(mse_train)
+        y_pred_test = svmModel.predict(x_test)
+        rmse = np.sqrt(mean_squared_error(y_test, y_pred_test))
 
-        y_pred_test = svm_model.predict(x_test)
-        mse_test = mean_squared_error(y_test, y_pred_test)
-        rmse_test = np.sqrt(mse_test)
-
-        last_n_days = df[-n:]
-        prediction = svm_model.predict([last_n_days])
+        lastNDays = df[-n:]
+        prediction = svmModel.predict([lastNDays])
 
         fig = go.Figure()
         fig.add_trace(go.Scatter(x = self.stock.index[:-len(y_test) + 1], y = self.stock['Adj Close'], name = 'Actual'))
@@ -274,15 +264,49 @@ class StockPricePredictor:
         st.plotly_chart(fig, use_container_width = True)
         
         st.write(f"Predicted Stock Adj Close Price for ({StockPricePredictor.tomorrowDate}): {prediction[0]:.2f}")
-        st.write(f"Training RMSE: {rmse_train}")
-        st.write(f"Testing RMSE: {rmse_test}")
+        st.write(f"RMSE: {rmse}")
+
+    def rf_ml_model(self) -> None:
+        df = pd.DataFrame(self.stock['Adj Close'])
+        X = df.iloc[:-1]
+        y = df.iloc[1:]
+        y = y.values.ravel() 
+
+        split_index = int(len(X) * 0.8)
+
+        X_train, X_test = X.iloc[:split_index], X.iloc[split_index:]
+        y_train, y_test = y[:split_index], y[split_index:]
+
+        rfModel = RandomForestRegressor(n_estimators = 100, random_state = 42)
+        rfModel.fit(X_train, y_train)
+        y_pred = rfModel.predict(X_test)
+
+        rmse = np.sqrt(mean_squared_error(y_test, y_pred))
+        
+        nextDayPredY = rfModel.predict(X.iloc[[-1]])
+
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(x = self.stock.index[:-len(y_test) + 1], y = self.stock['Adj Close'], name = 'Actual'))
+        fig.add_trace(go.Scatter(x = self.stock.index[-len(y_test):], y = y_test, name = 'Actual', showlegend = False))
+        fig.add_trace(go.Scatter(x = self.stock.index[-len(y_test):], y = y_pred, name = 'Predictions',
+                                 line = dict(color = 'red')))
+        
+        fig.update_layout(title = f"Stock Price Prediction for {self.titleStock} ({self.companyStock})", 
+                          xaxis_title = 'Date', 
+                          yaxis_title = 'Adj Close')
+        st.subheader(f"Latest Stock Adj Close Price: {self.stock['Adj Close'].iloc[-1]:.2f}")
+        st.plotly_chart(fig, use_container_width = True)
+
+        st.write(f"Predicted Stock Adj Close Price for ({StockPricePredictor.tomorrowDate}): {nextDayPredY[0]:.2f}")
+        st.write(f"RMSE: {rmse}")
 
     def ml_model_chooser(self) -> None:
         mlOptions = {
             'GRU (Gated Recurrent Unit) Model': self.gru_ml_model,
             'LSTM (Long Short-Term Memory) Model': self.lstm_ml_model,
             'XGB (Extreme Gradient Boosting) Model': self.gb_ml_model,
-            'SVR (Support Vector Regression) Model': self.svm_ml_model
+            'SVR (Support Vector Regression) Model': self.svm_ml_model,
+            'RF (Random Forest) Model': self.rf_ml_model
         }
 
         mlOptionList = list(mlOptions.keys())
