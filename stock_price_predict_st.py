@@ -75,7 +75,7 @@ class StockPricePredictor:
         fig.add_trace(go.Scatter(x = predictedDf.index, y = predictedDf['predicted_values'], name = 'Predictions',
                                  line = dict(color = 'red')))
         
-        fig.update_layout(title = f"Stock Price Prediction for {self.titleStock} ({self.companyStock})", 
+        fig.update_layout(title = f"GRU Stock Price Prediction for {self.titleStock} ({self.companyStock})", 
                           xaxis_title = 'Date', 
                           yaxis_title = 'Adj Close')
         st.subheader(f"Latest Stock Adj Close Price: {self.stock['Adj Close'].iloc[-1]:.2f}")
@@ -157,7 +157,7 @@ class StockPricePredictor:
         fig.add_trace(go.Scatter(x = valid.index, y = valid['Predictions'], name = 'Predictions',
                                  line = dict(color = 'red')))
         
-        fig.update_layout(title = f"Stock Price Prediction for {self.titleStock} ({self.companyStock})", 
+        fig.update_layout(title = f"LSTM Stock Price Prediction for {self.titleStock} ({self.companyStock})", 
                           xaxis_title = 'Date', 
                           yaxis_title = 'Adj Close')
         st.subheader(f"Latest Stock Adj Close Price: {self.stock['Adj Close'].iloc[-1]:.2f}")
@@ -215,7 +215,7 @@ class StockPricePredictor:
         fig.add_trace(go.Scatter(x = self.stock.index[-len(y_test):], y = y_pred_test, name = 'Predictions',
                                  line = dict(color = 'red')))
         
-        fig.update_layout(title = f"Stock Price Prediction for {self.titleStock} ({self.companyStock})", 
+        fig.update_layout(title = f"XGB Stock Price Prediction for {self.titleStock} ({self.companyStock})", 
                           xaxis_title = 'Date', 
                           yaxis_title = 'Adj Close')
         st.subheader(f"Latest Stock Adj Close Price: {self.stock['Adj Close'].iloc[-1]:.2f}")
@@ -259,7 +259,7 @@ class StockPricePredictor:
         fig.add_trace(go.Scatter(x = self.stock.index[-len(y_test):], y = y_pred_test, name = 'Predictions',
                                  line = dict(color = 'red')))
         
-        fig.update_layout(title = f"Stock Price Prediction for {self.titleStock} ({self.companyStock})", 
+        fig.update_layout(title = f"SVR Stock Price Prediction for {self.titleStock} ({self.companyStock})", 
                           xaxis_title = 'Date', 
                           yaxis_title = 'Adj Close')
         st.subheader(f"Latest Stock Adj Close Price: {self.stock['Adj Close'].iloc[-1]:.2f}")
@@ -293,7 +293,7 @@ class StockPricePredictor:
         fig.add_trace(go.Scatter(x = self.stock.index[-len(y_test):], y = y_pred, name = 'Predictions',
                                  line = dict(color = 'red')))
         
-        fig.update_layout(title = f"Stock Price Prediction for {self.titleStock} ({self.companyStock})", 
+        fig.update_layout(title = f"RFR Stock Price Prediction for {self.titleStock} ({self.companyStock})", 
                           xaxis_title = 'Date', 
                           yaxis_title = 'Adj Close')
         st.subheader(f"Latest Stock Adj Close Price: {self.stock['Adj Close'].iloc[-1]:.2f}")
