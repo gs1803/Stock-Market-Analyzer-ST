@@ -7,6 +7,8 @@ import tensorflow as tf
 import datetime as dt
 import math
 import xgboost as xgb
+import pytz
+from datetime import datetime
 from sklearn.svm import SVR
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.preprocessing import MinMaxScaler
@@ -18,7 +20,7 @@ from keras.optimizers.legacy import Adam
 tf.random.set_seed(42)
 
 class StockPricePredictor:
-    tomorrowDate = dt.date.today() + dt.timedelta(days = 1)
+    tomorrowDate = datetime.now(pytz.timezone('US/Eastern')).date() + dt.timedelta(days = 1)
 
     def __init__(self, stock, titleStock) -> None:
         self.stock = stock
