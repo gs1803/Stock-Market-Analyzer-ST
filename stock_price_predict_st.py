@@ -306,7 +306,7 @@ class StockPricePredictor:
             'LSTM (Long Short-Term Memory) Model': self.lstm_ml_model,
             'XGB (Extreme Gradient Boosting) Model': self.gb_ml_model,
             'SVR (Support Vector Regression) Model': self.svm_ml_model,
-            'RF (Random Forest) Model': self.rf_ml_model
+            'RFR (Random Forest Regression) Model': self.rf_ml_model
         }
 
         mlOptionList = list(mlOptions.keys())
