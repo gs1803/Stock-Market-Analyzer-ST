@@ -212,7 +212,7 @@ class StockPricePredictor:
         prediction = xgb_model.predict(last_n_days)
 
         fig = go.Figure()
-        fig.add_trace(go.Scatter(x = self.stock.index[:-len(y_test)], y = self.stock['Adj Close'], name = 'Actual'))
+        fig.add_trace(go.Scatter(x = self.stock.index[:-len(y_test) + 1], y = self.stock['Adj Close'], name = 'Actual'))
         fig.add_trace(go.Scatter(x = self.stock.index[-len(y_test):], y = y_test, name = 'Actual', showlegend = False))
         fig.add_trace(go.Scatter(x = self.stock.index[-len(y_test):], y = y_pred_test, name = 'Predictions',
                                  line = dict(color = 'red')))
@@ -262,7 +262,7 @@ class StockPricePredictor:
         prediction = svm_model.predict([last_n_days])
 
         fig = go.Figure()
-        fig.add_trace(go.Scatter(x = self.stock.index[:-len(y_test)], y = self.stock['Adj Close'], name = 'Actual'))
+        fig.add_trace(go.Scatter(x = self.stock.index[:-len(y_test) + 1], y = self.stock['Adj Close'], name = 'Actual'))
         fig.add_trace(go.Scatter(x = self.stock.index[-len(y_test):], y = y_test, name = 'Actual', showlegend = False))
         fig.add_trace(go.Scatter(x = self.stock.index[-len(y_test):], y = y_pred_test, name = 'Predictions',
                                  line = dict(color = 'red')))
