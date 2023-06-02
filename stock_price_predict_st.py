@@ -199,9 +199,7 @@ class StockPricePredictor:
         y_train = labels[:splitIndex]
         y_test = labels[splitIndex:]
         
-        params = {'tree_method': 'gpu_hist'}
-        xgbModel = xgb.XGBRegressor(**params)
-        # xgbModel = xgb.XGBRegressor()
+        xgbModel = xgb.XGBRegressor()
         xgbModel.fit(x_train, y_train)
 
         y_pred_test = xgbModel.predict(x_test)
