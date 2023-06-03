@@ -1,10 +1,10 @@
+import streamlit as st
 import bs4 as bs
 import datetime as dt
 import pandas as pd
 import requests
 import yfinance as yf
 import plotly.graph_objects as go
-import streamlit as st
 
 class StandardPoorCorr:
     def save_sp500_tickers() -> list:
