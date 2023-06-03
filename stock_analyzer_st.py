@@ -36,14 +36,14 @@ class StockAnalyzer:
                 elif self.dayStock['Adj Close'].iloc[-1] < self.stock['Adj Close'].iloc[-2]:
                     arrow = '<span style="color:red">↓</span>'
                 else:
-                    arrow = '<span style="color:gray">▬</span>'
+                    arrow = '<span style="color:gray">–</span>'
             else:
                 if self.dayStock['Adj Close'].iloc[-1] > self.stock['Adj Close'].iloc[-1]:
                     arrow = '<span style="color:green">↑</span>'
                 elif self.dayStock['Adj Close'].iloc[-1] < self.stock['Adj Close'].iloc[-1]:
                     arrow = '<span style="color:red">↓</span>'
                 else:
-                    arrow = '<span style="color:gray">▬</span>'
+                    arrow = '<span style="color:gray">–</span>'
             st.markdown(f"### Latest Stock Open Price: {self.dayStock['Open'].iloc[-1]:.2f} \
                         {StockAnalyzer.arrow_change(self.dayStock, 'Open')}",
                         unsafe_allow_html = True)
@@ -407,7 +407,7 @@ class StockAnalyzer:
 
     def arrow_change(data, calcCol):
         data['Arrow Change'] = np.where(data[calcCol] > data[calcCol].shift(), '↑', 
-                                        np.where(data[calcCol] < data[calcCol].shift(), '↓', '▬'))
+                                        np.where(data[calcCol] < data[calcCol].shift(), '↓', '–'))
         arrowColor = np.where(data[calcCol] > data[calcCol].shift(), 'green', 
                               np.where(data[calcCol] < data[calcCol].shift(), 'red', 'gray'))
         arrowHtml = [f'<span style="color:{color}">{arrow}</span>' for arrow, color in zip(data['Arrow Change'], arrowColor)]
