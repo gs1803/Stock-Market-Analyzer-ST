@@ -2,7 +2,6 @@ import streamlit as st
 import yfinance as yf
 import plotly.graph_objects as go
 import pandas as pd
-import numpy as np
 from plotly.subplots import make_subplots
 from technical_analysis_st import TechnicalAnalysis
 
@@ -27,36 +26,22 @@ class StockAnalyzer:
         fig.update_layout(title = f"Stock Price for {self.titleStock} ({self.companyStock})",
                           yaxis = dict(title = 'Price'))
         
+        priceCol1, priceCol2 = st.columns([5, 5])
         timeRange = self.stock.index[-1] - self.stock.index[0]
-        lastTime = self.stock.index[-1]
-        if timeRange <= pd.Timedelta(days = 1):
-            if str(lastTime) != '2023-06-02 15:59:00-04:00':
-                if self.dayStock['Adj Close'].iloc[-1] > self.stock['Adj Close'].iloc[-2]:
-                    arrow = '<span style="color:green">↑</span>'
-                elif self.dayStock['Adj Close'].iloc[-1] < self.stock['Adj Close'].iloc[-2]:
-                    arrow = '<span style="color:red">↓</span>'
-                else:
-                    arrow = '<span style="color:gray">–</span>'
-            else:
-                if self.dayStock['Adj Close'].iloc[-1] > self.stock['Adj Close'].iloc[-1]:
-                    arrow = '<span style="color:green">↑</span>'
-                elif self.dayStock['Adj Close'].iloc[-1] < self.stock['Adj Close'].iloc[-1]:
-                    arrow = '<span style="color:red">↓</span>'
-                else:
-                    arrow = '<span style="color:gray">–</span>'
-            st.markdown(f"### Latest Stock Open Price: {self.dayStock['Open'].iloc[-1]:.2f} \
-                        {StockAnalyzer.arrow_change(self.dayStock, 'Open')}",
-                        unsafe_allow_html = True)
-            st.markdown(f"### Latest Stock Adj Close Price: {self.dayStock['Adj Close'].iloc[-1]:.2f} \
-                        {arrow}", unsafe_allow_html = True)
+        if timeRange < pd.Timedelta(days = 1):           
+            priceCol1.metric(label = 'Latest Stock Open Price:', 
+                             value = f" {self.dayStock['Open'].iloc[-1]:.2f}", 
+                             delta = f"{self.dayStock['Open'].iloc[-1] - self.dayStock['Open'].iloc[-2]:.2f}")
+            priceCol2.metric(label = 'Latest Stock Adj Close Price:', 
+                             value = f"{self.dayStock['Adj Close'].iloc[-1]:.2f}", 
+                             delta = f"{self.dayStock['Adj Close'].iloc[-1] - self.stock['Adj Close'].iloc[-1]:.2f}")
         else:
-            st.markdown(f"### Latest Stock Open Price: {self.stock['Open'].iloc[-1]:.2f} \
-                        {StockAnalyzer.arrow_change(self.stock, 'Open')}",
-                        unsafe_allow_html = True)
-            st.markdown(f"### Latest Stock Adj Close Price: {self.stock['Adj Close'].iloc[-1]:.2f} \
-                        {StockAnalyzer.arrow_change(self.stock, 'Adj Close')}",
-                        unsafe_allow_html = True)
-
+            priceCol1.metric(label = 'Latest Stock Open Price:', 
+                             value = f" {self.stock['Open'].iloc[-1]:.2f}", 
+                             delta = f"{self.stock['Open'].iloc[-1] - self.stock['Open'].iloc[-2]:.2f}")
+            priceCol2.metric(label = 'Latest Stock Adj Close Price:', 
+                             value = f"{self.stock['Adj Close'].iloc[-1]:.2f}", 
+                             delta = f"{self.stock['Adj Close'].iloc[-1] - self.stock['Adj Close'].iloc[-2]:.2f}")
         st.plotly_chart(fig, use_container_width = True)
 
     def stock_volume(self) -> None:
@@ -65,9 +50,9 @@ class StockAnalyzer:
                                           mode = 'lines'))
         fig.update_layout(title = f"Volume of Stock Traded of {self.titleStock} ({self.companyStock})",
                           yaxis = dict(title = 'Volume'))
-        st.markdown(f"### Latest Stock Volume: {self.stock['Volume'].iloc[-1]:.2f} \
-                    {StockAnalyzer.arrow_change(self.stock, 'Volume')}",
-                    unsafe_allow_html = True)
+        st.metric(label = 'Latest Stock Volume:', 
+                  value = f" {self.stock['Volume'].iloc[-1]:.2f}", 
+                  delta = f"{self.stock['Volume'].iloc[-1] - self.stock['Volume'].iloc[-2]:.2f}")
         st.plotly_chart(fig, use_container_width = True)
 
     def stock_market_cap(self) -> None:
@@ -77,9 +62,9 @@ class StockAnalyzer:
                                           mode = 'lines'))
         fig.update_layout(title = f"Market Cap for {self.titleStock} ({self.companyStock})",
                           yaxis = dict(title = 'Market Cap'))
-        st.markdown(f"### Latest Stock Market Cap: {self.stock['MktCap'].iloc[-1]:.2f} \
-                    {StockAnalyzer.arrow_change(self.stock, 'MktCap')}",
-                    unsafe_allow_html = True)
+        st.metric(label = 'Latest Stock Market Cap:', 
+                  value = f" {self.stock['MktCap'].iloc[-1]:.2f}", 
+                  delta = f"{self.stock['MktCap'].iloc[-1] - self.stock['MktCap'].iloc[-2]:.2f}")
         st.plotly_chart(fig, use_container_width = True)
 
     def stock_volatility(self) -> None:
@@ -403,13 +388,3 @@ class StockAnalyzer:
         with graphTab2:
             selectedGraphFunction2 = graphOptions.get(selectedGraphOption2)
             selectedGraphFunction2()
-
-    def arrow_change(data, calcCol):
-        data['Arrow Change'] = np.where(data[calcCol] > data[calcCol].shift(), '↑', 
-                                        np.where(data[calcCol] < data[calcCol].shift(), '↓', '–'))
-        arrowColor = np.where(data[calcCol] > data[calcCol].shift(), 'green', 
-                              np.where(data[calcCol] < data[calcCol].shift(), 'red', 'gray'))
-        arrowHtml = [f'<span style="color:{color}">{arrow}</span>' for arrow, color in zip(data['Arrow Change'], arrowColor)]
-        data['Arrow Change'] = arrowHtml
-
-        return data['Arrow Change'].iloc[-1]
