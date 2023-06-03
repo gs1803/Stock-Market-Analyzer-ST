@@ -128,9 +128,12 @@ class USEconomy:
                               title = 'Secured Overnight Financing Rate')
             st.subheader(f"Latest Secured Overnight Financing Rate: {sofrDf['sofr'].iloc[-1]:.2f}%")
             sofrCol1, sofrCol2, sofrCol3 = st.columns([3, 3, 3])
-            sofrCol1.markdown(f"30-day Average: {sofr30Df['sofr30'].iloc[-1]:.2f}% {sofr30Df['30-day Arrow'].iloc[-1]}", unsafe_allow_html = True)
-            sofrCol2.markdown(f"90-day Average: {sofr90Df['sofr90'].iloc[-1]:.2f}% {sofr90Df['90-day Arrow'].iloc[-1]}", unsafe_allow_html = True)
-            sofrCol3.markdown(f"180-day Average: {sofr180Df['sofr180'].iloc[-1]:.2f}% {sofr180Df['180-day Arrow'].iloc[-1]}", unsafe_allow_html = True)
+            sofrCol1.markdown(f"30-day Average: {sofr30Df['sofr30'].iloc[-1]:.2f}% {sofr30Df['30-day Arrow'].iloc[-1]}", 
+                              unsafe_allow_html = True)
+            sofrCol2.markdown(f"90-day Average: {sofr90Df['sofr90'].iloc[-1]:.2f}% {sofr90Df['90-day Arrow'].iloc[-1]}", 
+                              unsafe_allow_html = True)
+            sofrCol3.markdown(f"180-day Average: {sofr180Df['sofr180'].iloc[-1]:.2f}% {sofr180Df['180-day Arrow'].iloc[-1]}", 
+                              unsafe_allow_html = True)
             st.plotly_chart(fig, use_container_width = True)
 
     def exchange_rates() -> None:
