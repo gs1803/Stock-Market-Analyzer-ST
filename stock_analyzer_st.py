@@ -27,10 +27,10 @@ class StockAnalyzer:
         fig.update_layout(title = f"Stock Price for {self.titleStock} ({self.companyStock})",
                           yaxis = dict(title = 'Price'))
         
-        time_range = self.stock.index[-1] - self.stock.index[0]
-        time = self.stock.index[-1]
-        if time_range <= pd.Timedelta(days = 1):
-            if str(time) != '2023-06-02 15:59:00-04:00':
+        timeRange = self.stock.index[-1] - self.stock.index[0]
+        lastTime = self.stock.index[-1]
+        if timeRange <= pd.Timedelta(days = 1):
+            if str(lastTime) != '2023-06-02 15:59:00-04:00':
                 if self.dayStock['Adj Close'].iloc[-1] > self.stock['Adj Close'].iloc[-2]:
                     arrow = '<span style="color:green">↑</span>'
                 elif self.dayStock['Adj Close'].iloc[-1] < self.stock['Adj Close'].iloc[-2]:
