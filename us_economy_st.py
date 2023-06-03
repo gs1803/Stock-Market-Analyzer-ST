@@ -95,7 +95,7 @@ class USEconomy:
             sofr30Df = pd.DataFrame(USEconomy.sofr30Data)
             sofr30Df.index = pd.to_datetime(sofr30Df.index)
             sofr30Df.columns = ['sofr30']
-            sofr30Df['30-day Arrow'] = np.where(sofr30Df['sofr30'] > sofr30Df['sofr30'].shift(), '▲▼', 
+            sofr30Df['30-day Arrow'] = np.where(sofr30Df['sofr30'] > sofr30Df['sofr30'].shift(), '▲', 
                                                 np.where(sofr30Df['sofr30'] < sofr30Df['sofr30'].shift(), '▼', '▬'))
             arrowColor30 = np.where(sofr30Df['sofr30'] > sofr30Df['sofr30'].shift(), 'green', 
                                     np.where(sofr30Df['sofr30'] < sofr30Df['sofr30'].shift(), 'red', 'gray'))
