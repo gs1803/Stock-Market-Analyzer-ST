@@ -63,7 +63,7 @@ class USEconomy:
     def interest_rates() -> None:
         interestOption = st.radio("Select an option:", ['Federal Funds Effective Rate', 
                                                         'Market Yield on U.S. Treasury Securities (10 Year)', 
-                                                        'Secured Overnight Financing Rate (SOFR)'])
+                                                        'Secured Overnight Financing Rate'])
         
         if interestOption == 'Federal Funds Effective Rate':
             fferDf = pd.DataFrame(USEconomy.fedFundEffecRateData)
@@ -87,7 +87,7 @@ class USEconomy:
             st.subheader(f"Latest Market Yield on U.S. Treasury Securities (10 Year) Rate: {sofrDf['myuts'].iloc[-1]:.2f}%")
             st.plotly_chart(fig, use_container_width = True)
 
-        if interestOption == 'Secured Overnight Financing Rate (SOFR)':
+        if interestOption == 'Secured Overnight Financing Rate':
             sofrDf = pd.DataFrame(USEconomy.sofrData)
             sofrDf.index = pd.to_datetime(sofrDf.index)
             sofrDf.columns = ['sofr']
@@ -95,24 +95,30 @@ class USEconomy:
             sofr30Df = pd.DataFrame(USEconomy.sofr30Data)
             sofr30Df.index = pd.to_datetime(sofr30Df.index)
             sofr30Df.columns = ['sofr30']
-            sofr30Df['30-day Arrow'] = np.where(sofr30Df['sofr30'] > 0, '▲', np.where(sofr30Df['sofr30'] < 0, '▼', '▬'))
-            arrowColor30 = np.where(sofr30Df['sofr30'] != 0, np.where(sofr30Df['sofr30'] > 0, 'green', 'red'), 'gray')
+            sofr30Df['30-day Arrow'] = np.where(sofr30Df['sofr30'] > sofr30Df['sofr30'].shift(), '▲', 
+                                                np.where(sofr30Df['sofr30'] < sofr30Df['sofr30'].shift(), '▼', '▬'))
+            arrowColor30 = np.where(sofr30Df['sofr30'] > sofr30Df['sofr30'].shift(), 'green', 
+                                    np.where(sofr30Df['sofr30'] < sofr30Df['sofr30'].shift(), 'red', 'gray'))
             arrowHtml30 = [f'<span style="color:{color}">{arrow}</span>' for arrow, color in zip(sofr30Df['30-day Arrow'], arrowColor30)]
             sofr30Df['30-day Arrow'] = arrowHtml30
 
             sofr90Df = pd.DataFrame(USEconomy.sofr90Data)
             sofr90Df.index = pd.to_datetime(sofr90Df.index)
             sofr90Df.columns = ['sofr90']
-            sofr90Df['90-day Arrow'] = np.where(sofr90Df['sofr90'] > 0, '▲', np.where(sofr90Df['sofr90'] < 0, '▼', '▬'))
-            arrowColor90 = np.where(sofr90Df['sofr90'] != 0, np.where(sofr90Df['sofr90'] > 0, 'green', 'red'), 'gray')
+            sofr90Df['90-day Arrow'] = np.where(sofr90Df['sofr90'] > sofr90Df['sofr90'].shift(), '▲', 
+                                                np.where(sofr90Df['sofr90'] < sofr90Df['sofr90'].shift(), '▼', '▬'))
+            arrowColor90 = np.where(sofr90Df['sofr90'] > sofr90Df['sofr90'].shift(), 'green', 
+                                    np.where(sofr90Df['sofr90'] < sofr90Df['sofr90'].shift(), 'red', 'gray'))
             arrowHtml90 = [f'<span style="color:{color}">{arrow}</span>' for arrow, color in zip(sofr90Df['90-day Arrow'], arrowColor90)]
             sofr90Df['90-day Arrow'] = arrowHtml90
 
             sofr180Df = pd.DataFrame(USEconomy.sofr180Data)
             sofr180Df.index = pd.to_datetime(sofr180Df.index)
             sofr180Df.columns = ['sofr180']
-            sofr180Df['180-day Arrow'] = np.where(sofr180Df['sofr180'] > 0, '▲', np.where(sofr180Df['sofr180'] < 0, '▼', '▬'))
-            arrowColor180 = np.where(sofr180Df['sofr180'] != 0, np.where(sofr180Df['sofr180'] > 0, 'green', 'red'), 'gray')
+            sofr180Df['180-day Arrow'] = np.where(sofr180Df['sofr180'] > sofr180Df['sofr180'].shift(), '▲', 
+                                                  np.where(sofr180Df['sofr180'] < sofr180Df['sofr180'].shift(), '▼', '▬'))
+            arrowColor180 = np.where(sofr180Df['sofr180'] > sofr180Df['sofr180'].shift(), 'green', 
+                                     np.where(sofr180Df['sofr180'] < sofr180Df['sofr180'].shift(), 'red', 'gray'))
             arrowHtml180 = [f'<span style="color:{color}">{arrow}</span>' for arrow, color in zip(sofr180Df['180-day Arrow'], arrowColor180)]
             sofr180Df['180-day Arrow'] = arrowHtml180
 
@@ -224,4 +230,3 @@ class USEconomy:
         selectedEconomyFunction = economyOptions.get(selectedEconomyOption)
         if selectedEconomyFunction:
             selectedEconomyFunction()
-
