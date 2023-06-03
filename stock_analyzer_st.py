@@ -48,8 +48,7 @@ class StockAnalyzer:
                         {StockAnalyzer.arrow_change(self.dayStock, 'Open')}",
                         unsafe_allow_html = True)
             st.markdown(f"### Latest Stock Adj Close Price: {self.dayStock['Adj Close'].iloc[-1]:.2f} \
-                        {arrow}",
-                        unsafe_allow_html = True)
+                        {arrow}", unsafe_allow_html = True)
         else:
             st.markdown(f"### Latest Stock Open Price: {self.stock['Open'].iloc[-1]:.2f} \
                         {StockAnalyzer.arrow_change(self.stock, 'Open')}",
