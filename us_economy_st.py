@@ -63,7 +63,7 @@ class USEconomy:
     def interest_rates() -> None:
         interestOption = st.radio("Select an option:", ['Federal Funds Effective Rate', 
                                                         'Market Yield on U.S. Treasury Securities (10 Year)', 
-                                                        'Secured Overnight Financing Rate'])
+                                                        'Secured Overnight Financing Rate (SOFR)'])
         
         if interestOption == 'Federal Funds Effective Rate':
             fferDf = pd.DataFrame(USEconomy.fedFundEffecRateData)
@@ -87,7 +87,7 @@ class USEconomy:
             st.subheader(f"Latest Market Yield on U.S. Treasury Securities (10 Year) Rate: {sofrDf['myuts'].iloc[-1]:.2f}%")
             st.plotly_chart(fig, use_container_width = True)
 
-        if interestOption == 'Secured Overnight Financing Rate':
+        if interestOption == 'Secured Overnight Financing Rate (SOFR)':
             sofrDf = pd.DataFrame(USEconomy.sofrData)
             sofrDf.index = pd.to_datetime(sofrDf.index)
             sofrDf.columns = ['sofr']
