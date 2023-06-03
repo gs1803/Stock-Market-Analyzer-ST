@@ -40,6 +40,7 @@ class USEconomy:
                       value = f"{inflationDf['inflation_rate'].iloc[-1]:.3f}%", 
                       delta = f"{inflationDf['inflation_rate'].iloc[-1] - inflationDf['inflation_rate'].iloc[-2]:.3f}")
             st.plotly_chart(fig, use_container_width = True)
+            
         if inflationOption == 'Core Inflation Rate':
             coreInflationDf = pd.DataFrame(USEconomy.coreInflationData).dropna(how = 'all')
             coreInflationDf.index = pd.to_datetime(coreInflationDf.index)
