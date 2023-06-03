@@ -227,10 +227,10 @@ class USEconomy:
         mortCol1, mortCol2 = st.columns([5, 5])
         mortCol1.metric(label = 'Latest 15 Year Fixed Rate:', 
                         value = f"{mortgage15Df['mort15'].iloc[-1]:.2f}%", 
-                        delta = f"{mortgage15Df['mort15'].iloc[-1] - mortgage15Df['mort15'].iloc[-2]:.3f}")
+                        delta = f"{mortgage15Df['mort15'].iloc[-1] - mortgage15Df['mort15'].iloc[-2]:.2f}")
         mortCol2.metric(label = 'Latest 30 Year Fixed Rate:', 
                         value = f"{mortgage30Df['mort30'].iloc[-1]:.2f}%", 
-                        delta = f"{mortgage30Df['mort30'].iloc[-1] - mortgage30Df['mort30'].iloc[-2]:.3f}")
+                        delta = f"{mortgage30Df['mort30'].iloc[-1] - mortgage30Df['mort30'].iloc[-2]:.2f}")
         st.plotly_chart(fig, use_container_width = True)
         
     def economy_chooser() -> None:
