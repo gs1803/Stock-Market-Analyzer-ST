@@ -21,7 +21,7 @@ tf.random.set_seed(42)
 
 class StockPricePredictor:
     tomorrowDate = datetime.now(pytz.timezone('US/Eastern')).date() + dt.timedelta(days = 1)
-    
+
     while tomorrowDate.isoweekday() > 5: 
         tomorrowDate += dt.timedelta(days = 1)
 
@@ -81,7 +81,9 @@ class StockPricePredictor:
         fig.update_layout(title = f"GRU Stock Price Prediction for {self.titleStock} ({self.companyStock})", 
                           xaxis_title = 'Date', 
                           yaxis_title = 'Adj Close')
-        st.subheader(f"Latest Stock Adj Close Price: {self.stock['Adj Close'].iloc[-1]:.2f}")
+        st.markdown(f"### Latest Stock Adj Close Price: {self.stock['Adj Close'].iloc[-1]:.2f} \
+                    {StockAnalyzer.arrow_change(self.stock, 'Adj Close')}",
+                    unsafe_allow_html = True)
         st.plotly_chart(fig, use_container_width = True)
 
         nextDayPrediction = model.predict(np.array([x_test[-1]]), verbose = 0)
@@ -163,7 +165,9 @@ class StockPricePredictor:
         fig.update_layout(title = f"LSTM Stock Price Prediction for {self.titleStock} ({self.companyStock})", 
                           xaxis_title = 'Date', 
                           yaxis_title = 'Adj Close')
-        st.subheader(f"Latest Stock Adj Close Price: {self.stock['Adj Close'].iloc[-1]:.2f}")
+        st.markdown(f"### Latest Stock Adj Close Price: {self.stock['Adj Close'].iloc[-1]:.2f} \
+                    {StockAnalyzer.arrow_change(self.stock, 'Adj Close')}",
+                    unsafe_allow_html = True)
         st.plotly_chart(fig, use_container_width = True)
 
         nextDayPrediction = model.predict(np.array([x_test[-1]]), verbose = 0)
@@ -182,7 +186,7 @@ class StockPricePredictor:
         st.write(f"RMSE: {rmse}")
         st.write(f"95% Confidence Interval: ±{format(predictionInterval, '0.10f')}")
 
-    def gb_ml_model(self) -> None:        
+    def gb_ml_model(self) -> None:
         df = self.stock['Adj Close']
         n = 5
         features = []
@@ -201,7 +205,7 @@ class StockPricePredictor:
         x_test = features[splitIndex:]
         y_train = labels[:splitIndex]
         y_test = labels[splitIndex:]
-        
+
         xgbModel = xgb.XGBRegressor()
         xgbModel.fit(x_train, y_train)
 
@@ -221,7 +225,9 @@ class StockPricePredictor:
         fig.update_layout(title = f"XGB Stock Price Prediction for {self.titleStock} ({self.companyStock})", 
                           xaxis_title = 'Date', 
                           yaxis_title = 'Adj Close')
-        st.subheader(f"Latest Stock Adj Close Price: {self.stock['Adj Close'].iloc[-1]:.2f}")
+        st.markdown(f"### Latest Stock Adj Close Price: {self.stock['Adj Close'].iloc[-1]:.2f} \
+                    {StockAnalyzer.arrow_change(self.stock, 'Adj Close')}",
+                    unsafe_allow_html = True)
         st.plotly_chart(fig, use_container_width = True)
 
         st.write(f"Predicted Stock Adj Close Price for ({StockPricePredictor.tomorrowDate}): {prediction[0]:.2f}")
@@ -265,7 +271,9 @@ class StockPricePredictor:
         fig.update_layout(title = f"SVR Stock Price Prediction for {self.titleStock} ({self.companyStock})", 
                           xaxis_title = 'Date', 
                           yaxis_title = 'Adj Close')
-        st.subheader(f"Latest Stock Adj Close Price: {self.stock['Adj Close'].iloc[-1]:.2f}")
+        st.markdown(f"### Latest Stock Adj Close Price: {self.stock['Adj Close'].iloc[-1]:.2f} \
+                    {StockAnalyzer.arrow_change(self.stock, 'Adj Close')}",
+                    unsafe_allow_html = True)
         st.plotly_chart(fig, use_container_width = True)
         
         st.write(f"Predicted Stock Adj Close Price for ({StockPricePredictor.tomorrowDate}): {prediction[0]:.2f}")
@@ -299,7 +307,9 @@ class StockPricePredictor:
         fig.update_layout(title = f"RFR Stock Price Prediction for {self.titleStock} ({self.companyStock})", 
                           xaxis_title = 'Date', 
                           yaxis_title = 'Adj Close')
-        st.subheader(f"Latest Stock Adj Close Price: {self.stock['Adj Close'].iloc[-1]:.2f}")
+        st.markdown(f"### Latest Stock Adj Close Price: {self.stock['Adj Close'].iloc[-1]:.2f} \
+                    {StockAnalyzer.arrow_change(self.stock, 'Adj Close')}",
+                    unsafe_allow_html = True)
         st.plotly_chart(fig, use_container_width = True)
 
         st.write(f"Predicted Stock Adj Close Price for ({StockPricePredictor.tomorrowDate}): {nextDayPredY[0]:.2f}")
