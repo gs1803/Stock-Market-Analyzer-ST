@@ -14,9 +14,9 @@ def stock_info():
     st.header("Graphs")
     startCol, endCol = st.columns([5, 5])
     start = startCol.date_input("Select the Start Date:",
-                                 value = et_now, 
-                                 min_value = date(1960, 1, 1), 
-                                 max_value = et_now)
+                                value = et_now, 
+                                min_value = date(1960, 1, 1), 
+                                max_value = et_now)
     start = str(start).replace('/', '-')
     end = endCol.date_input("Select the End Date:", 
                              value = et_now, 
@@ -39,9 +39,19 @@ def stock_info():
             st.write(" ")
         else:
             if dateDiff == 0:
-                inputStock = yf.download(f"{userStock}", start, end, interval = '1m', progress = False)
+                if startDate.isoweekday() == 6:
+                    start = startDate - timedelta(days = 1)                    
+                    end = endDate - timedelta(days = 1)
+                    inputStock = yf.download(f"{userStock}", start, end, interval = '1m', progress = False)
+                elif startDate.isoweekday() == 7:
+                    start = startDate - timedelta(days = 2)                    
+                    end = endDate - timedelta(days = 2)
+                    inputStock = yf.download(f"{userStock}", start, end, interval = '1m', progress = False)
+                else:
+                    inputStock = yf.download(f"{userStock}", start, end, interval = '1m', progress = False)
             elif dateDiff == 1:
                 if startDate.isoweekday() == 6 or startDate.isoweekday() == 7 or endDate.isoweekday() == 6 or endDate.isoweekday() == 7:
+                    start = startDate - timedelta(days = 1)                    
                     end = endDate - timedelta(days = 1)
                     inputStock = yf.download(f"{userStock}", start, end, interval = '1m', progress = False)
                 else:
