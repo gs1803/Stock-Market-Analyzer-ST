@@ -81,9 +81,9 @@ class StockPricePredictor:
         fig.update_layout(title = f"GRU Stock Price Prediction for {self.titleStock} ({self.companyStock})", 
                           xaxis_title = 'Date', 
                           yaxis_title = 'Adj Close')
-        st.metric(label = 'Latest Stock Adj Close Price:', 
+        st.metric(label = f"Latest Stock Adj Close Price ({self.stock.index[-1].date()}):", 
                   value = f"{self.stock['Adj Close'].iloc[-1]:.2f}", 
-                  delta = f"{self.stock['Adj Close'].iloc[-1] - self.stock['Adj Close'].iloc[-2]:.2f}")
+                  delta = f"{self.stock['Adj Close'].iloc[-1] - self.stock['Adj Close'].iloc[-2]:.2f} From Previous Day")
         st.plotly_chart(fig, use_container_width = True)
 
         nextDayPrediction = model.predict(np.array([x_test[-1]]), verbose = 0)
@@ -165,9 +165,9 @@ class StockPricePredictor:
         fig.update_layout(title = f"LSTM Stock Price Prediction for {self.titleStock} ({self.companyStock})", 
                           xaxis_title = 'Date', 
                           yaxis_title = 'Adj Close')
-        st.metric(label = 'Latest Stock Adj Close Price:', 
+        st.metric(label = f"Latest Stock Adj Close Price ({self.stock.index[-1].date()}):", 
                   value = f"{self.stock['Adj Close'].iloc[-1]:.2f}", 
-                  delta = f"{self.stock['Adj Close'].iloc[-1] - self.stock['Adj Close'].iloc[-2]:.2f}")
+                  delta = f"{self.stock['Adj Close'].iloc[-1] - self.stock['Adj Close'].iloc[-2]:.2f} From Previous Day")
         st.plotly_chart(fig, use_container_width = True)
 
         nextDayPrediction = model.predict(np.array([x_test[-1]]), verbose = 0)
@@ -225,9 +225,9 @@ class StockPricePredictor:
         fig.update_layout(title = f"XGB Stock Price Prediction for {self.titleStock} ({self.companyStock})", 
                           xaxis_title = 'Date', 
                           yaxis_title = 'Adj Close')
-        st.metric(label = 'Latest Stock Adj Close Price:', 
+        st.metric(label = f"Latest Stock Adj Close Price ({self.stock.index[-1].date()}):", 
                   value = f"{self.stock['Adj Close'].iloc[-1]:.2f}", 
-                  delta = f"{self.stock['Adj Close'].iloc[-1] - self.stock['Adj Close'].iloc[-2]:.2f}")
+                  delta = f"{self.stock['Adj Close'].iloc[-1] - self.stock['Adj Close'].iloc[-2]:.2f} From Previous Day")
         st.plotly_chart(fig, use_container_width = True)
 
         st.write(f"Predicted Stock Adj Close Price for ({StockPricePredictor.tomorrowDate}): {prediction[0]:.2f}")
@@ -271,9 +271,9 @@ class StockPricePredictor:
         fig.update_layout(title = f"SVR Stock Price Prediction for {self.titleStock} ({self.companyStock})", 
                           xaxis_title = 'Date', 
                           yaxis_title = 'Adj Close')
-        st.metric(label = 'Latest Stock Adj Close Price:', 
+        st.metric(label = f"Latest Stock Adj Close Price ({self.stock.index[-1].date()}):", 
                   value = f"{self.stock['Adj Close'].iloc[-1]:.2f}", 
-                  delta = f"{self.stock['Adj Close'].iloc[-1] - self.stock['Adj Close'].iloc[-2]:.2f}")
+                  delta = f"{self.stock['Adj Close'].iloc[-1] - self.stock['Adj Close'].iloc[-2]:.2f} From Previous Day")
         st.plotly_chart(fig, use_container_width = True)
         
         st.write(f"Predicted Stock Adj Close Price for ({StockPricePredictor.tomorrowDate}): {prediction[0]:.2f}")
@@ -307,9 +307,10 @@ class StockPricePredictor:
         fig.update_layout(title = f"RFR Stock Price Prediction for {self.titleStock} ({self.companyStock})", 
                           xaxis_title = 'Date', 
                           yaxis_title = 'Adj Close')
-        st.metric(label = 'Latest Stock Adj Close Price:', 
+        st.metric(label = f"Latest Stock Adj Close Price ({self.stock.index[-1].date()}):", 
                   value = f"{self.stock['Adj Close'].iloc[-1]:.2f}", 
-                  delta = f"{self.stock['Adj Close'].iloc[-1] - self.stock['Adj Close'].iloc[-2]:.2f}")
+                  delta = f"{self.stock['Adj Close'].iloc[-1] - self.stock['Adj Close'].iloc[-2]:.2f} From Previous Day")
+        st.plotly_chart(fig, use_container_width = True)
         st.plotly_chart(fig, use_container_width = True)
 
         st.write(f"Predicted Stock Adj Close Price for ({StockPricePredictor.tomorrowDate}): {nextDayPredY[0]:.2f}")
