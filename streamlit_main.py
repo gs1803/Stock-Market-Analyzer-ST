@@ -50,12 +50,16 @@ def stock_info():
                 else:
                     inputStock = yf.download(f"{userStock}", start, end, interval = '1m', progress = False)
             elif dateDiff == 1:
-                if startDate.isoweekday() == 6 or startDate.isoweekday() == 7 or endDate.isoweekday() == 6 or endDate.isoweekday() == 7:
-                    start = startDate - timedelta(days = 1)                    
-                    end = endDate - timedelta(days = 1)
-                    inputStock = yf.download(f"{userStock}", start, end, interval = '1m', progress = False)
+                if startDate.isoweekday() == 6 or startDate.isoweekday() == 7 or endDate.isoweekday() - 1 == 6 or endDate.isoweekday() - 1 == 7:
+                    if startDate.isoweekday() == 5:
+                        end = endDate - timedelta(days = 1)
+                        inputStock = yf.download(f"{userStock}", start, end, interval = '1m', progress = False)
+                    else:
+                        start = startDate - timedelta(days = 1)                    
+                        end = endDate - timedelta(days = 1)
+                        inputStock = yf.download(f"{userStock}", start, end, interval = '1m', progress = False)
                 else:
-                    inputStock = yf.download(f"{userStock}", start, end, interval = '1m', progress = False)
+                    inputStock = yf.download(f"{userStock}", start, end, progress = False)
             elif dateDiff == 2 and startDate.isoweekday() == 5:
                 end = endDate - timedelta(days = 2)
                 inputStock = yf.download(f"{userStock}", start, end, interval = '1m', progress = False)
