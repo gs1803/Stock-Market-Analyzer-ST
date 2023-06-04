@@ -8,20 +8,20 @@ from standard_poor_corr_st import StandardPoorCorr
 from us_economy_st import USEconomy
 from stock_price_predict_st import StockPricePredictor
 
-et_now = datetime.now(pytz.timezone('US/Eastern')).date()
+etNow = datetime.now(pytz.timezone('US/Eastern')).date()
 
 def stock_info():
     st.header("Graphs")
     startCol, endCol = st.columns([5, 5])
     start = startCol.date_input("Select the Start Date:",
-                                value = et_now, 
+                                value = etNow, 
                                 min_value = date(1960, 1, 1), 
-                                max_value = et_now)
+                                max_value = etNow)
     start = str(start).replace('/', '-')
     end = endCol.date_input("Select the End Date:", 
-                             value = et_now, 
+                             value = etNow, 
                              min_value = date(1960, 1, 1), 
-                             max_value = et_now)
+                             max_value = etNow)
     end = end + timedelta(days = 1)
     end = str(end).replace('/', '-')
        
@@ -47,7 +47,7 @@ def stock_info():
                     start = startDate - timedelta(days = 2)                    
                     end = endDate - timedelta(days = 2)
                     inputStock = yf.download(f"{userStock}", start, end, interval = '1m', progress = False)
-                elif et_now - startDate.date() >= timedelta(days = 30):
+                elif etNow - startDate.date() >= timedelta(days = 30):
                     inputStock = yf.download(f"{userStock}", start, end, progress = False)
                 else:
                     inputStock = yf.download(f"{userStock}", start, end, interval = '1m', progress = False)
@@ -117,7 +117,7 @@ def us_economy():
 def stock_price_predictor():
     st.header('Stock Price Predictor')
     userStock = st.text_input("Enter the Stock Ticker:").upper().replace(" ", "")
-    end = str(et_now + timedelta(days = 1))
+    end = str(etNow + timedelta(days = 1))
     if not userStock:
         st.write(" ")
     elif not userStock.isascii():
