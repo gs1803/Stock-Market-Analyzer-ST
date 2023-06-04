@@ -1,3 +1,9 @@
+import streamlit as st
+import yfinance as yf
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
+from technical_analysis_st import TechnicalAnalysis
+
 class StockAnalyzer:
     def __init__(self, stock, titleStock) -> None:
         self.stock = stock
