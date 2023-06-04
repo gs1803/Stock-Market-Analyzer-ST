@@ -30,14 +30,14 @@ class StockAnalyzer:
         timeRange = self.stock.index[-1] - self.stock.index[0]
         if timeRange < pd.Timedelta(days = 1):           
             priceCol1.metric(label = 'Latest Stock Open Price:', 
-                             value = f" {self.dayStock['Open'].iloc[-1]:.2f}", 
+                             value = f"{self.dayStock['Open'].iloc[-1]:.2f}", 
                              delta = f"{self.dayStock['Open'].iloc[-1] - self.dayStock['Open'].iloc[-2]:.2f}")
             priceCol2.metric(label = 'Latest Stock Adj Close Price:', 
                              value = f"{self.dayStock['Adj Close'].iloc[-1]:.2f}", 
                              delta = f"{self.dayStock['Adj Close'].iloc[-1] - self.stock['Adj Close'].iloc[-1]:.2f}")
         else:
             priceCol1.metric(label = 'Latest Stock Open Price:', 
-                             value = f" {self.stock['Open'].iloc[-1]:.2f}", 
+                             value = f"{self.stock['Open'].iloc[-1]:.2f}", 
                              delta = f"{self.stock['Open'].iloc[-1] - self.stock['Open'].iloc[-2]:.2f}")
             priceCol2.metric(label = 'Latest Stock Adj Close Price:', 
                              value = f"{self.stock['Adj Close'].iloc[-1]:.2f}", 
