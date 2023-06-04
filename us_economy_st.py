@@ -36,11 +36,11 @@ class USEconomy:
 
             fig.update_layout(xaxis_title = 'Date',
                               title = 'Inflation Rate')
-            st.metric(label = 'Latest Inflation Rate:', 
+            st.metric(label = f"Latest Inflation Rate ({inflationDf.index[-1].strftime('%Y-%m')}):", 
                       value = f"{inflationDf['inflation_rate'].iloc[-1]:.3f}%", 
-                      delta = f"{inflationDf['inflation_rate'].iloc[-1] - inflationDf['inflation_rate'].iloc[-2]:.3f}")
+                      delta = f"{inflationDf['inflation_rate'].iloc[-1] - inflationDf['inflation_rate'].iloc[-2]:.3f} From Previous Month",
+                      delta_color = 'inverse')
             st.plotly_chart(fig, use_container_width = True)
-            
         if inflationOption == 'Core Inflation Rate':
             coreInflationDf = pd.DataFrame(USEconomy.coreInflationData).dropna(how = 'all')
             coreInflationDf.index = pd.to_datetime(coreInflationDf.index)
@@ -49,9 +49,10 @@ class USEconomy:
 
             fig.update_layout(xaxis_title = 'Date',
                               title = 'Core Inflation Rate')
-            st.metric(label = 'Latest Core Inflation Rate:', 
+            st.metric(label = f"Latest Core Inflation Rate ({coreInflationDf.index[-1].strftime('%Y-%m')}):", 
                       value = f"{coreInflationDf['core_inflation_rate'].iloc[-1]:.3f}%", 
-                      delta = f"{coreInflationDf['core_inflation_rate'].iloc[-1] - coreInflationDf['core_inflation_rate'].iloc[-2]:.3f}")
+                      delta = f"{coreInflationDf['core_inflation_rate'].iloc[-1] - coreInflationDf['core_inflation_rate'].iloc[-2]:.3f} From Previous Month",
+                      delta_color = 'inverse')
             st.plotly_chart(fig, use_container_width = True)
 
     def unemployment_rate() -> None:
@@ -62,9 +63,10 @@ class USEconomy:
 
         fig.update_layout(xaxis_title = 'Date',
                           title = 'Unemployment Rate')
-        st.metric(label = 'Latest Unemployment Rate:', 
+        st.metric(label = f"Latest Unemployment Rate ({unemploymentDf.index[-1].strftime('%Y-%m')}):", 
                   value = f"{unemploymentDf['unemployment_rate'].iloc[-1]:.3f}%", 
-                  delta = f"{unemploymentDf['unemployment_rate'].iloc[-1] - unemploymentDf['unemployment_rate'].iloc[-2]:.3f}")
+                  delta = f"{unemploymentDf['unemployment_rate'].iloc[-1] - unemploymentDf['unemployment_rate'].iloc[-2]:.3f} From Previous Month",
+                  delta_color = 'inverse')
         st.plotly_chart(fig, use_container_width = True)
     
     def interest_rates() -> None:
@@ -80,9 +82,9 @@ class USEconomy:
 
             fig.update_layout(xaxis_title = 'Date',
                               title = 'Federal Funds Effective Rate')
-            st.metric(label = 'Latest Federal Funds Effective Rate:', 
+            st.metric(label = f"Latest Federal Funds Effective Rate ({fferDf.index[-1].date()}):", 
                       value = f"{fferDf['ffer'].iloc[-1]:.2f}%", 
-                      delta = f"{fferDf['ffer'].iloc[-1] - fferDf['ffer'].iloc[-2]:.2f}")
+                      delta = f"{fferDf['ffer'].iloc[-1] - fferDf['ffer'].iloc[-2]:.2f} From Previous Day")
             st.plotly_chart(fig, use_container_width = True)
 
         if interestOption == 'Market Yield on U.S. Treasury Securities (10 Year)':
@@ -93,9 +95,9 @@ class USEconomy:
 
             fig.update_layout(xaxis_title = 'Date', 
                               title = 'Market Yield on U.S. Treasury Securities (10 Year) Rate')
-            st.metric(label = 'Latest Market Yield on U.S. Treasury Securities (10 Year) Rate:', 
+            st.metric(label = f"Latest Market Yield on U.S. Treasury Securities (10 Year) Rate ({markYieldTresDf.index[-1].date()}):", 
                       value = f"{markYieldTresDf['myuts'].iloc[-1]:.2f}%", 
-                      delta = f"{markYieldTresDf['myuts'].iloc[-1] - markYieldTresDf['myuts'].iloc[-2]:.2f}")
+                      delta = f"{markYieldTresDf['myuts'].iloc[-1] - markYieldTresDf['myuts'].iloc[-2]:.2f} From Previous Day")
             st.plotly_chart(fig, use_container_width = True)
 
         if interestOption == 'Secured Overnight Financing Rate':
@@ -120,9 +122,9 @@ class USEconomy:
             fig.update_layout(xaxis_title = 'Date', 
                               title = 'Secured Overnight Financing Rate')
             sofrCol1, sofrCol2, sofrCol3, sofrCol4 = st.columns([4, 2, 2, 2])
-            sofrCol1.metric(label = 'Latest Secured Overnight Financing Rate:', 
+            sofrCol1.metric(label = f"Latest SOFR ({sofrDf.index[-1].date()}):", 
                             value = f"{sofrDf['sofr'].iloc[-1]:.2f}%", 
-                            delta = f"{sofrDf['sofr'].iloc[-1] - sofrDf['sofr'].iloc[-2]:.2f}")
+                            delta = f"{sofrDf['sofr'].iloc[-1] - sofrDf['sofr'].iloc[-2]:.2f} From Previous Day")
             sofrCol2.metric(label = '30-day Average:', 
                             value = f"{sofr30Df['sofr30'].iloc[-1]:.2f}%", 
                             delta = f"{sofr30Df['sofr30'].iloc[-1] - sofr30Df['sofr30'].iloc[-2]:.2f}")
@@ -151,9 +153,9 @@ class USEconomy:
 
             fig.update_layout(xaxis_title = 'Date',
                               title = 'USD to EURO')
-            st.metric(label = 'Latest USD to EURO Exchange Rate:', 
+            st.metric(label = f"Latest USD to EURO Exchange Rate ({usdEuroDf.index[-1].date()}):", 
                       value = f"{usdEuroDf['exchange_rate'].iloc[-1]:.3f} EUR", 
-                      delta = f"{usdEuroDf['exchange_rate'].iloc[-1] - usdEuroDf['exchange_rate'].iloc[-2]:.3f}")
+                      delta = f"{usdEuroDf['exchange_rate'].iloc[-1] - usdEuroDf['exchange_rate'].iloc[-2]:.3f} From Previous Day")
             st.plotly_chart(fig, use_container_width = True)
 
         if usdCad:
@@ -164,9 +166,9 @@ class USEconomy:
 
             fig.update_layout(xaxis_title = 'Date',
                               title = 'USD to CAD')
-            st.metric(label = 'Latest USD to CAD Exchange Rate:', 
+            st.metric(label = f"Latest USD to CAD Exchange Rate ({usdCadDf.index[-1].date()}):", 
                       value = f"{usdCadDf['exchange_rate'].iloc[-1]:.3f} CAD", 
-                      delta = f"{usdCadDf['exchange_rate'].iloc[-1] - usdCadDf['exchange_rate'].iloc[-2]:.3f}")
+                      delta = f"{usdCadDf['exchange_rate'].iloc[-1] - usdCadDf['exchange_rate'].iloc[-2]:.3f} From Previous Day")
             st.plotly_chart(fig, use_container_width = True)
         
         if usdInr:
@@ -177,9 +179,9 @@ class USEconomy:
 
             fig.update_layout(xaxis_title = 'Date',
                               title = 'USD to INR')
-            st.metric(label = 'Latest USD to INR Exchange Rate:', 
+            st.metric(label = f"Latest USD to INR Exchange Rate ({usdInrDf.index[-1].date()}):", 
                       value = f"{usdInrDf['exchange_rate'].iloc[-1]:.3f} INR", 
-                      delta = f"{usdInrDf['exchange_rate'].iloc[-1] - usdInrDf['exchange_rate'].iloc[-2]:.3f}")
+                      delta = f"{usdInrDf['exchange_rate'].iloc[-1] - usdInrDf['exchange_rate'].iloc[-2]:.3f} From Previous Day")
             st.plotly_chart(fig, use_container_width = True)
         
         if usdYen:
@@ -190,9 +192,9 @@ class USEconomy:
 
             fig.update_layout(xaxis_title = 'Date',
                               title = 'USD to YEN')
-            st.metric(label = 'Latest USD to YEN Exchange Rate:', 
+            st.metric(label = f"Latest USD to YEN Exchange Rate ({usdYenDf.index[-1].date()}):",
                       value = f"{usdYenDf['exchange_rate'].iloc[-1]:.3f} YEN", 
-                      delta = f"{usdYenDf['exchange_rate'].iloc[-1] - usdYenDf['exchange_rate'].iloc[-2]:.3f}")
+                      delta = f"{usdYenDf['exchange_rate'].iloc[-1] - usdYenDf['exchange_rate'].iloc[-2]:.3f} From Previous Day")
             st.plotly_chart(fig, use_container_width = True)
 
         if usdRmb:
@@ -203,9 +205,9 @@ class USEconomy:
 
             fig.update_layout(xaxis_title = 'Date',
                               title = 'USD to RMB')
-            st.metric(label = 'Latest USD to RMB Exchange Rate:', 
+            st.metric(label = f"Latest USD to RMB Exchange Rate ({usdRmbDf.index[-1].date()}):",
                       value = f"{usdRmbDf['exchange_rate'].iloc[-1]:.3f} RMB", 
-                      delta = f"{usdRmbDf['exchange_rate'].iloc[-1] - usdRmbDf['exchange_rate'].iloc[-2]:.3f}")
+                      delta = f"{usdRmbDf['exchange_rate'].iloc[-1] - usdRmbDf['exchange_rate'].iloc[-2]:.3f} From Previous Day")
             st.plotly_chart(fig, use_container_width = True)
 
     def mortgage_rates() -> None:
@@ -225,12 +227,12 @@ class USEconomy:
                           yaxis = dict(title = 'Rate'),
                           xaxis = dict(title = 'Date'))
         mortCol1, mortCol2 = st.columns([5, 5])
-        mortCol1.metric(label = 'Latest 15 Year Fixed Rate:', 
+        mortCol1.metric(label = f"Latest 15 Year Fixed Rate ({mortgage15Df.index[-1].date()}):", 
                         value = f"{mortgage15Df['mort15'].iloc[-1]:.2f}%", 
-                        delta = f"{mortgage15Df['mort15'].iloc[-1] - mortgage15Df['mort15'].iloc[-2]:.2f}")
-        mortCol2.metric(label = 'Latest 30 Year Fixed Rate:', 
+                        delta = f"{mortgage15Df['mort15'].iloc[-1] - mortgage15Df['mort15'].iloc[-2]:.2f} From Previous Week")
+        mortCol2.metric(label = f"Latest 30 Year Fixed Rate ({mortgage30Df.index[-1].date()}):", 
                         value = f"{mortgage30Df['mort30'].iloc[-1]:.2f}%", 
-                        delta = f"{mortgage30Df['mort30'].iloc[-1] - mortgage30Df['mort30'].iloc[-2]:.2f}")
+                        delta = f"{mortgage30Df['mort30'].iloc[-1] - mortgage30Df['mort30'].iloc[-2]:.2f} From Previous Week")
         st.plotly_chart(fig, use_container_width = True)
         
     def economy_chooser() -> None:
