@@ -92,8 +92,8 @@ class StockInformation:
             'ask': 'Ask',
             'bidSize': 'Bid Size',
             'askSize': 'Ask Size',
-            'sharesOutstanding': 'Shares Outstanding',
-            'sharesShort': 'Shares Short'
+            'sharesOutstanding': 'Outstanding Shares',
+            'sharesShort': 'Short Shares'
         }
         for key in column_names:
             if key in infoDictionary:
