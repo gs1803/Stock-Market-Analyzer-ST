@@ -54,16 +54,16 @@ class StockAnalyzer:
         st.plotly_chart(fig, use_container_width = True)
 
     def stock_trading_value(self) -> None:
-        self.stock['Trad_Val'] = self.stock['Adj Close'] * self.stock['Volume']
-        self.dayStock['Trad_Val'] = self.dayStock['Adj Close'] * self.dayStock['Volume']
+        self.stock['Trad Val'] = self.stock['Adj Close'] * self.stock['Volume']
+        self.dayStock['Trad Val'] = self.dayStock['Adj Close'] * self.dayStock['Volume']
         fig = go.Figure(data = go.Scatter(x = self.stock.index, 
-                                          y = self.stock['Trad_Val'], 
+                                          y = self.stock['Trad Val'], 
                                           mode = 'lines'))
         fig.update_layout(title = f"Trading Value for {self.titleStock} ({self.companyStock})",
                           yaxis = dict(title = 'Trading Value'))
         st.metric(label = f"Latest Stock Trading Value ({self.dayStock.index[-1].date()}):", 
-                  value = f"{self.dayStock['Trad_Val'].iloc[-1]:,.2f}", 
-                  delta = f"{self.dayStock['Trad_Val'].iloc[-1] - self.dayStock['Trad_Val'].iloc[-2]:,.2f} From Previous Day")
+                  value = f"{self.dayStock['Trad Val'].iloc[-1]:,.2f}", 
+                  delta = f"{self.dayStock['Trad Val'].iloc[-1] - self.dayStock['Trad Val'].iloc[-2]:,.2f} From Previous Day")
         st.plotly_chart(fig, use_container_width = True)
 
     def stock_volatility(self) -> None:
