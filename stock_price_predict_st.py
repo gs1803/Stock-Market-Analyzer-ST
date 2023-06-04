@@ -311,7 +311,6 @@ class StockPricePredictor:
                   value = f"{self.stock['Adj Close'].iloc[-1]:.2f}", 
                   delta = f"{self.stock['Adj Close'].iloc[-1] - self.stock['Adj Close'].iloc[-2]:.2f} From Previous Day")
         st.plotly_chart(fig, use_container_width = True)
-        st.plotly_chart(fig, use_container_width = True)
 
         st.write(f"Predicted Stock Adj Close Price for ({StockPricePredictor.tomorrowDate}): {nextDayPredY[0]:.2f}")
         st.write(f"RMSE: {rmse}")
