@@ -1,7 +1,6 @@
 import streamlit as st
 import yfinance as yf
 import plotly.graph_objects as go
-import pandas as pd
 from plotly.subplots import make_subplots
 from technical_analysis_st import TechnicalAnalysis
 
@@ -27,21 +26,12 @@ class StockAnalyzer:
                           yaxis = dict(title = 'Price'))
         
         priceCol1, priceCol2 = st.columns([5, 5])
-        timeRange = self.stock.index[-1] - self.stock.index[0]
-        if timeRange < pd.Timedelta(days = 1):           
-            priceCol1.metric(label = 'Latest Stock Open Price:', 
-                             value = f"{self.dayStock['Open'].iloc[-1]:.2f}", 
-                             delta = f"{self.dayStock['Open'].iloc[-1] - self.dayStock['Open'].iloc[-2]:.2f}")
-            priceCol2.metric(label = 'Latest Stock Adj Close Price:', 
-                             value = f"{self.dayStock['Adj Close'].iloc[-1]:.2f}", 
-                             delta = f"{self.dayStock['Adj Close'].iloc[-1] - self.stock['Adj Close'].iloc[-1]:.2f}")
-        else:
-            priceCol1.metric(label = 'Latest Stock Open Price:', 
-                             value = f"{self.stock['Open'].iloc[-1]:.2f}", 
-                             delta = f"{self.stock['Open'].iloc[-1] - self.stock['Open'].iloc[-2]:.2f}")
-            priceCol2.metric(label = 'Latest Stock Adj Close Price:', 
-                             value = f"{self.stock['Adj Close'].iloc[-1]:.2f}", 
-                             delta = f"{self.stock['Adj Close'].iloc[-1] - self.stock['Adj Close'].iloc[-2]:.2f}")
+        priceCol1.metric(label = f"Latest Stock Open Price ({self.dayStock.index[-1].date()}):", 
+                         value = f"{self.dayStock['Open'].iloc[-1]:.2f}", 
+                         delta = f"{self.dayStock['Open'].iloc[-1] - self.dayStock['Open'].iloc[-2]:.2f} From Previous Day")
+        priceCol2.metric(label = f"Latest Stock Adj Close Price ({self.dayStock.index[-1].date()}):", 
+                         value = f"{self.dayStock['Adj Close'].iloc[-1]:.2f}", 
+                         delta = f"{self.dayStock['Adj Close'].iloc[-1] - self.dayStock['Adj Close'].iloc[-2]:.2f} From Previous Day")
         st.plotly_chart(fig, use_container_width = True)
 
     def stock_volume(self) -> None:
@@ -50,21 +40,22 @@ class StockAnalyzer:
                                           mode = 'lines'))
         fig.update_layout(title = f"Volume of Stock Traded of {self.titleStock} ({self.companyStock})",
                           yaxis = dict(title = 'Volume'))
-        st.metric(label = 'Latest Stock Volume:', 
-                  value = f" {self.stock['Volume'].iloc[-1]:.2f}", 
-                  delta = f"{self.stock['Volume'].iloc[-1] - self.stock['Volume'].iloc[-2]:.2f}")
+        st.metric(label = f"Latest Stock Volume ({self.dayStock.index[-1].date()}):", 
+                  value = f"{self.dayStock['Volume'].iloc[-1]:,.2f}", 
+                  delta = f"{self.dayStock['Volume'].iloc[-1] - self.dayStock['Volume'].iloc[-2]:,.2f} From Previous Day")
         st.plotly_chart(fig, use_container_width = True)
 
     def stock_market_cap(self) -> None:
         self.stock['MktCap'] = self.stock['Open'] * self.stock['Volume']
+        self.dayStock['MktCap'] = self.dayStock['Open'] * self.dayStock['Volume']
         fig = go.Figure(data = go.Scatter(x = self.stock.index, 
                                           y = self.stock['MktCap'], 
                                           mode = 'lines'))
         fig.update_layout(title = f"Market Cap for {self.titleStock} ({self.companyStock})",
                           yaxis = dict(title = 'Market Cap'))
-        st.metric(label = 'Latest Stock Market Cap:', 
-                  value = f" {self.stock['MktCap'].iloc[-1]:.2f}", 
-                  delta = f"{self.stock['MktCap'].iloc[-1] - self.stock['MktCap'].iloc[-2]:.2f}")
+        st.metric(label = f"Latest Stock Market Cap ({self.dayStock.index[-1].date()}):", 
+                  value = f"{self.dayStock['MktCap'].iloc[-1]:,.2f}", 
+                  delta = f"{self.dayStock['MktCap'].iloc[-1] - self.dayStock['MktCap'].iloc[-2]:,.2f} From Previous Day")
         st.plotly_chart(fig, use_container_width = True)
 
     def stock_volatility(self) -> None:
