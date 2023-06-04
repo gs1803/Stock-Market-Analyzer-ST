@@ -13,7 +13,7 @@ class StockAnalyzer:
             self.companyStock = yf.Ticker(titleStock).info['longName']
         except:
             self.companyStock = ('')
-        self.dayStock = yf.download(titleStock, period = '2d', repair = True, progress = False)
+        self.dayStock = yf.download(titleStock, period = '3d', progress = False)
         
     def stock_prices(self) -> None:
         fig = make_subplots(specs = [[{"secondary_y": True}]])
