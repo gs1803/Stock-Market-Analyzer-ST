@@ -39,18 +39,18 @@ def stock_info():
             st.write(" ")
         else:
             if dateDiff == 0:
-                inputStock = yf.download(f"{userStock}", start, end, interval = '1m', repair = True, progress = False)
+                inputStock = yf.download(f"{userStock}", start, end, interval = '1m', progress = False)
             elif dateDiff == 1:
                 end = endDate - timedelta(days = 1)
                 if startDate.isoweekday() == 6 or startDate.isoweekday() == 7 or endDate.isoweekday() == 6 or endDate.isoweekday() == 7:
-                    inputStock = yf.download(f"{userStock}", start, end, interval = '1m', repair = True, progress = False)
+                    inputStock = yf.download(f"{userStock}", start, end, interval = '1m', progress = False)
                 else:
-                    inputStock = yf.download(f"{userStock}", start, end, interval = '1m', repair = True, progress = False)
+                    inputStock = yf.download(f"{userStock}", start, end, interval = '1m', progress = False)
             elif dateDiff == 2 and startDate.isoweekday() == 5:
                 end = endDate - timedelta(days = 2)
-                inputStock = yf.download(f"{userStock}", start, end, interval = '1m', repair = True, progress = False)
+                inputStock = yf.download(f"{userStock}", start, end, interval = '1m', progress = False)
             else:
-                inputStock = yf.download(f"{userStock}", start, end, repair = True, progress = False)
+                inputStock = yf.download(f"{userStock}", start, end, progress = False)
             if inputStock.empty:
                 st.write("No Information Available for the Ticker.")
             else:
@@ -107,7 +107,7 @@ def stock_price_predictor():
     elif not userStock.isascii():
         st.write(" ")
     else:
-        inputStock = yf.download(userStock, '2021-01-01', end, repair = True, progress = False)
+        inputStock = yf.download(userStock, '2021-01-01', end, progress = False)
         if inputStock.empty:
             st.write("No Information Available for the Ticker.")
         else:
