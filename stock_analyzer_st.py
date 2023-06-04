@@ -46,8 +46,8 @@ class StockAnalyzer:
         st.plotly_chart(fig, use_container_width = True)
 
     def stock_trading_value(self) -> None:
-        self.stock['Trad_Val'] = self.stock['Open'] * self.stock['Volume']
-        self.dayStock['Trad_Val'] = self.dayStock['Open'] * self.dayStock['Volume']
+        self.stock['Trad_Val'] = self.stock['Adj Close'] * self.stock['Volume']
+        self.dayStock['Trad_Val'] = self.dayStock['Adj Close'] * self.dayStock['Volume']
         fig = go.Figure(data = go.Scatter(x = self.stock.index, 
                                           y = self.stock['Trad_Val'], 
                                           mode = 'lines'))
