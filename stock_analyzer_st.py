@@ -1,6 +1,7 @@
 import streamlit as st
 import yfinance as yf
 import plotly.graph_objects as go
+from millify import millify
 from plotly.subplots import make_subplots
 from technical_analysis_st import TechnicalAnalysis
 
@@ -10,8 +11,10 @@ class StockAnalyzer:
         self.titleStock = titleStock
         try:
             self.companyStock = yf.Ticker(titleStock).info['longName']
+            self.mktCap = yf.Ticker(titleStock).info['marketCap']
         except:
             self.companyStock = ('')
+            self.mktCap = ('')
         self.dayStock = yf.download(titleStock, period = '3d', progress = False)
         
     def stock_prices(self) -> None:
@@ -25,13 +28,18 @@ class StockAnalyzer:
         fig.update_layout(title = f"Stock Price for {self.titleStock} ({self.companyStock})",
                           yaxis = dict(title = 'Price'))
         
-        priceCol1, priceCol2 = st.columns([5, 5])
+        priceCol1, priceCol2, mktCapCol = st.columns([3.25, 3.75, 3])
         priceCol1.metric(label = f"Latest Stock Open Price ({self.dayStock.index[-1].date()}):", 
                          value = f"{self.dayStock['Open'].iloc[-1]:.2f}", 
                          delta = f"{self.dayStock['Open'].iloc[-1] - self.dayStock['Open'].iloc[-2]:.2f} From Previous Day")
         priceCol2.metric(label = f"Latest Stock Adj Close Price ({self.dayStock.index[-1].date()}):", 
                          value = f"{self.dayStock['Adj Close'].iloc[-1]:.2f}", 
                          delta = f"{self.dayStock['Adj Close'].iloc[-1] - self.dayStock['Adj Close'].iloc[-2]:.2f} From Previous Day")
+        try:
+            mktCapCol.metric(label = f"Latest Market Cap ({self.dayStock.index[-1].date()}):", 
+                             value = f"{millify(self.mktCap, precision = 5)}")
+        except:
+            pass
         st.plotly_chart(fig, use_container_width = True)
 
     def stock_volume(self) -> None:
