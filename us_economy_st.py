@@ -15,7 +15,8 @@ class USEconomy:
     exchangeDataUsdInr = fred.get_series('DEXINUS', observation_start = '1/1/2015')
     exchangeDataUsdYen = fred.get_series('DEXJPUS', observation_start = '1/1/2015')
     exchangeDataUsdRmb = fred.get_series('DEXCHUS', observation_start = '1/1/2015')
-    marketYieldUSTresData = fred.get_series('DGS10', observation_start = '1/1/1970')
+    marketYieldUSTres1Data = fred.get_series('DGS1', observation_start = '1/1/1970')
+    marketYieldUSTres10Data = fred.get_series('DGS10', observation_start = '1/1/1970')
     fedFundEffecRateData = fred.get_series('DFF', observation_start = '1/1/1970')
     sofrData = fred.get_series('SOFR', observation_start = '3/4/2018')
     sofr30Data = fred.get_series('SOFR30DAYAVG', observation_start = '2/5/2018')
@@ -71,7 +72,7 @@ class USEconomy:
     
     def interest_rates() -> None:
         interestOption = st.radio("Select an option:", ['Federal Funds Effective Rate', 
-                                                        'Market Yield on U.S. Treasury Securities (10 Year)', 
+                                                        'Market Yield on U.S. Treasury Securities', 
                                                         'Secured Overnight Financing Rate'])
         
         if interestOption == 'Federal Funds Effective Rate':
@@ -87,17 +88,30 @@ class USEconomy:
                       delta = f"{fferDf['ffer'].iloc[-1] - fferDf['ffer'].iloc[-2]:.2f} From Previous Day")
             st.plotly_chart(fig, use_container_width = True)
 
-        if interestOption == 'Market Yield on U.S. Treasury Securities (10 Year)':
-            markYieldTresDf = pd.DataFrame(USEconomy.marketYieldUSTresData).dropna(how = 'all')
-            markYieldTresDf.index = pd.to_datetime(markYieldTresDf.index)
-            markYieldTresDf.columns = ['myuts']
-            fig = go.Figure(data = go.Scatter(x = markYieldTresDf.index, y = markYieldTresDf['myuts']))
+        if interestOption == 'Market Yield on U.S. Treasury Securities':
+            mktYieldTres1Df = pd.DataFrame(USEconomy.marketYieldUSTres1Data).dropna(how = 'all')
+            mktYieldTres1Df.index = pd.to_datetime(mktYieldTres1Df.index)
+            mktYieldTres1Df.columns = ['myuts1']
+            
+            mktYieldTres10Df = pd.DataFrame(USEconomy.marketYieldUSTres10Data).dropna(how = 'all')
+            mktYieldTres10Df.index = pd.to_datetime(mktYieldTres10Df.index)
+            mktYieldTres10Df.columns = ['myuts10']
 
-            fig.update_layout(xaxis_title = 'Date', 
-                              title = 'Market Yield on U.S. Treasury Securities (10 Year) Rate')
-            st.metric(label = f"Latest Market Yield on U.S. Treasury Securities (10 Year) Rate ({markYieldTresDf.index[-1].date()}):", 
-                      value = f"{markYieldTresDf['myuts'].iloc[-1]:.2f}%", 
-                      delta = f"{markYieldTresDf['myuts'].iloc[-1] - markYieldTresDf['myuts'].iloc[-2]:.2f} From Previous Day")
+            mktYieldCol1, mktYieldCol2 = st.columns([5, 5])
+            fig = make_subplots(specs = [[{"secondary_y": True}]])
+            fig.add_trace(go.Scatter(x = mktYieldTres1Df.index, y = mktYieldTres1Df['myuts1'], name = '1 Year'))
+            fig.add_trace(go.Scatter(x = mktYieldTres10Df.index, y = mktYieldTres10Df['myuts10'], name = '10 Year'))
+
+            fig.update_layout(title = 'Market Yield on U.S. Treasury Securities Rate',
+                              yaxis = dict(title = 'Rate'),
+                              xaxis = dict(title = 'Date'))
+            
+            mktYieldCol1.metric(label = f"Latest Market Yield (1 Year) Rate ({mktYieldTres1Df.index[-1].date()}):", 
+                                value = f"{mktYieldTres1Df['myuts1'].iloc[-1]:.2f}%", 
+                                delta = f"{mktYieldTres1Df['myuts1'].iloc[-1] - mktYieldTres1Df['myuts1'].iloc[-2]:.2f} From Previous Day")
+            mktYieldCol2.metric(label = f"Latest Market Yield (10 Year) Rate ({mktYieldTres10Df.index[-1].date()}):", 
+                                value = f"{mktYieldTres10Df['myuts10'].iloc[-1]:.2f}%", 
+                                delta = f"{mktYieldTres10Df['myuts10'].iloc[-1] - mktYieldTres10Df['myuts10'].iloc[-2]:.2f} From Previous Day")
             st.plotly_chart(fig, use_container_width = True)
 
         if interestOption == 'Secured Overnight Financing Rate':
