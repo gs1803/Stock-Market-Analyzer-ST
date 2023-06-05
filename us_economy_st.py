@@ -10,11 +10,6 @@ class USEconomy:
     inflationData = fred.get_series('CPIAUCSL', units = 'pc1', observation_start = '1/1/1970')
     coreInflationData = fred.get_series('CPILFESL', units = 'pc1', observation_start = '1/1/1970')
     unemploymentData = fred.get_series('UNRATE', observation_start = '1/1/1970')
-    exchangeDataUsdEuro = fred.get_series('DEXUSEU', observation_start = '1/1/2015')
-    exchangeDataUsdCad = fred.get_series('DEXCAUS', observation_start = '1/1/2015')
-    exchangeDataUsdInr = fred.get_series('DEXINUS', observation_start = '1/1/2015')
-    exchangeDataUsdYen = fred.get_series('DEXJPUS', observation_start = '1/1/2015')
-    exchangeDataUsdRmb = fred.get_series('DEXCHUS', observation_start = '1/1/2015')
     marketYieldUSTres1Data = fred.get_series('DGS1', observation_start = '1/1/1970')
     marketYieldUSTres10Data = fred.get_series('DGS10', observation_start = '1/1/1970')
     fedFundEffecRateData = fred.get_series('DFF', observation_start = '1/1/1970')
@@ -151,77 +146,56 @@ class USEconomy:
             st.plotly_chart(fig, use_container_width = True)
 
     def exchange_rates() -> None:
-        currCol1, currCol2, currCol3, currCol4, currCol5 = st.columns([2, 2, 2, 2, 2])
-        usdEuro = currCol1.button("USD to EURO")
-        usdCad = currCol2.button("USD to CAD")
-        usdInr = currCol3.button("USD to INR")
-        usdYen = currCol4.button("USD to YEN")
-        usdRmb = currCol5.button("USD to RMB")
+        exchangeDf = fred.search('U.S. Dollar Spot Exchange Rate')
+        exchangeDict = {}
+        for _, row in exchangeDf.iterrows():
+            if 'U.S. Dollar Spot Exchange Rate' in row['title']:
+                if row['id'].startswith('D'):
+                    newTitle = row['title'].replace(' Spot Exchange Rate', 's')
+                    exchangeDict[newTitle] = row['id']
 
-        if usdEuro:
-            usdEuroDf = pd.DataFrame(USEconomy.exchangeDataUsdEuro).dropna(how = 'all')
-            usdEuroDf.index = pd.to_datetime(usdEuroDf.index)
-            usdEuroDf.columns = ['exchange_rate']
-            usdEuroDf['exchange_rate'] = 1 / usdEuroDf['exchange_rate']
-            fig = go.Figure(data = go.Scatter(x = usdEuroDf.index, y = usdEuroDf['exchange_rate']))
+        exchangeCleanDf = pd.DataFrame([exchangeDict.values(), exchangeDict.keys()]).transpose()
+        exchangeCleanDf.columns = ['id', 'name']
+        isoCodeList = ['YEN', 'CNY', 'KRW', 'CAD', 'MXN', 'VEF', 'INR', 
+                       'BRL', 'LKR', 'CHF', 'MYR', 'THB', 'ZAR', 'TWD', 
+                       'HKD','NOK', 'DKK', 'SEK', 'SGD']
+        exchangeCleanDf['iso_code'] = isoCodeList
+        euroRate = {'id': 'DEXUSEU', 'name': 'Euro to U.S. Dollars', 'iso_code': 'EUR'}
+        ukRate = {'id': 'DEXUSUK', 'name': 'Pound Sterling to U.S. Dollars', 'iso_code': 'GBP'}
+        exchangeCleanDf = pd.concat([pd.DataFrame(ukRate, index = [0]), exchangeCleanDf]).reset_index(drop = True)
+        exchangeCleanDf = pd.concat([pd.DataFrame(euroRate, index = [0]), exchangeCleanDf]).reset_index(drop = True)
+        selectedName = st.selectbox('Select an exchange rate', exchangeCleanDf['name'])
 
-            fig.update_layout(xaxis_title = 'Date',
-                              title = 'USD to EURO')
-            st.metric(label = f"Latest USD to EURO Exchange Rate ({usdEuroDf.index[-1].date()}):", 
-                      value = f"{usdEuroDf['exchange_rate'].iloc[-1]:.3f} EUR", 
-                      delta = f"{usdEuroDf['exchange_rate'].iloc[-1] - usdEuroDf['exchange_rate'].iloc[-2]:.3f} From Previous Day")
-            st.plotly_chart(fig, use_container_width = True)
-
-        if usdCad:
-            usdCadDf = pd.DataFrame(USEconomy.exchangeDataUsdCad).dropna(how = 'all')
-            usdCadDf.index = pd.to_datetime(usdCadDf.index)
-            usdCadDf.columns = ['exchange_rate']
-            fig = go.Figure(data = go.Scatter(x = usdCadDf.index, y = usdCadDf['exchange_rate']))
-
-            fig.update_layout(xaxis_title = 'Date',
-                              title = 'USD to CAD')
-            st.metric(label = f"Latest USD to CAD Exchange Rate ({usdCadDf.index[-1].date()}):", 
-                      value = f"{usdCadDf['exchange_rate'].iloc[-1]:.3f} CAD", 
-                      delta = f"{usdCadDf['exchange_rate'].iloc[-1] - usdCadDf['exchange_rate'].iloc[-2]:.3f} From Previous Day")
-            st.plotly_chart(fig, use_container_width = True)
+        selectedId = exchangeCleanDf.loc[exchangeCleanDf['name'] == selectedName, 'id'].values[0]
+        selectedDf = fred.get_series(selectedId, observation_start = '1/1/2015')
+        selectedIso = exchangeCleanDf.loc[exchangeCleanDf['name'] == selectedName, 'iso_code'].values[0]
         
-        if usdInr:
-            usdInrDf = pd.DataFrame(USEconomy.exchangeDataUsdInr).dropna(how = 'all')
-            usdInrDf.index = pd.to_datetime(usdInrDf.index)
-            usdInrDf.columns = ['exchange_rate']
-            fig = go.Figure(data = go.Scatter(x = usdInrDf.index, y = usdInrDf['exchange_rate']))
+        if selectedName == 'Euro to U.S. Dollars' or selectedName == 'Pound Sterling to U.S. Dollars':
+            usdModDf = pd.DataFrame(selectedDf).dropna(how = 'all')
+            usdModDf.index = pd.to_datetime(usdModDf.index)
+            usdModDf.columns = ['exchange_rate']
+            usdModDf['exchange_rate'] = 1 / usdModDf['exchange_rate']
+            fig = go.Figure(data = go.Scatter(x = usdModDf.index, y = usdModDf['exchange_rate']))
 
             fig.update_layout(xaxis_title = 'Date',
-                              title = 'USD to INR')
-            st.metric(label = f"Latest USD to INR Exchange Rate ({usdInrDf.index[-1].date()}):", 
-                      value = f"{usdInrDf['exchange_rate'].iloc[-1]:.3f} INR", 
-                      delta = f"{usdInrDf['exchange_rate'].iloc[-1] - usdInrDf['exchange_rate'].iloc[-2]:.3f} From Previous Day")
-            st.plotly_chart(fig, use_container_width = True)
-        
-        if usdYen:
-            usdYenDf = pd.DataFrame(USEconomy.exchangeDataUsdYen).dropna(how = 'all')
-            usdYenDf.index = pd.to_datetime(usdYenDf.index)
-            usdYenDf.columns = ['exchange_rate']
-            fig = go.Figure(data = go.Scatter(x = usdYenDf.index, y = usdYenDf['exchange_rate']))
-
-            fig.update_layout(xaxis_title = 'Date',
-                              title = 'USD to YEN')
-            st.metric(label = f"Latest USD to YEN Exchange Rate ({usdYenDf.index[-1].date()}):",
-                      value = f"{usdYenDf['exchange_rate'].iloc[-1]:.3f} YEN", 
-                      delta = f"{usdYenDf['exchange_rate'].iloc[-1] - usdYenDf['exchange_rate'].iloc[-2]:.3f} From Previous Day")
+                              title = 'Exchange Rate')
+            st.metric(label = f"Latest {selectedName} ({usdModDf.index[-1].date()}):", 
+                      value = f"{usdModDf['exchange_rate'].iloc[-1]:.3f} {selectedIso}", 
+                      delta = f"{usdModDf['exchange_rate'].iloc[-1] - usdModDf['exchange_rate'].iloc[-2]:.3f} From Previous Day")
             st.plotly_chart(fig, use_container_width = True)
 
-        if usdRmb:
-            usdRmbDf = pd.DataFrame(USEconomy.exchangeDataUsdRmb).dropna(how = 'all')
-            usdRmbDf.index = pd.to_datetime(usdRmbDf.index)
-            usdRmbDf.columns = ['exchange_rate']
-            fig = go.Figure(data = go.Scatter(x = usdRmbDf.index, y = usdRmbDf['exchange_rate']))
+        else:
+            usdDf = pd.DataFrame(selectedDf).dropna(how = 'all')
+            usdDf.index = pd.to_datetime(usdDf.index)
+            usdDf.columns = ['exchange_rate']
+
+            fig = go.Figure(data = go.Scatter(x = usdDf.index, y = usdDf['exchange_rate']))
 
             fig.update_layout(xaxis_title = 'Date',
-                              title = 'USD to RMB')
-            st.metric(label = f"Latest USD to RMB Exchange Rate ({usdRmbDf.index[-1].date()}):",
-                      value = f"{usdRmbDf['exchange_rate'].iloc[-1]:.3f} RMB", 
-                      delta = f"{usdRmbDf['exchange_rate'].iloc[-1] - usdRmbDf['exchange_rate'].iloc[-2]:.3f} From Previous Day")
+                            title = f'Exchange Rate')
+            st.metric(label = f"Latest {selectedName} ({usdDf.index[-1].date()}):", 
+                    value = f"{usdDf['exchange_rate'].iloc[-1]:.3f} {selectedIso}", 
+                    delta = f"{usdDf['exchange_rate'].iloc[-1] - usdDf['exchange_rate'].iloc[-2]:.3f} From Previous Day")
             st.plotly_chart(fig, use_container_width = True)
 
     def mortgage_rates() -> None:
