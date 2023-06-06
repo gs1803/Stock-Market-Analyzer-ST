@@ -21,7 +21,6 @@ tf.random.set_seed(42)
 
 class StockPricePredictor:
     tomorrowDate = datetime.now(pytz.timezone('US/Eastern')).date() + dt.timedelta(days = 1)
-    st.write(tomorrowDate)
 
     while tomorrowDate.isoweekday() > 5: 
         tomorrowDate += dt.timedelta(days = 1)
