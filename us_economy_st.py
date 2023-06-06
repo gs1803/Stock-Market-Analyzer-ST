@@ -164,7 +164,7 @@ class USEconomy:
         ukRate = {'id': 'DEXUSUK', 'name': 'Pound Sterling to U.S. Dollars', 'iso_code': 'GBP'}
         exchangeCleanDf = pd.concat([pd.DataFrame(ukRate, index = [0]), exchangeCleanDf]).reset_index(drop = True)
         exchangeCleanDf = pd.concat([pd.DataFrame(euroRate, index = [0]), exchangeCleanDf]).reset_index(drop = True)
-        selectedName = st.selectbox('Select an exchange rate', exchangeCleanDf['name'])
+        selectedName = st.selectbox('Select an Exchange Rate:', exchangeCleanDf['name'])
 
         selectedId = exchangeCleanDf.loc[exchangeCleanDf['name'] == selectedName, 'id'].values[0]
         selectedDf = fred.get_series(selectedId, observation_start = '1/1/2015')
@@ -231,7 +231,7 @@ class USEconomy:
                           'Mortgage Rates': USEconomy.mortgage_rates}
 
         economyOptionList = list(economyOptions.keys())
-        selectedEconomyOption = st.selectbox("Select an option", economyOptionList)
+        selectedEconomyOption = st.selectbox("Select an option:", economyOptionList)
 
         selectedEconomyFunction = economyOptions.get(selectedEconomyOption)
         if selectedEconomyFunction:
