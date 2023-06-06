@@ -55,15 +55,46 @@ class USEconomy:
         unemploymentDf = pd.DataFrame(USEconomy.unemploymentData).dropna(how = 'all')
         unemploymentDf.index = pd.to_datetime(unemploymentDf.index)
         unemploymentDf.columns = ['unemployment_rate']
-        fig = go.Figure(data = go.Scatter(x = unemploymentDf.index, y = unemploymentDf['unemployment_rate']))
+        
+        unempStateDf = fred.search('unemployment rate state', filter = ('frequency', 'Monthly'))
+        unempStateDf = unempStateDf.query('seasonal_adjustment == "Seasonally Adjusted" and units == "Percent"')
+        unempStateDf = unempStateDf.loc[unempStateDf['title'].str.startswith('Unemployment Rate in')]
+        unempStateDf = unempStateDf[~unempStateDf['title'].str.contains(',')]
+        unempStateDf = unempStateDf[~unempStateDf['title'].str.contains('Region')]
 
-        fig.update_layout(xaxis_title = 'Date',
-                          title = 'Unemployment Rate')
-        st.metric(label = f"Latest Unemployment Rate ({unemploymentDf.index[-1].strftime('%Y-%m')}):", 
-                  value = f"{unemploymentDf['unemployment_rate'].iloc[-1]:.3f}%", 
-                  delta = f"{unemploymentDf['unemployment_rate'].iloc[-1] - unemploymentDf['unemployment_rate'].iloc[-2]:.3f} From Previous Month",
-                  delta_color = 'inverse')
-        st.plotly_chart(fig, use_container_width = True)
+        cleanUnempStateDf = unempStateDf[['id', 'title']].reset_index(drop = True)
+        cleanUnempStateDf['title'] = [t.replace('Unemployment Rate in ', '').title() for t in cleanUnempStateDf['title']]
+        cleanUnempStateDf = cleanUnempStateDf.sort_values(['title']).reset_index(drop = True)
+        cleanUnempStateDf = cleanUnempStateDf.rename(columns = {'title': 'name'})
+
+        unemCol1, unemCol2 = st.tabs(['Total Unemployment Rate', 'Unemployment Rate by State'])
+        with unemCol1:
+            fig = go.Figure(data = go.Scatter(x = unemploymentDf.index, y = unemploymentDf['unemployment_rate']))
+            fig.update_layout(xaxis_title = 'Date',
+                              title = 'Unemployment Rate')
+            st.metric(label = f"Latest Unemployment Rate ({unemploymentDf.index[-1].strftime('%Y-%m')}):", 
+                      value = f"{unemploymentDf['unemployment_rate'].iloc[-1]:.3f}%", 
+                      delta = f"{unemploymentDf['unemployment_rate'].iloc[-1] - unemploymentDf['unemployment_rate'].iloc[-2]:.3f} From Previous Month",
+                      delta_color = 'inverse')
+            st.plotly_chart(fig, use_container_width = True)
+        
+        with unemCol2:
+            selectedName = st.selectbox('Select a State:', cleanUnempStateDf['name'])
+            selectedID = cleanUnempStateDf.loc[cleanUnempStateDf['name'] == selectedName, 'id'].values[0]
+
+            stateData = fred.get_series(f'{selectedID}', observation_start = '1/1/1975')
+            stateUnemploymentDf = pd.DataFrame(stateData).dropna(how = 'all')
+            stateUnemploymentDf.index = pd.to_datetime(stateUnemploymentDf.index)
+            stateUnemploymentDf.columns = ['sa_unemployment_rate']
+
+            figState = go.Figure(data = go.Scatter(x = stateUnemploymentDf.index, y = stateUnemploymentDf['sa_unemployment_rate']))
+            figState.update_layout(xaxis_title = 'Date',
+                                   title = f'Unemployment Rate in {selectedName}')
+            st.metric(label = f"Latest Unemployment Rate in {selectedName} ({stateUnemploymentDf.index[-1].strftime('%Y-%m')}):", 
+                      value = f"{stateUnemploymentDf['sa_unemployment_rate'].iloc[-1]:.3f}%", 
+                      delta = f"{stateUnemploymentDf['sa_unemployment_rate'].iloc[-1] - stateUnemploymentDf['sa_unemployment_rate'].iloc[-2]:.3f} From Previous Month",
+                      delta_color = 'inverse')
+            st.plotly_chart(figState, use_container_width = True)
     
     def interest_rates() -> None:
         interestOption = st.radio("Select an option:", ['Federal Funds Effective Rate', 
@@ -164,7 +195,7 @@ class USEconomy:
         ukRate = {'id': 'DEXUSUK', 'name': 'Pound Sterling to U.S. Dollars', 'iso_code': 'GBP'}
         exchangeCleanDf = pd.concat([pd.DataFrame(ukRate, index = [0]), exchangeCleanDf]).reset_index(drop = True)
         exchangeCleanDf = pd.concat([pd.DataFrame(euroRate, index = [0]), exchangeCleanDf]).reset_index(drop = True)
-        selectedName = st.selectbox('Select an Exchange Rate:', exchangeCleanDf['name'])
+        selectedName = st.selectbox('Select an exchange rate', exchangeCleanDf['name'])
 
         selectedId = exchangeCleanDf.loc[exchangeCleanDf['name'] == selectedName, 'id'].values[0]
         selectedDf = fred.get_series(selectedId, observation_start = '1/1/2015')
@@ -231,8 +262,9 @@ class USEconomy:
                           'Mortgage Rates': USEconomy.mortgage_rates}
 
         economyOptionList = list(economyOptions.keys())
-        selectedEconomyOption = st.selectbox("Select an option:", economyOptionList)
+        selectedEconomyOption = st.selectbox("Select an option", economyOptionList)
 
         selectedEconomyFunction = economyOptions.get(selectedEconomyOption)
         if selectedEconomyFunction:
             selectedEconomyFunction()
+     
