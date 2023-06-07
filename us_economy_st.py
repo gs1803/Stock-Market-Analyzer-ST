@@ -8,25 +8,12 @@ from fredapi import Fred
 fred = Fred(api_key = st.secrets['API_KEY'])
 
 class USEconomy:
-    inflationData = fred.get_series('CPIAUCSL', units = 'pc1', observation_start = '1/1/1970')
-    coreInflationData = fred.get_series('CPILFESL', units = 'pc1', observation_start = '1/1/1970')
-    unemploymentData = fred.get_series('UNRATE', observation_start = '1/1/1970')
-    txUnemploymentData = fred.get_series('TXUR', observation_start = '1/1/1975')
-    marketYieldUSTres1Data = fred.get_series('DGS1', observation_start = '1/1/1970')
-    marketYieldUSTres10Data = fred.get_series('DGS10', observation_start = '1/1/1970')
-    fedFundEffecRateData = fred.get_series('DFF', observation_start = '1/1/1970')
-    sofrData = fred.get_series('SOFR', observation_start = '3/4/2018')
-    sofr30Data = fred.get_series('SOFR30DAYAVG', observation_start = '2/5/2018')
-    sofr90Data = fred.get_series('SOFR90DAYAVG', observation_start = '2/5/2018')
-    sofr180Data = fred.get_series('SOFR180DAYAVG', observation_start = '2/5/2018')
-    mortgage15Data = fred.get_series('MORTGAGE15US', observation_start = '1/1/1992')
-    mortgage30Data = fred.get_series('MORTGAGE30US', observation_start = '1/1/1992')
-
     def inflation_rate() -> None:
         inflationOption = st.radio("Select an option:", ['Inflation Rate', 'Core Inflation Rate'])
 
         if inflationOption == 'Inflation Rate':
-            inflationDf = pd.DataFrame(USEconomy.inflationData).dropna(how = 'all')
+            inflationData = fred.get_series('CPIAUCSL', units = 'pc1', observation_start = '1/1/1970')
+            inflationDf = pd.DataFrame(inflationData).dropna(how = 'all')
             inflationDf.index = pd.to_datetime(inflationDf.index)
             inflationDf.columns = ['inflation_rate']
 
@@ -40,7 +27,8 @@ class USEconomy:
                       delta_color = 'inverse')
             st.plotly_chart(fig, use_container_width = True)
         if inflationOption == 'Core Inflation Rate':
-            coreInflationDf = pd.DataFrame(USEconomy.coreInflationData).dropna(how = 'all')
+            coreInflationData = fred.get_series('CPILFESL', units = 'pc1', observation_start = '1/1/1970')
+            coreInflationDf = pd.DataFrame(coreInflationData).dropna(how = 'all')
             coreInflationDf.index = pd.to_datetime(coreInflationDf.index)
             coreInflationDf.columns = ['core_inflation_rate']
             fig = go.Figure(data = go.Scatter(x = coreInflationDf.index, y = coreInflationDf['core_inflation_rate']))
@@ -54,7 +42,10 @@ class USEconomy:
             st.plotly_chart(fig, use_container_width = True)
 
     def unemployment_rate() -> None:
-        unemploymentDf = pd.DataFrame(USEconomy.unemploymentData).dropna(how = 'all')
+        unemploymentData = fred.get_series('UNRATE', observation_start = '1/1/1970')
+        txUnemploymentData = fred.get_series('TXUR', observation_start = '1/1/1975')
+
+        unemploymentDf = pd.DataFrame(unemploymentData).dropna(how = 'all')
         unemploymentDf.index = pd.to_datetime(unemploymentDf.index)
         unemploymentDf.columns = ['unemployment_rate']
         
@@ -84,7 +75,7 @@ class USEconomy:
         with unemCol2:
             selectedNames = st.multiselect('Select up to 5 States:', cleanUnempStateDf['name'], default = ['Texas'], max_selections = 5)
             selectedIDs = cleanUnempStateDf.loc[cleanUnempStateDf['name'].isin(selectedNames), 'id'].values
-            texasDateDf = pd.DataFrame(USEconomy.txUnemploymentData).dropna(how = 'all')
+            texasDateDf = pd.DataFrame(txUnemploymentData).dropna(how = 'all')
             texasDateDf.index = pd.to_datetime(texasDateDf.index)
 
             if len(selectedNames) > 0:
@@ -125,7 +116,8 @@ class USEconomy:
                                                         'Secured Overnight Financing Rate'])
         
         if interestOption == 'Federal Funds Effective Rate':
-            fferDf = pd.DataFrame(USEconomy.fedFundEffecRateData).dropna(how = 'all')
+            fedFundEffecRateData = fred.get_series('DFF', observation_start = '1/1/1970')
+            fferDf = pd.DataFrame(fedFundEffecRateData).dropna(how = 'all')
             fferDf.index = pd.to_datetime(fferDf.index)
             fferDf.columns = ['ffer']
             fig = go.Figure(data = go.Scatter(x = fferDf.index, y = fferDf['ffer']))
@@ -138,11 +130,13 @@ class USEconomy:
             st.plotly_chart(fig, use_container_width = True)
 
         if interestOption == 'Market Yield on U.S. Treasury Securities':
-            mktYieldTres1Df = pd.DataFrame(USEconomy.marketYieldUSTres1Data).dropna(how = 'all')
+            marketYieldUSTres1Data = fred.get_series('DGS1', observation_start = '1/1/1970')
+            marketYieldUSTres10Data = fred.get_series('DGS10', observation_start = '1/1/1970')
+            mktYieldTres1Df = pd.DataFrame(marketYieldUSTres1Data).dropna(how = 'all')
             mktYieldTres1Df.index = pd.to_datetime(mktYieldTres1Df.index)
             mktYieldTres1Df.columns = ['myuts1']
             
-            mktYieldTres10Df = pd.DataFrame(USEconomy.marketYieldUSTres10Data).dropna(how = 'all')
+            mktYieldTres10Df = pd.DataFrame(marketYieldUSTres10Data).dropna(how = 'all')
             mktYieldTres10Df.index = pd.to_datetime(mktYieldTres10Df.index)
             mktYieldTres10Df.columns = ['myuts10']
 
@@ -164,19 +158,23 @@ class USEconomy:
             st.plotly_chart(fig, use_container_width = True)
 
         if interestOption == 'Secured Overnight Financing Rate':
-            sofrDf = pd.DataFrame(USEconomy.sofrData).dropna(how = 'all')
+            sofrData = fred.get_series('SOFR', observation_start = '3/4/2018')            
+            sofrDf = pd.DataFrame(sofrData).dropna(how = 'all')
             sofrDf.index = pd.to_datetime(sofrDf.index)
             sofrDf.columns = ['sofr']
             
-            sofr30Df = pd.DataFrame(USEconomy.sofr30Data).dropna(how = 'all')
+            sofr30Data = fred.get_series('SOFR30DAYAVG', observation_start = '2/5/2018')
+            sofr30Df = pd.DataFrame(sofr30Data).dropna(how = 'all')
             sofr30Df.index = pd.to_datetime(sofr30Df.index)
             sofr30Df.columns = ['sofr30']
 
-            sofr90Df = pd.DataFrame(USEconomy.sofr90Data).dropna(how = 'all')
+            sofr90Data = fred.get_series('SOFR90DAYAVG', observation_start = '2/5/2018')
+            sofr90Df = pd.DataFrame(sofr90Data).dropna(how = 'all')
             sofr90Df.index = pd.to_datetime(sofr90Df.index)
             sofr90Df.columns = ['sofr90']
 
-            sofr180Df = pd.DataFrame(USEconomy.sofr180Data).dropna(how = 'all')
+            sofr180Data = fred.get_series('SOFR180DAYAVG', observation_start = '2/5/2018')
+            sofr180Df = pd.DataFrame(sofr180Data).dropna(how = 'all')
             sofr180Df.index = pd.to_datetime(sofr180Df.index)
             sofr180Df.columns = ['sofr180']
 
@@ -253,11 +251,13 @@ class USEconomy:
             st.plotly_chart(fig, use_container_width = True)
 
     def mortgage_rates() -> None:
-        mortgage15Df = pd.DataFrame(USEconomy.mortgage15Data).dropna(how = 'all')
+        mortgage15Data = fred.get_series('MORTGAGE15US', observation_start = '1/1/1992')
+        mortgage15Df = pd.DataFrame(mortgage15Data).dropna(how = 'all')
         mortgage15Df.index = pd.to_datetime(mortgage15Df.index)
         mortgage15Df.columns = ['mort15']
 
-        mortgage30Df = pd.DataFrame(USEconomy.mortgage30Data).dropna(how = 'all')
+        mortgage30Data = fred.get_series('MORTGAGE30US', observation_start = '1/1/1992')
+        mortgage30Df = pd.DataFrame(mortgage30Data).dropna(how = 'all')
         mortgage30Df.index = pd.to_datetime(mortgage30Df.index)
         mortgage30Df.columns = ['mort30']
 
