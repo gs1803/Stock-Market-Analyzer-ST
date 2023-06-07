@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
+import time
 from plotly.subplots import make_subplots
 from fredapi import Fred
 
@@ -10,6 +11,7 @@ class USEconomy:
     inflationData = fred.get_series('CPIAUCSL', units = 'pc1', observation_start = '1/1/1970')
     coreInflationData = fred.get_series('CPILFESL', units = 'pc1', observation_start = '1/1/1970')
     unemploymentData = fred.get_series('UNRATE', observation_start = '1/1/1970')
+    txUnemploymentData = fred.get_series('TXUR', observation_start = '1/1/1975')
     marketYieldUSTres1Data = fred.get_series('DGS1', observation_start = '1/1/1970')
     marketYieldUSTres10Data = fred.get_series('DGS10', observation_start = '1/1/1970')
     fedFundEffecRateData = fred.get_series('DFF', observation_start = '1/1/1970')
@@ -61,9 +63,10 @@ class USEconomy:
         unempStateDf = unempStateDf.loc[unempStateDf['title'].str.startswith('Unemployment Rate in')]
         unempStateDf = unempStateDf[~unempStateDf['title'].str.contains(',')]
         unempStateDf = unempStateDf[~unempStateDf['title'].str.contains('Region')]
+        unempStateDf = unempStateDf[~unempStateDf['title'].str.contains('Puerto Rico')]
 
         cleanUnempStateDf = unempStateDf[['id', 'title']].reset_index(drop = True)
-        cleanUnempStateDf['title'] = [t.replace('Unemployment Rate in ', '').title() for t in cleanUnempStateDf['title']]
+        cleanUnempStateDf['title'] = [state.replace('Unemployment Rate in ', '').title() for state in cleanUnempStateDf['title']]
         cleanUnempStateDf = cleanUnempStateDf.sort_values(['title']).reset_index(drop = True)
         cleanUnempStateDf = cleanUnempStateDf.rename(columns = {'title': 'name'})
 
@@ -79,23 +82,43 @@ class USEconomy:
             st.plotly_chart(fig, use_container_width = True)
         
         with unemCol2:
-            selectedName = st.selectbox('Select a State:', cleanUnempStateDf['name'])
-            selectedID = cleanUnempStateDf.loc[cleanUnempStateDf['name'] == selectedName, 'id'].values[0]
+            selectedNames = st.multiselect('Select up to 5 States:', cleanUnempStateDf['name'], default = ['Texas'], max_selections = 5)
+            selectedIDs = cleanUnempStateDf.loc[cleanUnempStateDf['name'].isin(selectedNames), 'id'].values
+            texasDateDf = pd.DataFrame(USEconomy.txUnemploymentData).dropna(how = 'all')
+            texasDateDf.index = pd.to_datetime(texasDateDf.index)
 
-            stateData = fred.get_series(f'{selectedID}', observation_start = '1/1/1975')
-            stateUnemploymentDf = pd.DataFrame(stateData).dropna(how = 'all')
-            stateUnemploymentDf.index = pd.to_datetime(stateUnemploymentDf.index)
-            stateUnemploymentDf.columns = ['sa_unemployment_rate']
+            if len(selectedNames) > 0:
+                selectedNames.sort()
+                st.write(f"Latest Unemployment Rate ({texasDateDf.index[-1].strftime('%Y-%m')}) (Change from Previous Month)")
+                columns = st.columns([2, 2, 2, 2, 2])
+                figState = go.Figure()
+                
+                for selectedID, selectedName, column in zip(selectedIDs, selectedNames, columns):
+                    stateData = fred.get_series(f'{selectedID}', observation_start = '1/1/1975')
+                    stateUnemploymentDf = pd.DataFrame(stateData).dropna(how = 'all')
+                    stateUnemploymentDf.index = pd.to_datetime(stateUnemploymentDf.index)
+                    stateUnemploymentDf.columns = ['sa_unemployment_rate']
+                    
+                    figState.add_trace(go.Scatter(x = stateUnemploymentDf.index, 
+                                                  y = stateUnemploymentDf['sa_unemployment_rate'], 
+                                                  name = selectedName))
+                    time.sleep(0.01)
 
-            figState = go.Figure(data = go.Scatter(x = stateUnemploymentDf.index, y = stateUnemploymentDf['sa_unemployment_rate']))
-            figState.update_layout(xaxis_title = 'Date',
-                                   title = f'Unemployment Rate in {selectedName}')
-            st.metric(label = f"Latest Unemployment Rate in {selectedName} ({stateUnemploymentDf.index[-1].strftime('%Y-%m')}):", 
-                      value = f"{stateUnemploymentDf['sa_unemployment_rate'].iloc[-1]:.3f}%", 
-                      delta = f"{stateUnemploymentDf['sa_unemployment_rate'].iloc[-1] - stateUnemploymentDf['sa_unemployment_rate'].iloc[-2]:.3f} From Previous Month",
-                      delta_color = 'inverse')
-            st.plotly_chart(figState, use_container_width = True)
-    
+                    stateUnemploymentRate = stateUnemploymentDf['sa_unemployment_rate'].iloc[-1]
+                    prevStateUnemploymentRate = stateUnemploymentDf['sa_unemployment_rate'].iloc[-2]
+                    delta = stateUnemploymentRate - prevStateUnemploymentRate
+                    
+                    column.metric(label = f"{selectedName}:",
+                                  value = f"{stateUnemploymentRate:.3f}%",
+                                  delta = f"{delta:.3f}",
+                                  delta_color = 'inverse')
+                    
+                figState.update_layout(xaxis_title = 'Date', title = 'Unemployment Rate by State', showlegend = True)
+                st.plotly_chart(figState, use_container_width = True)
+            
+            else:
+                st.write("No States selected. Please select at least one State.")
+
     def interest_rates() -> None:
         interestOption = st.radio("Select an option:", ['Federal Funds Effective Rate', 
                                                         'Market Yield on U.S. Treasury Securities', 
@@ -267,4 +290,3 @@ class USEconomy:
         selectedEconomyFunction = economyOptions.get(selectedEconomyOption)
         if selectedEconomyFunction:
             selectedEconomyFunction()
-     
