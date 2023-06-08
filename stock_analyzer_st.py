@@ -70,8 +70,8 @@ class StockAnalyzer:
     def stock_volatility(self) -> None:
         self.stock['returns'] = (self.stock['Adj Close'] / self.stock['Adj Close'].shift(1)) - 1
 
-        datePeriod = st.select_slider("Select a Date Period:", ['1d', '5d', '10d', '30d', '3mo', '6mo', '12mo',
-                                                                '2y', '5y', '7y', '10y', 'YTD', 'MAX'])
+        datePeriod = st.select_slider("Select a Date Period:", ['1d', '5d', '10d', '30d', 'YTD', '3mo', '6mo',
+                                                                '12mo', '2y', '5y', '7y', '10y', 'MAX'])
         yearStock = yf.download(self.titleStock, period = datePeriod, progress = False)
         yearStock['returns'] = (yearStock['Adj Close'] / yearStock['Adj Close'].shift(1)) - 1
         if datePeriod == '1d':
