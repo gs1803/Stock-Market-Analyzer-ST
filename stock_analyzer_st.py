@@ -87,17 +87,17 @@ class StockAnalyzer:
 
             volCol1, volCol2, volCol3 = st.columns([3.33, 3.33, 3.33])
             volCol1.metric(label = f"Latest Daily Volatility ({datePeriod} Period):", 
-                        value = f"{dailyVolatility * 100:,.2f}%", 
-                        delta = ' ')
+                           value = f"{dailyVolatility * 100:,.2f}%", 
+                           delta = ' ')
             if datePeriod != '1d' and datePeriod != '5d' and datePeriod != '10d' and datePeriod != '1mo':
                 volCol2.metric(label = f"Latest Monthly Volatility ({datePeriod} Period):", 
-                            value = f"{monthlyVolatility * 100:,.2f}%", 
-                            delta = ' ')
+                               value = f"{monthlyVolatility * 100:,.2f}%", 
+                               delta = ' ')
             if datePeriod != '1d' and datePeriod != '5d' and datePeriod != '10d' and datePeriod != '1mo'\
                 and datePeriod != '3mo' and datePeriod != '6mo'and datePeriod != '1y' and datePeriod != 'YTD':
                 volCol3.metric(label = f"Latest Annual Volatility ({datePeriod} Period):",
-                            value = f"{annualVolatility * 100:,.2f}%", 
-                            delta = ' ')
+                               value = f"{annualVolatility * 100:,.2f}%", 
+                               delta = ' ')
         else:
             pass
         
