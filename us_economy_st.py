@@ -116,7 +116,7 @@ class USEconomy:
                                                         'Secured Overnight Financing Rate'])
         
         if interestOption == 'Federal Funds Effective Rate':
-            fedFundEffecRateData = fred.get_series('DFF', observation_start = '1/1/1970')
+            fedFundEffecRateData = fred.get_series('EFFR', observation_start = '1/1/1970')
             fferDf = pd.DataFrame(fedFundEffecRateData).dropna(how = 'all')
             fferDf.index = pd.to_datetime(fferDf.index)
             fferDf.columns = ['ffer']
