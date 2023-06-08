@@ -66,37 +66,40 @@ class StockAnalyzer:
                   value = f"{self.dayStock['Trad Val'].iloc[-1]:,.2f}", 
                   delta = f"{self.dayStock['Trad Val'].iloc[-1] - self.dayStock['Trad Val'].iloc[-2]:,.2f} From Previous Day")
         st.plotly_chart(fig, use_container_width = True)
-
     def stock_volatility(self) -> None:
         self.stock['returns'] = (self.stock['Adj Close'] / self.stock['Adj Close'].shift(1)) - 1
-        
-        datePeriod = st.select_slider("Select a Date Period:", ['1d', '5d', '10d', '1mo', '3mo', '6mo', 
-                                                                '1y', '2y', '5y', '10y', 'YTD', 'MAX'])
-        yearStock = yf.download(self.titleStock, period = datePeriod, progress = False)
-        yearStock['returns'] = (yearStock['Adj Close'] / yearStock['Adj Close'].shift(1)) - 1
-        if datePeriod == '1d':
-            dailyVolatility = np.std(self.stock['returns'])
+        dateRange = (self.stock.index[-1] - self.stock.index[0]).days
+
+        if dateRange < 1:
+            datePeriod = st.select_slider("Select a Date Period:", ['1d', '5d', '10d', '1mo', '3mo', '6mo', 
+                                                                    '1y', '2y', '5y', '10y', 'YTD', 'MAX'])
+            yearStock = yf.download(self.titleStock, period = datePeriod, progress = False)
+            yearStock['returns'] = (yearStock['Adj Close'] / yearStock['Adj Close'].shift(1)) - 1
+            if datePeriod == '1d':
+                dailyVolatility = np.std(self.stock['returns'])
+            else:
+                dailyVolatility = np.std(yearStock['returns'])
+
+            monthlyReturns = yearStock['Adj Close'].resample('M').ffill().pct_change()
+            monthlyVolatility = np.std(monthlyReturns)
+            annualReturns = yearStock['Adj Close'].resample('Y').ffill().pct_change()
+            annualVolatility = np.std(annualReturns)
+
+            volCol1, volCol2, volCol3 = st.columns([3.33, 3.33, 3.33])
+            volCol1.metric(label = f"Latest Daily Volatility ({datePeriod} Period):", 
+                        value = f"{dailyVolatility * 100:,.2f}%", 
+                        delta = ' ')
+            if datePeriod != '1d' and datePeriod != '5d' and datePeriod != '10d' and datePeriod != '1mo':
+                volCol2.metric(label = f"Latest Monthly Volatility ({datePeriod} Period):", 
+                            value = f"{monthlyVolatility * 100:,.2f}%", 
+                            delta = ' ')
+            if datePeriod != '1d' and datePeriod != '5d' and datePeriod != '10d' and datePeriod != '1mo'\
+                and datePeriod != '3mo' and datePeriod != '6mo'and datePeriod != '1y' and datePeriod != 'YTD':
+                volCol3.metric(label = f"Latest Annual Volatility ({datePeriod} Period):",
+                            value = f"{annualVolatility * 100:,.2f}%", 
+                            delta = ' ')
         else:
-            dailyVolatility = np.std(yearStock['returns'])
-
-        monthlyReturns = yearStock['Adj Close'].resample('M').ffill().pct_change()
-        monthlyVolatility = np.std(monthlyReturns)
-        annualReturns = yearStock['Adj Close'].resample('Y').ffill().pct_change()
-        annualVolatility = np.std(annualReturns)
-
-        volCol1, volCol2, volCol3 = st.columns([3.33, 3.33, 3.33])
-        volCol1.metric(label = f"Latest Daily Volatility ({datePeriod} Period):", 
-                       value = f"{dailyVolatility * 100:,.2f}%", 
-                       delta = ' ')
-        if datePeriod != '1d' and datePeriod != '5d' and datePeriod != '10d' and datePeriod != '1mo':
-            volCol2.metric(label = f"Latest Monthly Volatility ({datePeriod} Period):", 
-                           value = f"{monthlyVolatility * 100:,.2f}%", 
-                           delta = ' ')
-        if datePeriod != '1d' and datePeriod != '5d' and datePeriod != '10d' and datePeriod != '1mo'\
-            and datePeriod != '3mo' and datePeriod != '6mo'and datePeriod != '1y' and datePeriod != 'YTD':
-            volCol3.metric(label = f"Latest Annual Volatility ({datePeriod} Period):",
-                           value = f"{annualVolatility * 100:,.2f}%", 
-                           delta = ' ')
+            pass
         
         fig = go.Figure(data = go.Histogram(x = self.stock['returns'], nbinsx = 100))
         fig.update_layout(title = f"Volatility of {self.titleStock} ({self.companyStock})")
