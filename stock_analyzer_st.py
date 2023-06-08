@@ -1,10 +1,14 @@
 import streamlit as st
 import yfinance as yf
-import numpy as np
 import plotly.graph_objects as go
+import numpy as np
+import pytz
+from datetime import datetime
 from millify import millify
 from plotly.subplots import make_subplots
 from technical_analysis_st import TechnicalAnalysis
+
+etNow = datetime.now(pytz.timezone('US/Eastern')).date()
 
 class StockAnalyzer:
     def __init__(self, stock, titleStock) -> None:
@@ -55,22 +59,23 @@ class StockAnalyzer:
         st.plotly_chart(fig, use_container_width = True)
 
     def stock_trading_value(self) -> None:
-        self.stock['Trad Val'] = self.stock['Adj Close'] * self.stock['Volume']
-        self.dayStock['Trad Val'] = self.dayStock['Adj Close'] * self.dayStock['Volume']
+        self.stock['Trad_Val'] = self.stock['Adj Close'] * self.stock['Volume']
+        self.dayStock['Trad_Val'] = self.dayStock['Adj Close'] * self.dayStock['Volume']
         fig = go.Figure(data = go.Scatter(x = self.stock.index, 
-                                          y = self.stock['Trad Val'], 
+                                          y = self.stock['Trad_Val'], 
                                           mode = 'lines'))
         fig.update_layout(title = f"Trading Value for {self.titleStock} ({self.companyStock})",
                           yaxis = dict(title = 'Trading Value'))
         st.metric(label = f"Latest Stock Trading Value ({self.dayStock.index[-1].date()}):", 
-                  value = f"{self.dayStock['Trad Val'].iloc[-1]:,.2f}", 
-                  delta = f"{self.dayStock['Trad Val'].iloc[-1] - self.dayStock['Trad Val'].iloc[-2]:,.2f} From Previous Day")
+                  value = f"{self.dayStock['Trad_Val'].iloc[-1]:,.2f}", 
+                  delta = f"{self.dayStock['Trad_Val'].iloc[-1] - self.dayStock['Trad_Val'].iloc[-2]:,.2f} From Previous Day")
         st.plotly_chart(fig, use_container_width = True)
+    
     def stock_volatility(self) -> None:
         self.stock['returns'] = (self.stock['Adj Close'] / self.stock['Adj Close'].shift(1)) - 1
         dateRange = (self.stock.index[-1] - self.stock.index[0]).days
 
-        if dateRange < 1:
+        if dateRange < 1 and self.stock.index[-1].date() == etNow:
             datePeriod = st.select_slider("Select a Date Period:", ['1d', '5d', '10d', '1mo', '3mo', '6mo', 
                                                                     '1y', '2y', '5y', '10y', 'YTD', 'MAX'])
             yearStock = yf.download(self.titleStock, period = datePeriod, progress = False)
@@ -86,6 +91,7 @@ class StockAnalyzer:
             annualVolatility = np.std(annualReturns)
 
             volCol1, volCol2, volCol3 = st.columns([3.33, 3.33, 3.33])
+
             volCol1.metric(label = f"Latest Daily Volatility ({datePeriod} Period):", 
                            value = f"{dailyVolatility * 100:,.2f}%", 
                            delta = ' ')
