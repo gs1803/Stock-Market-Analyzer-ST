@@ -1,5 +1,6 @@
 import streamlit as st
 import yfinance as yf
+import numpy as np
 import plotly.graph_objects as go
 from millify import millify
 from plotly.subplots import make_subplots
