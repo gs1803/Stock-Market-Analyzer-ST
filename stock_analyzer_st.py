@@ -74,6 +74,7 @@ class StockAnalyzer:
     def stock_volatility(self) -> None:
         self.stock['returns'] = (self.stock['Adj Close'] / self.stock['Adj Close'].shift(1)) - 1
         dateRange = (self.stock.index[-1] - self.stock.index[0]).days
+        volCol1, volCol2, volCol3 = st.columns([3.33, 3.33, 3.33])
 
         if dateRange < 1 and self.stock.index[-1].date() == etNow:
             datePeriod = st.select_slider("Select a Date Period:", ['1d', '5d', '10d', '1mo', '3mo', '6mo', 
@@ -90,8 +91,6 @@ class StockAnalyzer:
             annualReturns = yearStock['Adj Close'].resample('Y').ffill().pct_change()
             annualVolatility = np.std(annualReturns)
 
-            volCol1, volCol2, volCol3 = st.columns([3.33, 3.33, 3.33])
-
             volCol1.metric(label = f"Latest Daily Volatility ({datePeriod} Period):", 
                            value = f"{dailyVolatility * 100:,.2f}%", 
                            delta = ' ')
@@ -105,7 +104,23 @@ class StockAnalyzer:
                                value = f"{annualVolatility * 100:,.2f}%", 
                                delta = ' ')
         else:
-            pass
+            dailyVolatility = np.std(self.stock['returns'])
+            monthlyReturns = self.stock['Adj Close'].resample('M').ffill().pct_change()
+            monthlyVolatility = np.std(monthlyReturns)
+            annualReturns = self.stock['Adj Close'].resample('Y').ffill().pct_change()
+            annualVolatility = np.std(annualReturns)
+
+            volCol1.metric(label = f"Daily Volatility (Selected Range):", 
+                           value = f"{dailyVolatility * 100:,.2f}%", 
+                           delta = ' ')
+            if dateRange > 30:
+                volCol2.metric(label = f"Monthly Volatility (Selected Range):", 
+                               value = f"{monthlyVolatility * 100:,.2f}%", 
+                               delta = ' ')
+            if dateRange > 365:
+                volCol3.metric(label = f"Annual Volatility (Selected Range):",
+                               value = f"{annualVolatility * 100:,.2f}%", 
+                               delta = ' ')
         
         fig = go.Figure(data = go.Histogram(x = self.stock['returns'], nbinsx = 100))
         fig.update_layout(title = f"Volatility of {self.titleStock} ({self.companyStock})")
