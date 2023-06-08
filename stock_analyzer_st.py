@@ -88,7 +88,7 @@ class StockAnalyzer:
             volCol2.metric(label = f"Latest Monthly Volatility ({datePeriod} Period):", 
                            value = f"{monthlyVolatility * 100:,.2f}%", 
                            delta = ' ')
-        if datePeriod != '1d' and datePeriod != '5d' and datePeriod != '10d' and datePeriod != '1mo' and datePeriod != '3mo' and datePeriod != '6mo':
+        if datePeriod != '1d' and datePeriod != '5d' and datePeriod != '10d' and datePeriod != '1mo' and datePeriod != '3mo' and datePeriod != '6mo' and datePeriod != 'YTD':
             volCol3.metric(label = f"Latest Annual Volatility ({datePeriod} Period):", 
                            value = f"{annualVolatility * 100:,.2f}%", 
                            delta = ' ')
