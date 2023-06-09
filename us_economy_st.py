@@ -244,10 +244,10 @@ class USEconomy:
             fig = go.Figure(data = go.Scatter(x = usdDf.index, y = usdDf['exchange_rate']))
 
             fig.update_layout(xaxis_title = 'Date',
-                            title = f'Exchange Rate')
+                              title = f'Exchange Rate')
             st.metric(label = f"Latest {selectedName} ({usdDf.index[-1].date()}):", 
-                    value = f"{usdDf['exchange_rate'].iloc[-1]:.3f} {selectedIso}", 
-                    delta = f"{usdDf['exchange_rate'].iloc[-1] - usdDf['exchange_rate'].iloc[-2]:.3f} From Previous Day")
+                      value = f"{usdDf['exchange_rate'].iloc[-1]:.3f} {selectedIso}", 
+                      delta = f"{usdDf['exchange_rate'].iloc[-1] - usdDf['exchange_rate'].iloc[-2]:.3f} From Previous Day")
             st.plotly_chart(fig, use_container_width = True)
 
     def mortgage_rates() -> None:
