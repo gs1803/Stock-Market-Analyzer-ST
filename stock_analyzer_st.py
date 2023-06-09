@@ -8,8 +8,6 @@ from millify import millify
 from plotly.subplots import make_subplots
 from technical_analysis_st import TechnicalAnalysis
 
-etNow = datetime.now(pytz.timezone('US/Eastern')).date()
-
 class StockAnalyzer:
     def __init__(self, stock, titleStock) -> None:
         self.stock = stock
@@ -21,6 +19,7 @@ class StockAnalyzer:
             self.companyStock = ('')
             self.mktCap = ('')
         self.dayStock = yf.download(titleStock, period = '3d', progress = False)
+        self.etNow = datetime.now(pytz.timezone('US/Eastern')).date()
         
     def stock_prices(self) -> None:
         fig = make_subplots(specs = [[{"secondary_y": True}]])
@@ -76,7 +75,7 @@ class StockAnalyzer:
         dateRange = (self.stock.index[-1] - self.stock.index[0]).days
         volCol1, volCol2, volCol3 = st.columns([3.33, 3.33, 3.33])
 
-        if dateRange < 1 and self.stock.index[-1].date() == etNow:
+        if dateRange < 1 and self.stock.index[-1].date() == self.etNow:
             datePeriod = st.select_slider("Select a Date Period:", ['1d', '5d', '10d', '1mo', '3mo', '6mo', 
                                                                     '1y', '2y', '5y', '10y', 'YTD', 'MAX'])
             yearStock = yf.download(self.titleStock, period = datePeriod, progress = False)
