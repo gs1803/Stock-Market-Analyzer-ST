@@ -3,7 +3,7 @@ import yfinance as yf
 import plotly.graph_objects as go
 import numpy as np
 import pytz
-from datetime import datetime, timedelta
+from datetime import datetime
 from millify import millify
 from plotly.subplots import make_subplots
 from technical_analysis_st import TechnicalAnalysis
