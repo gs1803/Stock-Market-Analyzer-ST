@@ -429,7 +429,7 @@ class StockAnalyzer:
             'Donchian Breakout Strategy': self.stock_donchian}
 
         graphOptionList = list(graphOptions.keys())
-        graphTab1, graphTab2, graphTab3 = st.tabs(['Information Graphs', 'Technical Analysis Graphs', 'Pre and Post Market Hours'])
+        graphTab1, graphTab2 = st.tabs(['Information Graphs', 'Technical Analysis Graphs'])
         selectedGraphOption1 = graphTab1.selectbox("Select an option:", graphOptionList[0:5])
         selectedGraphOption2 = graphTab2.selectbox("Select an option:", graphOptionList[5:10])
 
