@@ -415,93 +415,6 @@ class StockAnalyzer:
         ))
         st.plotly_chart(fig, use_container_width = True)
 
-    def stock_pre_post(self) -> None:
-        todayDate = self.etNow
-        tomorrowDate = self.etNow + timedelta(days = 1)
-
-        while todayDate.isoweekday() > 5:
-            todayDate -= timedelta(days = 1)
-        while tomorrowDate.isoweekday() == 7:
-            todayDate -= timedelta(days = 1)
-
-        stockPrePost = yf.download(self.titleStock, start = todayDate, end = tomorrowDate, interval = '1m', prepost = True, progress = False)
-        fig = make_subplots(specs = [[{"secondary_y": True}]])
-
-        fig.add_trace(
-            go.Scatter(
-                x = stockPrePost.index[:330],
-                y = stockPrePost['Open'][:330],
-                name = 'Open',
-                line = dict(color = 'papayawhip')
-            ),
-            secondary_y =False
-        )
-        fig.add_trace(
-            go.Scatter(
-                x = stockPrePost.index[:330],
-                y = stockPrePost['Adj Close'][:330],
-                name = 'Adj Close',
-                line = dict(color = 'orange')
-            ),
-            secondary_y = False
-        )
-        fig.add_trace(
-            go.Scatter(
-                x = stockPrePost.index[330:720],
-                y = stockPrePost['Open'][330:720],
-                name = 'Open',
-                line = dict(color = '#73b0e0')
-            ),
-            secondary_y = False
-        )
-        fig.add_trace(
-            go.Scatter(
-                x = stockPrePost.index[330:720],
-                y = stockPrePost['Adj Close'][330:720],
-                name = 'Adj Close',
-                line = dict(color = '#0160b8')
-            ),
-            secondary_y = False
-        )
-        fig.add_trace(
-            go.Scatter(
-                x = stockPrePost.index[720:],
-                y = stockPrePost['Open'][720:],
-                name = 'Open',
-                line = dict(color = 'papayawhip')
-            ),
-            secondary_y =False
-        )
-        fig.add_trace(
-            go.Scatter(
-                x = stockPrePost.index[720:],
-                y = stockPrePost['Adj Close'][720:],
-                name = 'Adj Close',
-                line = dict(color = 'orange')
-            ),
-            secondary_y =False
-        )
-
-        fig.update_layout(title = f"Stock Price for {self.titleStock} ({self.companyStock})",
-                          yaxis = dict(title = 'Price'),
-                          showlegend = False)
-                                 
-        priceCol1, priceCol2 = st.columns([5, 5])
-        priceCol1.metric(label = f"Latest Pre-Market Open Price ({stockPrePost.index[-1].date()}):", 
-                         value = f"{stockPrePost['Open'].iloc[0]:.2f}", 
-                         delta = '')
-        priceCol2.metric(label = f"Latest Pre-Market Adj Close Price ({stockPrePost.index[-1].date()}):", 
-                         value = f"{stockPrePost['Adj Close'].iloc[329]:.2f}", 
-                         delta = '')
-        priceCol1.metric(label = f"Latest Post-Market Open Price ({self.dayStock.index[-1].date()}):", 
-                         value = f"{stockPrePost['Open'].iloc[719]:.2f}", 
-                         delta = '')
-        priceCol2.metric(label = f"Latest Post-Market Adj Close Price ({stockPrePost.index[-1].date()}):", 
-                         value = f"{stockPrePost['Adj Close'].iloc[-1]:.2f}", 
-                         delta = '')
-    
-        st.plotly_chart(fig, use_container_width = True)
-
     def graph_chooser(self) -> None:
         graphOptions = {
             'Prices': self.stock_prices,
@@ -527,6 +440,3 @@ class StockAnalyzer:
         with graphTab2:
             selectedGraphFunction2 = graphOptions.get(selectedGraphOption2)
             selectedGraphFunction2()
-        
-        with graphTab3:
-            StockAnalyzer.stock_pre_post(self)
