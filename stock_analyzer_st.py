@@ -17,6 +17,15 @@ class StockAnalyzer:
             self.mktCap = yf.Ticker(titleStock).info['marketCap']
         except:
             self.companyStock = ('')
+            if self.titleStock == '^GSPC':
+                self.companyStock = 'S&P500'
+            if self.titleStock == '^DJI':
+                self.companyStock = 'Dow Jones'
+            if self.titleStock == '^RUT':
+                self.companyStock = 'Russell 2000'
+            if self.titleStock == '^IXIC':
+                self.companyStock = 'NASDAQ Composite'
+            self.companyStock = ('')
             self.mktCap = ('')
         self.dayStock = yf.download(titleStock, period = '3d', progress = False)
         self.etNow = datetime.now(pytz.timezone('US/Eastern')).date()
