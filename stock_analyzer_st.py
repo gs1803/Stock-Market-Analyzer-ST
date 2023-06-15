@@ -14,17 +14,11 @@ class StockAnalyzer:
         self.titleStock = titleStock
         try:
             self.companyStock = yf.Ticker(titleStock).info['longName']
-            self.mktCap = yf.Ticker(titleStock).info['marketCap']
         except:
             self.companyStock = ('')
-            if self.titleStock == '^GSPC':
-                self.companyStock = 'S&P500'
-            if self.titleStock == '^DJI':
-                self.companyStock = 'Dow Jones Industrial Average'
-            if self.titleStock == '^RUT':
-                self.companyStock = 'Russell 2000'
-            if self.titleStock == '^IXIC':
-                self.companyStock = 'NASDAQ Composite'
+        try:
+            self.mktCap = yf.Ticker(titleStock).info['marketCap']
+        except:
             self.mktCap = ('')
         
         self.dayStock = yf.download(titleStock, period = '3d', progress = False)
