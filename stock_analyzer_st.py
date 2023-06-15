@@ -20,7 +20,7 @@ class StockAnalyzer:
             if self.titleStock == '^GSPC':
                 self.companyStock = 'S&P500'
             if self.titleStock == '^DJI':
-                self.companyStock = 'Dow Jones'
+                self.companyStock = 'Dow Jones Industrial Average'
             if self.titleStock == '^RUT':
                 self.companyStock = 'Russell 2000'
             if self.titleStock == '^IXIC':
