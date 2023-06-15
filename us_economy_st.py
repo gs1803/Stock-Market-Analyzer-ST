@@ -113,7 +113,8 @@ class USEconomy:
     def interest_rates() -> None:
         interestOption = st.radio("Select an option:", ['Federal Funds Effective Rate', 
                                                         'Market Yield on U.S. Treasury Securities', 
-                                                        'Secured Overnight Financing Rate'])
+                                                        'Secured Overnight Financing Rate'], 
+                                 label_visibility = 'collapsed')
         
         if interestOption == 'Federal Funds Effective Rate':
             fedFundEffecRateData = fred.get_series('EFFR', observation_start = '1/1/1970')
