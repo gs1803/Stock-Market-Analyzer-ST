@@ -34,7 +34,7 @@ def stock_info():
         pass
     else:
         stockOption = st.radio('Select an option:', ['Manual Search', 'S&P500', 'Dow Jones', 'Russell 2000', 'NASDAQ Composite'], 
-                               label_visibility = False, horizontal = True)
+                               horizontal = True)
         
         if stockOption == 'Manual Search':
             userStock = st.text_input("Enter the Stock Ticker:").upper().replace(" ", "")
