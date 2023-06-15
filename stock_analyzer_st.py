@@ -25,8 +25,8 @@ class StockAnalyzer:
                 self.companyStock = 'Russell 2000'
             if self.titleStock == '^IXIC':
                 self.companyStock = 'NASDAQ Composite'
-            self.companyStock = ('')
             self.mktCap = ('')
+        
         self.dayStock = yf.download(titleStock, period = '3d', progress = False)
         self.etNow = datetime.now(pytz.timezone('US/Eastern')).date()
         
