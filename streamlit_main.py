@@ -129,7 +129,19 @@ def us_economy():
 
 def stock_price_predictor():
     st.header('Stock Price Predictor')
-    userStock = st.text_input("Enter the Stock Ticker:").upper().replace(" ", "")
+    stockOption = st.radio('Select an option:', ['Manual Search', 'S&P500', 'Dow Jones', 'Russell 2000', 'NASDAQ Composite'], horizontal = True)
+    
+    if stockOption == 'Manual Search':
+        userStock = st.text_input("Enter the Stock Ticker:").upper().replace(" ", "")
+    if stockOption == 'S&P500':
+        userStock = '^GSPC'
+    if stockOption == 'Dow Jones':
+        userStock = '^DJI'
+    if stockOption == 'Russell 2000':
+        userStock = '^RUT'
+    if stockOption == 'NASDAQ Composite':
+        userStock = '^IXIC'
+
     end = str(etNow + timedelta(days = 1))
     if not userStock:
         st.write(" ")
