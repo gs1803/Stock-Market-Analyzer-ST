@@ -10,7 +10,7 @@ fred = Fred(api_key = st.secrets['API_KEY'])
 class USEconomy:
     def inflation_rate() -> None:
         inflationOption = st.radio("Select an option:", ['Inflation Rate', 'Core Inflation Rate'],
-                                  label_visibility = 'collapsed')
+                                  label_visibility = 'collapsed', horizontal = True)
 
         if inflationOption == 'Inflation Rate':
             inflationData = fred.get_series('CPIAUCSL', units = 'pc1', observation_start = '1/1/1970')
