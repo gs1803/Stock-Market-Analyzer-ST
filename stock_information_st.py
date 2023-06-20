@@ -140,7 +140,20 @@ class StockInformation:
                                                           'Filter by Company'])
 
         if detailChoose == 'Ticker Details':
-            details = st.text_input("Enter the Ticker for the Stock:").upper().replace(" ", "")
+            detailOption = st.radio('Select an option:', ['Manual Search', 'S&P500', 'Dow Jones', 'Russell 2000', 'NASDAQ Composite'], 
+                                    label_visibility = 'collapsed', horizontal = True)
+            
+            if detailOption == 'Manual Search':
+                details = st.text_input("Enter the Ticker for the Stock:").upper().replace(" ", "")
+            if detailOption == 'S&P500':
+                details = '^GSPC'
+            if detailOption == 'Dow Jones':
+                details = '^DJI'
+            if detailOption == 'Russell 2000':
+                details = '^RUT'
+            if detailOption == 'NASDAQ Composite':
+                details = '^IXIC'
+
             if not details:
                 st.write(" ")
             elif not details.isascii():
