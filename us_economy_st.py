@@ -56,6 +56,8 @@ class USEconomy:
         unempStateDf = unempStateDf[~unempStateDf['title'].str.contains(',')]
         unempStateDf = unempStateDf[~unempStateDf['title'].str.contains('Region')]
         unempStateDf = unempStateDf[~unempStateDf['title'].str.contains('Puerto Rico')]
+        unempStateDf = unempStateDf[~unempStateDf['title'].str.contains('New England Census Division')]
+        unempStateDf = unempStateDf[~unempStateDf['title'].str.contains('Discontinued')]
 
         cleanUnempStateDf = unempStateDf[['id', 'title']].reset_index(drop = True)
         cleanUnempStateDf['title'] = [state.replace('Unemployment Rate in ', '').title() for state in cleanUnempStateDf['title']]
