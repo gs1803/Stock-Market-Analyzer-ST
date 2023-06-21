@@ -20,9 +20,10 @@ class StockAnalyzer:
             self.mktCap = yf.Ticker(titleStock).info['marketCap']
         except:
             self.mktCap = ('')
-        
+            
         self.dayStock = yf.download(titleStock, period = '3d', progress = False)
         self.etNow = datetime.now(pytz.timezone('US/Eastern')).date()
+        self.config = {'displaylogo': False}
         
     def stock_prices(self) -> None:
         fig = make_subplots(specs = [[{"secondary_y": True}]])
@@ -47,7 +48,8 @@ class StockAnalyzer:
                              value = f"{millify(self.mktCap, precision = 5)}")
         except:
             pass
-        st.plotly_chart(fig, use_container_width = True)
+
+        st.plotly_chart(fig, use_container_width = True, config = self.config)
 
     def stock_volume(self) -> None:
         fig = go.Figure(data = go.Scatter(x = self.stock.index, 
@@ -58,7 +60,7 @@ class StockAnalyzer:
         st.metric(label = f"Latest Stock Volume ({self.dayStock.index[-1].date()}):", 
                   value = f"{self.dayStock['Volume'].iloc[-1]:,.2f}", 
                   delta = f"{self.dayStock['Volume'].iloc[-1] - self.dayStock['Volume'].iloc[-2]:,.2f} From Previous Day")
-        st.plotly_chart(fig, use_container_width = True)
+        st.plotly_chart(fig, use_container_width = True, config = self.config)
 
     def stock_trading_value(self) -> None:
         self.stock['Trad_Val'] = self.stock['Adj Close'] * self.stock['Volume']
@@ -71,7 +73,7 @@ class StockAnalyzer:
         st.metric(label = f"Latest Stock Trading Value ({self.dayStock.index[-1].date()}):", 
                   value = f"{self.dayStock['Trad_Val'].iloc[-1]:,.2f}", 
                   delta = f"{self.dayStock['Trad_Val'].iloc[-1] - self.dayStock['Trad_Val'].iloc[-2]:,.2f} From Previous Day")
-        st.plotly_chart(fig, use_container_width = True)
+        st.plotly_chart(fig, use_container_width = True, config = self.config)
     
     def stock_volatility(self) -> None:
         self.stock['returns'] = (self.stock['Adj Close'] / self.stock['Adj Close'].shift(1)) - 1
@@ -126,7 +128,7 @@ class StockAnalyzer:
         
         fig = go.Figure(data = go.Histogram(x = self.stock['returns'], nbinsx = 100))
         fig.update_layout(title = f"Volatility of {self.titleStock} ({self.companyStock})")
-        st.plotly_chart(fig, use_container_width = True)
+        st.plotly_chart(fig, use_container_width = True, config = self.config)
 
     def stock_candlestick_graph(self) -> None:
         fig = make_subplots(rows = 2, cols = 1, 
@@ -149,12 +151,12 @@ class StockAnalyzer:
                    marker_color = 'red',
                    showlegend = False, name = ''),
             row = 2, col = 1)
-              
+        
         fig.update_layout(title = f"Candlestick Graph for {self.titleStock} ({self.companyStock})",
                           yaxis = dict(title = 'Price'),
                           yaxis2 = dict(title = 'Volume'))
         fig.update_layout(xaxis_rangeslider_visible = False)
-        st.plotly_chart(fig, use_container_width = True)
+        st.plotly_chart(fig, use_container_width = True, config = self.config)
 
     def stock_moving_average(self) -> None:
         fig = make_subplots(specs = [[{"secondary_y": True}]])
@@ -173,10 +175,10 @@ class StockAnalyzer:
         fig.add_trace(go.Scatter(x = self.stock.index, 
                                  y = self.stock['Adj Close'].rolling(200).mean(), name = '200 Days MA'), 
                                  secondary_y = False)
-                
+              
         fig.update_layout(title = f"Moving Average for {self.titleStock} ({self.companyStock})",
                           yaxis = dict(title = 'Price'))
-        st.plotly_chart(fig, use_container_width = True)
+        st.plotly_chart(fig, use_container_width = True, config = self.config)
 
     def stock_rsi(self) -> None:
         self.stock['rsi_14'] = TechnicalAnalysis.rsi_calculation(self.stock['Adj Close'], 14)
@@ -230,7 +232,7 @@ class StockAnalyzer:
                       line = dict(color = 'green', width = 1, dash = 'dash'), yref = 'y2', row = 2, col = 1)
         fig.add_shape(type = 'line', x0 = self.stock.index[0], x1 = self.stock.index[-1], y0 = 70, y1 = 70,
                       line = dict(color = 'red', width = 1, dash='dash'), yref = 'y2', row = 2, col = 1)
-        st.plotly_chart(fig, use_container_width = True)
+        st.plotly_chart(fig, use_container_width = True, config = self.config)
 
     def stock_macd(self) -> None:
         df_macd = TechnicalAnalysis.macd_calculations(self.stock['Adj Close'], 26, 12, 9)
@@ -296,7 +298,7 @@ class StockAnalyzer:
             yaxis = dict(title = 'Adj Close Price'),
             yaxis2 = dict(title = 'MACD')
         )
-        st.plotly_chart(fig, use_container_width = True)
+        st.plotly_chart(fig, use_container_width = True, config = self.config)
 
     def stock_bollinger(self) -> None:
         self.stock['sma_20'] = TechnicalAnalysis.sma_calculations(self.stock['Adj Close'], 20)
@@ -359,7 +361,7 @@ class StockAnalyzer:
             marker = dict(symbol = 'triangle-down', size = 20, color = 'red'),
             name = 'Sell Signal'
         ))
-        st.plotly_chart(fig, use_container_width = True)
+        st.plotly_chart(fig, use_container_width = True, config = self.config)
 
     def stock_donchian(self) -> None:
         self.stock['upper_db'], self.stock['lower_db'] = TechnicalAnalysis.donchian_breakout_calculations(self.stock['Adj Close'],
@@ -416,7 +418,7 @@ class StockAnalyzer:
             marker = dict(symbol = 'triangle-down', size = 20, color = 'red'),
             name = 'Sell Signal'
         ))
-        st.plotly_chart(fig, use_container_width = True)
+        st.plotly_chart(fig, use_container_width = True, config = self.config)
 
     def graph_chooser(self) -> None:
         graphOptions = {
