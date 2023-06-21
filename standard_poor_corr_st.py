@@ -61,4 +61,4 @@ class StandardPoorCorr:
             yaxis = dict(autorange = 'reversed', ticktext = [], tickvals = [])
         )
 
-        st.plotly_chart(fig)
+        st.plotly_chart(fig, config = {'displaylogo': False})
