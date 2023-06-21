@@ -10,7 +10,7 @@ fred = Fred(api_key = st.secrets['API_KEY'])
 class USEconomy:
     def inflation_rate() -> None:
         inflationOption = st.radio("Select an option:", ['Inflation Rate', 'Core Inflation Rate'],
-                                  label_visibility = 'collapsed', horizontal = True)
+                                   label_visibility = 'collapsed', horizontal = True)
 
         if inflationOption == 'Inflation Rate':
             inflationData = fred.get_series('CPIAUCSL', units = 'pc1', observation_start = '1/1/1970')
@@ -26,7 +26,7 @@ class USEconomy:
                       value = f"{inflationDf['inflation_rate'].iloc[-1]:.3f}%", 
                       delta = f"{inflationDf['inflation_rate'].iloc[-1] - inflationDf['inflation_rate'].iloc[-2]:.3f} From Previous Month",
                       delta_color = 'inverse')
-            st.plotly_chart(fig, use_container_width = True)
+            st.plotly_chart(fig, use_container_width = True, config = {'displaylogo': False})
         if inflationOption == 'Core Inflation Rate':
             coreInflationData = fred.get_series('CPILFESL', units = 'pc1', observation_start = '1/1/1970')
             coreInflationDf = pd.DataFrame(coreInflationData).dropna(how = 'all')
@@ -40,7 +40,7 @@ class USEconomy:
                       value = f"{coreInflationDf['core_inflation_rate'].iloc[-1]:.3f}%", 
                       delta = f"{coreInflationDf['core_inflation_rate'].iloc[-1] - coreInflationDf['core_inflation_rate'].iloc[-2]:.3f} From Previous Month",
                       delta_color = 'inverse')
-            st.plotly_chart(fig, use_container_width = True)
+            st.plotly_chart(fig, use_container_width = True, config = {'displaylogo': False})
 
     def unemployment_rate() -> None:
         unemploymentData = fred.get_series('UNRATE', observation_start = '1/1/1970')
@@ -49,7 +49,7 @@ class USEconomy:
         unemploymentDf = pd.DataFrame(unemploymentData).dropna(how = 'all')
         unemploymentDf.index = pd.to_datetime(unemploymentDf.index)
         unemploymentDf.columns = ['unemployment_rate']
-        
+
         unempStateDf = fred.search('unemployment rate state', filter = ('frequency', 'Monthly'))
         unempStateDf = unempStateDf.query('seasonal_adjustment == "Seasonally Adjusted" and units == "Percent"')
         unempStateDf = unempStateDf.loc[unempStateDf['title'].str.startswith('Unemployment Rate in')]
@@ -73,7 +73,7 @@ class USEconomy:
                       value = f"{unemploymentDf['unemployment_rate'].iloc[-1]:.3f}%", 
                       delta = f"{unemploymentDf['unemployment_rate'].iloc[-1] - unemploymentDf['unemployment_rate'].iloc[-2]:.3f} From Previous Month",
                       delta_color = 'inverse')
-            st.plotly_chart(fig, use_container_width = True)
+            st.plotly_chart(fig, use_container_width = True, config = {'displaylogo': False})
         
         with unemCol2:
             selectedNames = st.multiselect('Select up to 5 States:', cleanUnempStateDf['name'], default = ['Texas'], max_selections = 5)
@@ -108,7 +108,7 @@ class USEconomy:
                                   delta_color = 'inverse')
                     
                 figState.update_layout(xaxis_title = 'Date', title = 'Unemployment Rate by State', showlegend = True)
-                st.plotly_chart(figState, use_container_width = True)
+                st.plotly_chart(figState, use_container_width = True, config = {'displaylogo': False})
             
             else:
                 st.write("No States selected. Please select at least one State.")
@@ -116,8 +116,8 @@ class USEconomy:
     def interest_rates() -> None:
         interestOption = st.radio("Select an option:", ['Federal Funds Effective Rate', 
                                                         'Market Yield on U.S. Treasury Securities', 
-                                                        'Secured Overnight Financing Rate'], 
-                                 label_visibility = 'collapsed')
+                                                        'Secured Overnight Financing Rate'],
+                                  label_visibility = 'collapsed')
         
         if interestOption == 'Federal Funds Effective Rate':
             fedFundEffecRateData = fred.get_series('EFFR', observation_start = '1/1/1970')
@@ -131,7 +131,7 @@ class USEconomy:
             st.metric(label = f"Latest Federal Funds Effective Rate ({fferDf.index[-1].date()}):", 
                       value = f"{fferDf['ffer'].iloc[-1]:.2f}%", 
                       delta = f"{fferDf['ffer'].iloc[-1] - fferDf['ffer'].iloc[-2]:.2f} From Previous Day")
-            st.plotly_chart(fig, use_container_width = True)
+            st.plotly_chart(fig, use_container_width = True, config = {'displaylogo': False})
 
         if interestOption == 'Market Yield on U.S. Treasury Securities':
             marketYieldUSTres1Data = fred.get_series('DGS1', observation_start = '1/1/1970')
@@ -159,7 +159,7 @@ class USEconomy:
             mktYieldCol2.metric(label = f"Latest Market Yield (10 Year) Rate ({mktYieldTres10Df.index[-1].date()}):", 
                                 value = f"{mktYieldTres10Df['myuts10'].iloc[-1]:.2f}%", 
                                 delta = f"{mktYieldTres10Df['myuts10'].iloc[-1] - mktYieldTres10Df['myuts10'].iloc[-2]:.2f} From Previous Day")
-            st.plotly_chart(fig, use_container_width = True)
+            st.plotly_chart(fig, use_container_width = True, config = {'displaylogo': False})
 
         if interestOption == 'Secured Overnight Financing Rate':
             sofrData = fred.get_series('SOFR', observation_start = '3/4/2018')            
@@ -199,7 +199,7 @@ class USEconomy:
             sofrCol4.metric(label = '180-day Average:', 
                             value = f"{sofr180Df['sofr180'].iloc[-1]:.2f}%", 
                             delta = f"{sofr180Df['sofr180'].iloc[-1] - sofr180Df['sofr180'].iloc[-2]:.2f}")
-            st.plotly_chart(fig, use_container_width = True)
+            st.plotly_chart(fig, use_container_width = True, config = {'displaylogo': False})
 
     def exchange_rates() -> None:
         exchangeDf = fred.search('U.S. Dollar Spot Exchange Rate')
@@ -238,7 +238,7 @@ class USEconomy:
             st.metric(label = f"Latest {selectedName} ({usdModDf.index[-1].date()}):", 
                       value = f"{usdModDf['exchange_rate'].iloc[-1]:.3f} {selectedIso}", 
                       delta = f"{usdModDf['exchange_rate'].iloc[-1] - usdModDf['exchange_rate'].iloc[-2]:.3f} From Previous Day")
-            st.plotly_chart(fig, use_container_width = True)
+            st.plotly_chart(fig, use_container_width = True, config = {'displaylogo': False})
 
         else:
             usdDf = pd.DataFrame(selectedDf).dropna(how = 'all')
@@ -250,9 +250,9 @@ class USEconomy:
             fig.update_layout(xaxis_title = 'Date',
                               title = f'Exchange Rate')
             st.metric(label = f"Latest {selectedName} ({usdDf.index[-1].date()}):", 
-                      value = f"{usdDf['exchange_rate'].iloc[-1]:.3f} {selectedIso}", 
-                      delta = f"{usdDf['exchange_rate'].iloc[-1] - usdDf['exchange_rate'].iloc[-2]:.3f} From Previous Day")
-            st.plotly_chart(fig, use_container_width = True)
+                    value = f"{usdDf['exchange_rate'].iloc[-1]:.3f} {selectedIso}", 
+                    delta = f"{usdDf['exchange_rate'].iloc[-1] - usdDf['exchange_rate'].iloc[-2]:.3f} From Previous Day")
+            st.plotly_chart(fig, use_container_width = True, config = {'displaylogo': False})
 
     def mortgage_rates() -> None:
         mortgage15Data = fred.get_series('MORTGAGE15US', observation_start = '1/1/1992')
@@ -279,7 +279,7 @@ class USEconomy:
         mortCol2.metric(label = f"Latest 30 Year Fixed Rate ({mortgage30Df.index[-1].date()}):", 
                         value = f"{mortgage30Df['mort30'].iloc[-1]:.2f}%", 
                         delta = f"{mortgage30Df['mort30'].iloc[-1] - mortgage30Df['mort30'].iloc[-2]:.2f} From Previous Week")
-        st.plotly_chart(fig, use_container_width = True)
+        st.plotly_chart(fig, use_container_width = True, config = {'displaylogo': False})
         
     def economy_chooser() -> None:
         economyOptions = {'Inflation Rate': USEconomy.inflation_rate,
