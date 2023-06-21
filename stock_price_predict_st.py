@@ -32,6 +32,7 @@ class StockPricePredictor:
             self.companyStock = yf.Ticker(titleStock).info['longName']
         except:
             self.companyStock = ('')
+        self.config = {'displaylogo': False}
 
     def gru_ml_model(self) -> None:
         df = self.stock['Adj Close'].values.reshape(-1, 1)
@@ -71,7 +72,7 @@ class StockPricePredictor:
 
         predicted = np.concatenate((df[-120:], predictions))
         predictedDf = pd.DataFrame(predicted, index = self.stock.index[-121:], columns = ['predicted_values'])
-        
+
         fig = go.Figure()
         fig.add_trace(go.Scatter(x = self.stock.index[:-120], y = self.stock['Adj Close'], name = 'Actual'))
         fig.add_trace(go.Scatter(x = predictedDf.index, y = self.stock['Adj Close'][-121:], name = 'Actual', showlegend = False))
@@ -84,7 +85,7 @@ class StockPricePredictor:
         st.metric(label = f"Latest Stock Adj Close Price ({self.stock.index[-1].date()}):", 
                   value = f"{self.stock['Adj Close'].iloc[-1]:.2f}", 
                   delta = f"{self.stock['Adj Close'].iloc[-1] - self.stock['Adj Close'].iloc[-2]:.2f} From Previous Day")
-        st.plotly_chart(fig, use_container_width = True)
+        st.plotly_chart(fig, use_container_width = True, config = self.config)
 
         nextDayPrediction = model.predict(np.array([x_test[-1]]), verbose = 0)
         nextDayPrediction = scaler.inverse_transform(nextDayPrediction)[0][0]
@@ -168,7 +169,7 @@ class StockPricePredictor:
         st.metric(label = f"Latest Stock Adj Close Price ({self.stock.index[-1].date()}):", 
                   value = f"{self.stock['Adj Close'].iloc[-1]:.2f}", 
                   delta = f"{self.stock['Adj Close'].iloc[-1] - self.stock['Adj Close'].iloc[-2]:.2f} From Previous Day")
-        st.plotly_chart(fig, use_container_width = True)
+        st.plotly_chart(fig, use_container_width = True, config = self.config)
 
         nextDayPrediction = model.predict(np.array([x_test[-1]]), verbose = 0)
         nextDayPrediction = scaler.inverse_transform(nextDayPrediction)[0][0]
@@ -228,7 +229,7 @@ class StockPricePredictor:
         st.metric(label = f"Latest Stock Adj Close Price ({self.stock.index[-1].date()}):", 
                   value = f"{self.stock['Adj Close'].iloc[-1]:.2f}", 
                   delta = f"{self.stock['Adj Close'].iloc[-1] - self.stock['Adj Close'].iloc[-2]:.2f} From Previous Day")
-        st.plotly_chart(fig, use_container_width = True)
+        st.plotly_chart(fig, use_container_width = True, config = self.config)
 
         st.write(f"Predicted Stock Adj Close Price for ({StockPricePredictor.tomorrowDate}): {prediction[0]:.2f}")
         st.write(f"RMSE: {rmse}")
@@ -274,7 +275,7 @@ class StockPricePredictor:
         st.metric(label = f"Latest Stock Adj Close Price ({self.stock.index[-1].date()}):", 
                   value = f"{self.stock['Adj Close'].iloc[-1]:.2f}", 
                   delta = f"{self.stock['Adj Close'].iloc[-1] - self.stock['Adj Close'].iloc[-2]:.2f} From Previous Day")
-        st.plotly_chart(fig, use_container_width = True)
+        st.plotly_chart(fig, use_container_width = True, config = self.config)
         
         st.write(f"Predicted Stock Adj Close Price for ({StockPricePredictor.tomorrowDate}): {prediction[0]:.2f}")
         st.write(f"RMSE: {rmse}")
@@ -310,7 +311,7 @@ class StockPricePredictor:
         st.metric(label = f"Latest Stock Adj Close Price ({self.stock.index[-1].date()}):", 
                   value = f"{self.stock['Adj Close'].iloc[-1]:.2f}", 
                   delta = f"{self.stock['Adj Close'].iloc[-1] - self.stock['Adj Close'].iloc[-2]:.2f} From Previous Day")
-        st.plotly_chart(fig, use_container_width = True)
+        st.plotly_chart(fig, use_container_width = True, config = self.config)
 
         st.write(f"Predicted Stock Adj Close Price for ({StockPricePredictor.tomorrowDate}): {nextDayPredY[0]:.2f}")
         st.write(f"RMSE: {rmse}")
