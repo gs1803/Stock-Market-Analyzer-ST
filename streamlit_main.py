@@ -92,7 +92,7 @@ def industry_info():
     StockInformation.stock_details()
 
 def holder_info():
-    st.header("Holder Information")
+    st.header("Holders Information")
     try:
         userStock = st.text_input("Enter the Stock Ticker:").upper().replace(" ", "")
         if not userStock:
