@@ -23,7 +23,7 @@ class StockAnalyzer:
             
         self.dayStock = yf.download(titleStock, period = '3d', progress = False)
         self.etNow = datetime.now(pytz.timezone('US/Eastern')).date()
-        self.config = {'displaylogo': False}
+        self.config = {'displaylogo': False, 'modeBarButtonsToAdd':['drawline', 'drawopenpath', 'eraseshape']}
         
     def stock_prices(self) -> None:
         fig = make_subplots(specs = [[{"secondary_y": True}]])
@@ -34,7 +34,8 @@ class StockAnalyzer:
                                  y = self.stock['Adj Close'], name = 'Adj Close'),
                                  secondary_y = False)
         fig.update_layout(title = f"Stock Price for {self.titleStock} ({self.companyStock})",
-                          yaxis = dict(title = 'Price'))
+                          yaxis = dict(title = 'Price'), 
+                          newshape = dict(line_color = 'white'))
         
         priceCol1, priceCol2, mktCapCol = st.columns([3.25, 3.75, 3])
         priceCol1.metric(label = f"Latest Stock Open Price ({self.dayStock.index[-1].date()}):", 
@@ -56,7 +57,8 @@ class StockAnalyzer:
                                           y = self.stock['Volume'], 
                                           mode = 'lines'))
         fig.update_layout(title = f"Volume of Stock Traded of {self.titleStock} ({self.companyStock})",
-                          yaxis = dict(title = 'Volume'))
+                          yaxis = dict(title = 'Volume'), 
+                          newshape = dict(line_color = 'white'))
         st.metric(label = f"Latest Stock Volume ({self.dayStock.index[-1].date()}):", 
                   value = f"{self.dayStock['Volume'].iloc[-1]:,.2f}", 
                   delta = f"{self.dayStock['Volume'].iloc[-1] - self.dayStock['Volume'].iloc[-2]:,.2f} From Previous Day")
@@ -69,7 +71,8 @@ class StockAnalyzer:
                                           y = self.stock['Trad_Val'], 
                                           mode = 'lines'))
         fig.update_layout(title = f"Trading Value for {self.titleStock} ({self.companyStock})",
-                          yaxis = dict(title = 'Trading Value'))
+                          yaxis = dict(title = 'Trading Value'),
+                          newshape = dict(line_color = 'white'))
         st.metric(label = f"Latest Stock Trading Value ({self.dayStock.index[-1].date()}):", 
                   value = f"{self.dayStock['Trad_Val'].iloc[-1]:,.2f}", 
                   delta = f"{self.dayStock['Trad_Val'].iloc[-1] - self.dayStock['Trad_Val'].iloc[-2]:,.2f} From Previous Day")
@@ -127,7 +130,7 @@ class StockAnalyzer:
                                delta = ' ')
         
         fig = go.Figure(data = go.Histogram(x = self.stock['returns'], nbinsx = 100))
-        fig.update_layout(title = f"Volatility of {self.titleStock} ({self.companyStock})")
+        fig.update_layout(title = f"Volatility of {self.titleStock} ({self.companyStock})", newshape = dict(line_color = 'white'))
         st.plotly_chart(fig, use_container_width = True, config = self.config)
 
     def stock_candlestick_graph(self) -> None:
@@ -154,7 +157,8 @@ class StockAnalyzer:
         
         fig.update_layout(title = f"Candlestick Graph for {self.titleStock} ({self.companyStock})",
                           yaxis = dict(title = 'Price'),
-                          yaxis2 = dict(title = 'Volume'))
+                          yaxis2 = dict(title = 'Volume'),
+                          newshape = dict(line_color = 'white'))
         fig.update_layout(xaxis_rangeslider_visible = False)
         st.plotly_chart(fig, use_container_width = True, config = self.config)
 
@@ -177,7 +181,8 @@ class StockAnalyzer:
                                  secondary_y = False)
               
         fig.update_layout(title = f"Moving Average for {self.titleStock} ({self.companyStock})",
-                          yaxis = dict(title = 'Price'))
+                          yaxis = dict(title = 'Price'),
+                          newshape = dict(line_color = 'white'))
         st.plotly_chart(fig, use_container_width = True, config = self.config)
 
     def stock_rsi(self) -> None:
@@ -216,6 +221,7 @@ class StockAnalyzer:
             title = f'RSI Trade Signals for {self.titleStock} ({self.companyStock})',
             yaxis = dict(title = 'Adj Close Price'),
             yaxis2 = dict(title = 'RSI'),
+            newshape = dict(line_color = 'white')
         )
 
         fig.add_trace(go.Scatter(
@@ -296,7 +302,8 @@ class StockAnalyzer:
         fig.update_layout(
             title = f'MACD Trade Signals for {self.titleStock} ({self.companyStock})',
             yaxis = dict(title = 'Adj Close Price'),
-            yaxis2 = dict(title = 'MACD')
+            yaxis2 = dict(title = 'MACD'),
+            newshape = dict(line_color = 'white')
         )
         st.plotly_chart(fig, use_container_width = True, config = self.config)
 
@@ -343,7 +350,8 @@ class StockAnalyzer:
 
         fig.update_layout(
             title = f'Bollinger Bands Trade Signals for {self.titleStock} ({self.companyStock})',
-            yaxis = dict(title = 'Adj Close Price')
+            yaxis = dict(title = 'Adj Close Price'),
+            newshape = dict(line_color = 'white')
         )
 
         fig.add_trace(go.Scatter(
@@ -400,7 +408,8 @@ class StockAnalyzer:
 
         fig.update_layout(
             title = f'Donchian Breakout Trade Signals for {self.titleStock} ({self.companyStock})',
-            yaxis = dict(title = 'Adj Close Price')
+            yaxis = dict(title = 'Adj Close Price'),
+            newshape = dict(line_color = 'white')
         )
 
         fig.add_trace(go.Scatter(
