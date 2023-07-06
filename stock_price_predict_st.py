@@ -32,7 +32,7 @@ class StockPricePredictor:
             self.companyStock = yf.Ticker(titleStock).info['longName']
         except:
             self.companyStock = ('')
-        self.config = {'displaylogo': False}
+        self.config = {'displaylogo': False, 'modeBarButtonsToAdd': ['drawline', 'drawopenpath', 'eraseshape']}
 
     def gru_ml_model(self) -> None:
         df = self.stock['Adj Close'].values.reshape(-1, 1)
@@ -81,7 +81,8 @@ class StockPricePredictor:
         
         fig.update_layout(title = f"GRU Stock Price Prediction for {self.titleStock} ({self.companyStock})", 
                           xaxis_title = 'Date', 
-                          yaxis_title = 'Adj Close')
+                          yaxis_title = 'Adj Close',
+                          newshape = dict(line_color = 'white'))
         st.metric(label = f"Latest Stock Adj Close Price ({self.stock.index[-1].date()}):", 
                   value = f"{self.stock['Adj Close'].iloc[-1]:.2f}", 
                   delta = f"{self.stock['Adj Close'].iloc[-1] - self.stock['Adj Close'].iloc[-2]:.2f} From Previous Day")
@@ -165,7 +166,8 @@ class StockPricePredictor:
         
         fig.update_layout(title = f"LSTM Stock Price Prediction for {self.titleStock} ({self.companyStock})", 
                           xaxis_title = 'Date', 
-                          yaxis_title = 'Adj Close')
+                          yaxis_title = 'Adj Close',
+                          newshape = dict(line_color = 'white'))
         st.metric(label = f"Latest Stock Adj Close Price ({self.stock.index[-1].date()}):", 
                   value = f"{self.stock['Adj Close'].iloc[-1]:.2f}", 
                   delta = f"{self.stock['Adj Close'].iloc[-1] - self.stock['Adj Close'].iloc[-2]:.2f} From Previous Day")
@@ -225,7 +227,8 @@ class StockPricePredictor:
         
         fig.update_layout(title = f"XGB Stock Price Prediction for {self.titleStock} ({self.companyStock})", 
                           xaxis_title = 'Date', 
-                          yaxis_title = 'Adj Close')
+                          yaxis_title = 'Adj Close',
+                          newshape = dict(line_color = 'white'))
         st.metric(label = f"Latest Stock Adj Close Price ({self.stock.index[-1].date()}):", 
                   value = f"{self.stock['Adj Close'].iloc[-1]:.2f}", 
                   delta = f"{self.stock['Adj Close'].iloc[-1] - self.stock['Adj Close'].iloc[-2]:.2f} From Previous Day")
@@ -271,7 +274,8 @@ class StockPricePredictor:
         
         fig.update_layout(title = f"SVR Stock Price Prediction for {self.titleStock} ({self.companyStock})", 
                           xaxis_title = 'Date', 
-                          yaxis_title = 'Adj Close')
+                          yaxis_title = 'Adj Close',
+                          newshape = dict(line_color = 'white'))
         st.metric(label = f"Latest Stock Adj Close Price ({self.stock.index[-1].date()}):", 
                   value = f"{self.stock['Adj Close'].iloc[-1]:.2f}", 
                   delta = f"{self.stock['Adj Close'].iloc[-1] - self.stock['Adj Close'].iloc[-2]:.2f} From Previous Day")
@@ -307,7 +311,8 @@ class StockPricePredictor:
         
         fig.update_layout(title = f"RFR Stock Price Prediction for {self.titleStock} ({self.companyStock})", 
                           xaxis_title = 'Date', 
-                          yaxis_title = 'Adj Close')
+                          yaxis_title = 'Adj Close',
+                          newshape = dict(line_color = 'white'))
         st.metric(label = f"Latest Stock Adj Close Price ({self.stock.index[-1].date()}):", 
                   value = f"{self.stock['Adj Close'].iloc[-1]:.2f}", 
                   delta = f"{self.stock['Adj Close'].iloc[-1] - self.stock['Adj Close'].iloc[-2]:.2f} From Previous Day")
