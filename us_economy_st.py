@@ -84,7 +84,8 @@ class USEconomy:
                 )
 
             fig.update_layout(xaxis_title = 'Date',
-                              title = 'Core Inflation Rate')
+                              title = 'Core Inflation Rate',
+                              newshape = dict(line_color = 'white'))
             st.metric(label = f"Latest Core Inflation Rate ({coreInflationDf.index[-1].strftime('%Y-%m')}):", 
                       value = f"{coreInflationDf['core_inflation_rate'].iloc[-1]:.3f}%", 
                       delta = f"{coreInflationDf['core_inflation_rate'].iloc[-1] - coreInflationDf['core_inflation_rate'].iloc[-2]:.3f} From Previous Month",
@@ -120,7 +121,8 @@ class USEconomy:
         with unemCol1:
             fig = go.Figure(data = go.Scatter(x = unemploymentDf.index, y = unemploymentDf['unemployment_rate']))
             fig.update_layout(xaxis_title = 'Date',
-                              title = 'Unemployment Rate')
+                              title = 'Unemployment Rate',
+                              newshape = dict(line_color = 'white'))
             recessionPeriods = USEconomy.recession_periods()
             for startDate, endDate in recessionPeriods:
                 fig.add_shape(
@@ -176,7 +178,8 @@ class USEconomy:
                                   delta = f"{delta:.3f}",
                                   delta_color = 'inverse')
                     
-                figState.update_layout(xaxis_title = 'Date', title = 'Unemployment Rate by State', showlegend = True)
+                figState.update_layout(xaxis_title = 'Date', title = 'Unemployment Rate by State', showlegend = True,
+                                       newshape = dict(line_color = 'white'))
                 st.plotly_chart(figState, use_container_width = True, config = {'displaylogo': False,
                                                                                 'modeBarButtonsToAdd': ['drawline',
                                                                                                'drawopenpath',
@@ -199,11 +202,15 @@ class USEconomy:
             fig = go.Figure(data = go.Scatter(x = fferDf.index, y = fferDf['ffer']))
 
             fig.update_layout(xaxis_title = 'Date',
-                              title = 'Federal Funds Effective Rate')
+                              title = 'Federal Funds Effective Rate',
+                              newshape = dict(line_color = 'white'))
             st.metric(label = f"Latest Federal Funds Effective Rate ({fferDf.index[-1].date()}):", 
                       value = f"{fferDf['ffer'].iloc[-1]:.2f}%", 
                       delta = f"{fferDf['ffer'].iloc[-1] - fferDf['ffer'].iloc[-2]:.2f} From Previous Day")
-            st.plotly_chart(fig, use_container_width = True, config = {'displaylogo': False})
+            st.plotly_chart(fig, use_container_width = True, config = {'displaylogo': False, 
+                                                                       'modeBarButtonsToAdd': ['drawline',
+                                                                                               'drawopenpath',
+                                                                                               'eraseshape']})
 
         if interestOption == 'Market Yield on U.S. Treasury Securities':
             marketYieldUSTres1Data = fred.get_series('DGS1', observation_start = '1/1/1970')
@@ -223,7 +230,8 @@ class USEconomy:
 
             fig.update_layout(title = 'Market Yield on U.S. Treasury Securities Rate',
                               yaxis = dict(title = 'Rate'),
-                              xaxis = dict(title = 'Date'))
+                              xaxis = dict(title = 'Date'),
+                              newshape = dict(line_color = 'white'))
             
             mktYieldCol1.metric(label = f"Latest Market Yield (1 Year) Rate ({mktYieldTres1Df.index[-1].date()}):", 
                                 value = f"{mktYieldTres1Df['myuts1'].iloc[-1]:.2f}%", 
@@ -260,7 +268,8 @@ class USEconomy:
             fig = go.Figure(data = go.Scatter(x = sofrDf.index, y = sofrDf['sofr']))
 
             fig.update_layout(xaxis_title = 'Date', 
-                              title = 'Secured Overnight Financing Rate')
+                              title = 'Secured Overnight Financing Rate',
+                              newshape = dict(line_color = 'white'))
             sofrCol1, sofrCol2, sofrCol3, sofrCol4 = st.columns([4, 2, 2, 2])
             sofrCol1.metric(label = f"Latest SOFR ({sofrDf.index[-1].date()}):", 
                             value = f"{sofrDf['sofr'].iloc[-1]:.2f}%", 
@@ -312,7 +321,8 @@ class USEconomy:
             fig = go.Figure(data = go.Scatter(x = usdModDf.index, y = usdModDf['exchange_rate']))
 
             fig.update_layout(xaxis_title = 'Date',
-                              title = 'Exchange Rate')
+                              title = 'Exchange Rate',
+                              newshape = dict(line_color = 'white'))
             st.metric(label = f"Latest {selectedName} ({usdModDf.index[-1].date()}):", 
                       value = f"{usdModDf['exchange_rate'].iloc[-1]:.3f} {selectedIso}", 
                       delta = f"{usdModDf['exchange_rate'].iloc[-1] - usdModDf['exchange_rate'].iloc[-2]:.3f} From Previous Day")
@@ -329,7 +339,8 @@ class USEconomy:
             fig = go.Figure(data = go.Scatter(x = usdDf.index, y = usdDf['exchange_rate']))
 
             fig.update_layout(xaxis_title = 'Date',
-                              title = f'Exchange Rate')
+                              title = f'Exchange Rate',
+                              newshape = dict(line_color = 'white'))
             st.metric(label = f"Latest {selectedName} ({usdDf.index[-1].date()}):", 
                     value = f"{usdDf['exchange_rate'].iloc[-1]:.3f} {selectedIso}", 
                     delta = f"{usdDf['exchange_rate'].iloc[-1] - usdDf['exchange_rate'].iloc[-2]:.3f} From Previous Day")
@@ -355,7 +366,8 @@ class USEconomy:
 
         fig.update_layout(title = 'Fixed Mortgage Rates',
                           yaxis = dict(title = 'Rate'),
-                          xaxis = dict(title = 'Date'))
+                          xaxis = dict(title = 'Date'),
+                          newshape = dict(line_color = 'white'))
         mortCol1, mortCol2 = st.columns([5, 5])
         mortCol1.metric(label = f"Latest 15 Year Fixed Rate ({mortgage15Df.index[-1].date()}):", 
                         value = f"{mortgage15Df['mort15'].iloc[-1]:.2f}%", 
