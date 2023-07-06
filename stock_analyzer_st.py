@@ -23,7 +23,7 @@ class StockAnalyzer:
             
         self.dayStock = yf.download(titleStock, period = '3d', progress = False)
         self.etNow = datetime.now(pytz.timezone('US/Eastern')).date()
-        self.config = {'displaylogo': False, 'modeBarButtonsToAdd':['drawline', 'drawopenpath', 'eraseshape']}
+        self.config = {'displaylogo': False, 'modeBarButtonsToAdd': ['drawline', 'drawopenpath', 'eraseshape']}
         
     def stock_prices(self) -> None:
         fig = make_subplots(specs = [[{"secondary_y": True}]])
