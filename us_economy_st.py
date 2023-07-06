@@ -8,6 +8,21 @@ from fredapi import Fred
 fred = Fred(api_key = st.secrets['API_KEY'])
 
 class USEconomy:
+    def recession_periods() -> list:
+        recessionData = fred.get_series('USREC', observation_start = '1/1/1970')
+        recessionPeriods = []
+        inRecession = False
+        for i in range(len(recessionData)):
+            if recessionData[i] == 1 and not inRecession:
+                inRecession = True
+                startDate = recessionData.index[i]
+            elif recessionData[i] == 0 and inRecession:
+                inRecession = False
+                endDate = recessionData.index[i]
+                recessionPeriods.append((startDate, endDate))
+
+        return recessionPeriods
+
     def inflation_rate() -> None:
         inflationOption = st.radio("Select an option:", ['Inflation Rate', 'Core Inflation Rate'],
                                    label_visibility = 'collapsed', horizontal = True)
@@ -19,20 +34,54 @@ class USEconomy:
             inflationDf.columns = ['inflation_rate']
 
             fig = go.Figure(data = go.Scatter(x = inflationDf.index, y = inflationDf['inflation_rate']))
+            
+            recessionPeriods = USEconomy.recession_periods()
+            for startDate, endDate in recessionPeriods:
+                fig.add_shape(
+                    type = 'rect',
+                    xref = 'x',
+                    yref = 'paper',
+                    x0 = startDate,
+                    x1 = endDate,
+                    y0 = 0,
+                    y1 = 1,
+                    fillcolor = 'rgba(169, 169, 169, 0.25)',
+                    layer = 'below',
+                    line_width = 0
+                )
 
             fig.update_layout(xaxis_title = 'Date',
-                              title = 'Inflation Rate')
+                              title = 'Inflation Rate',
+                              newshape = dict(line_color = 'white'))
             st.metric(label = f"Latest Inflation Rate ({inflationDf.index[-1].strftime('%Y-%m')}):", 
                       value = f"{inflationDf['inflation_rate'].iloc[-1]:.3f}%", 
                       delta = f"{inflationDf['inflation_rate'].iloc[-1] - inflationDf['inflation_rate'].iloc[-2]:.3f} From Previous Month",
                       delta_color = 'inverse')
-            st.plotly_chart(fig, use_container_width = True, config = {'displaylogo': False})
+            st.plotly_chart(fig, use_container_width = True, config = {'displaylogo': False, 
+                                                                       'modeBarButtonsToAdd': ['drawline',
+                                                                                               'drawopenpath',
+                                                                                               'eraseshape']})
         if inflationOption == 'Core Inflation Rate':
             coreInflationData = fred.get_series('CPILFESL', units = 'pc1', observation_start = '1/1/1970')
             coreInflationDf = pd.DataFrame(coreInflationData).dropna(how = 'all')
             coreInflationDf.index = pd.to_datetime(coreInflationDf.index)
             coreInflationDf.columns = ['core_inflation_rate']
+            
             fig = go.Figure(data = go.Scatter(x = coreInflationDf.index, y = coreInflationDf['core_inflation_rate']))
+            recessionPeriods = USEconomy.recession_periods()
+            for startDate, endDate in recessionPeriods:
+                fig.add_shape(
+                    type = 'rect',
+                    xref = 'x',
+                    yref = 'paper',
+                    x0 = startDate,
+                    x1 = endDate,
+                    y0 = 0,
+                    y1 = 1,
+                    fillcolor = 'rgba(169, 169, 169, 0.25)',
+                    layer = 'below',
+                    line_width = 0,
+                )
 
             fig.update_layout(xaxis_title = 'Date',
                               title = 'Core Inflation Rate')
@@ -40,7 +89,10 @@ class USEconomy:
                       value = f"{coreInflationDf['core_inflation_rate'].iloc[-1]:.3f}%", 
                       delta = f"{coreInflationDf['core_inflation_rate'].iloc[-1] - coreInflationDf['core_inflation_rate'].iloc[-2]:.3f} From Previous Month",
                       delta_color = 'inverse')
-            st.plotly_chart(fig, use_container_width = True, config = {'displaylogo': False})
+            st.plotly_chart(fig, use_container_width = True, config = {'displaylogo': False, 
+                                                                       'modeBarButtonsToAdd': ['drawline',
+                                                                                               'drawopenpath',
+                                                                                               'eraseshape']})
 
     def unemployment_rate() -> None:
         unemploymentData = fred.get_series('UNRATE', observation_start = '1/1/1970')
@@ -69,11 +121,28 @@ class USEconomy:
             fig = go.Figure(data = go.Scatter(x = unemploymentDf.index, y = unemploymentDf['unemployment_rate']))
             fig.update_layout(xaxis_title = 'Date',
                               title = 'Unemployment Rate')
+            recessionPeriods = USEconomy.recession_periods()
+            for startDate, endDate in recessionPeriods:
+                fig.add_shape(
+                    type = 'rect',
+                    xref = 'x',
+                    yref = 'paper',
+                    x0 = startDate,
+                    x1 = endDate,
+                    y0 = 0,
+                    y1 = 1,
+                    fillcolor = 'rgba(169, 169, 169, 0.25)',
+                    layer = 'below',
+                    line_width = 0
+                )
             st.metric(label = f"Latest Unemployment Rate ({unemploymentDf.index[-1].strftime('%Y-%m')}):", 
                       value = f"{unemploymentDf['unemployment_rate'].iloc[-1]:.3f}%", 
                       delta = f"{unemploymentDf['unemployment_rate'].iloc[-1] - unemploymentDf['unemployment_rate'].iloc[-2]:.3f} From Previous Month",
                       delta_color = 'inverse')
-            st.plotly_chart(fig, use_container_width = True, config = {'displaylogo': False})
+            st.plotly_chart(fig, use_container_width = True, config = {'displaylogo': False, 
+                                                                       'modeBarButtonsToAdd': ['drawline',
+                                                                                               'drawopenpath',
+                                                                                               'eraseshape']})
         
         with unemCol2:
             selectedNames = st.multiselect('Select up to 5 States:', cleanUnempStateDf['name'], default = ['Texas'], max_selections = 5)
@@ -108,7 +177,10 @@ class USEconomy:
                                   delta_color = 'inverse')
                     
                 figState.update_layout(xaxis_title = 'Date', title = 'Unemployment Rate by State', showlegend = True)
-                st.plotly_chart(figState, use_container_width = True, config = {'displaylogo': False})
+                st.plotly_chart(figState, use_container_width = True, config = {'displaylogo': False,
+                                                                                'modeBarButtonsToAdd': ['drawline',
+                                                                                               'drawopenpath',
+                                                                                               'eraseshape']})
             
             else:
                 st.write("No States selected. Please select at least one State.")
@@ -159,7 +231,10 @@ class USEconomy:
             mktYieldCol2.metric(label = f"Latest Market Yield (10 Year) Rate ({mktYieldTres10Df.index[-1].date()}):", 
                                 value = f"{mktYieldTres10Df['myuts10'].iloc[-1]:.2f}%", 
                                 delta = f"{mktYieldTres10Df['myuts10'].iloc[-1] - mktYieldTres10Df['myuts10'].iloc[-2]:.2f} From Previous Day")
-            st.plotly_chart(fig, use_container_width = True, config = {'displaylogo': False})
+            st.plotly_chart(fig, use_container_width = True, config = {'displaylogo': False, 
+                                                                       'modeBarButtonsToAdd': ['drawline',
+                                                                                               'drawopenpath',
+                                                                                               'eraseshape']})
 
         if interestOption == 'Secured Overnight Financing Rate':
             sofrData = fred.get_series('SOFR', observation_start = '3/4/2018')            
@@ -199,7 +274,10 @@ class USEconomy:
             sofrCol4.metric(label = '180-day Average:', 
                             value = f"{sofr180Df['sofr180'].iloc[-1]:.2f}%", 
                             delta = f"{sofr180Df['sofr180'].iloc[-1] - sofr180Df['sofr180'].iloc[-2]:.2f}")
-            st.plotly_chart(fig, use_container_width = True, config = {'displaylogo': False})
+            st.plotly_chart(fig, use_container_width = True, config = {'displaylogo': False,
+                                                                       'modeBarButtonsToAdd': ['drawline',
+                                                                                               'drawopenpath',
+                                                                                               'eraseshape']})
 
     def exchange_rates() -> None:
         exchangeDf = fred.search('U.S. Dollar Spot Exchange Rate')
@@ -238,7 +316,10 @@ class USEconomy:
             st.metric(label = f"Latest {selectedName} ({usdModDf.index[-1].date()}):", 
                       value = f"{usdModDf['exchange_rate'].iloc[-1]:.3f} {selectedIso}", 
                       delta = f"{usdModDf['exchange_rate'].iloc[-1] - usdModDf['exchange_rate'].iloc[-2]:.3f} From Previous Day")
-            st.plotly_chart(fig, use_container_width = True, config = {'displaylogo': False})
+            st.plotly_chart(fig, use_container_width = True, config = {'displaylogo': False,
+                                                                       'modeBarButtonsToAdd': ['drawline',
+                                                                                               'drawopenpath',
+                                                                                               'eraseshape']})
 
         else:
             usdDf = pd.DataFrame(selectedDf).dropna(how = 'all')
@@ -252,7 +333,10 @@ class USEconomy:
             st.metric(label = f"Latest {selectedName} ({usdDf.index[-1].date()}):", 
                     value = f"{usdDf['exchange_rate'].iloc[-1]:.3f} {selectedIso}", 
                     delta = f"{usdDf['exchange_rate'].iloc[-1] - usdDf['exchange_rate'].iloc[-2]:.3f} From Previous Day")
-            st.plotly_chart(fig, use_container_width = True, config = {'displaylogo': False})
+            st.plotly_chart(fig, use_container_width = True, config = {'displaylogo': False,
+                                                                       'modeBarButtonsToAdd': ['drawline',
+                                                                                               'drawopenpath',
+                                                                                               'eraseshape']})
 
     def mortgage_rates() -> None:
         mortgage15Data = fred.get_series('MORTGAGE15US', observation_start = '1/1/1992')
@@ -279,7 +363,10 @@ class USEconomy:
         mortCol2.metric(label = f"Latest 30 Year Fixed Rate ({mortgage30Df.index[-1].date()}):", 
                         value = f"{mortgage30Df['mort30'].iloc[-1]:.2f}%", 
                         delta = f"{mortgage30Df['mort30'].iloc[-1] - mortgage30Df['mort30'].iloc[-2]:.2f} From Previous Week")
-        st.plotly_chart(fig, use_container_width = True, config = {'displaylogo': False})
+        st.plotly_chart(fig, use_container_width = True, config = {'displaylogo': False,
+                                                                   'modeBarButtonsToAdd': ['drawline',
+                                                                                           'drawopenpath',
+                                                                                           'eraseshape']})
         
     def economy_chooser() -> None:
         economyOptions = {'Inflation Rate': USEconomy.inflation_rate,
