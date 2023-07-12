@@ -11,7 +11,7 @@ class StockInformation:
             majorHolders = pd.DataFrame(self.stock.major_holders)
             majorHolders = majorHolders.reset_index(drop = True)
             majorHolders.columns = ['Percentage', 'Information']
-            st.dataframe(majorHolders, use_container_width = True)
+            st.dataframe(majorHolders, hide_index = True, use_container_width = True)
         except KeyError:
             st.write(" ")
 
@@ -21,7 +21,7 @@ class StockInformation:
             institutionalHolders = institutionalHolders.reset_index(drop = True)
             institutionalHolders.columns = ['Holder', 'Shares', 'Date Reported', '% Out', 'Value']
             institutionalHolders['Date Reported'] = pd.to_datetime(institutionalHolders['Date Reported']).dt.date
-            st.dataframe(institutionalHolders, use_container_width = True)
+            st.dataframe(institutionalHolders, hide_index = True, use_container_width = True)
         except KeyError:
             st.write(" ")
 
@@ -31,7 +31,7 @@ class StockInformation:
             mutualfundHolders = mutualfundHolders.reset_index(drop = True)
             mutualfundHolders.columns = ['Holder', 'Shares', 'Date Reported', '% Out', 'Value']
             mutualfundHolders['Date Reported'] = pd.to_datetime(mutualfundHolders['Date Reported']).dt.date
-            st.dataframe(mutualfundHolders, use_container_width = True)
+            st.dataframe(mutualfundHolders, hide_index = True, use_container_width = True)
         except KeyError:
             st.write(" ")
 
@@ -41,7 +41,7 @@ class StockInformation:
             df_StockDiv.reset_index(inplace = True)
             df_StockDiv['Date'] = pd.to_datetime(df_StockDiv['Date']).dt.date
             df_StockDiv.columns = ['Date', 'Dividends']
-            st.dataframe(df_StockDiv.tail(), use_container_width = True)
+            st.dataframe(df_StockDiv.tail(), hide_index = True, use_container_width = True)
         except KeyError:
             st.write(" ")
 
@@ -51,7 +51,7 @@ class StockInformation:
             df_StockSpl.reset_index(inplace = True)
             df_StockSpl['Date'] = pd.to_datetime(df_StockSpl['Date']).dt.date
             df_StockSpl.columns = ['Date', 'Splits']
-            st.dataframe(df_StockSpl.tail(), use_container_width = True)
+            st.dataframe(df_StockSpl.tail(), hide_index = True, use_container_width = True)
         except KeyError:
             st.write(" ")
 
@@ -112,7 +112,7 @@ class StockInformation:
                 
         infoDf = pd.DataFrame(data)
         infoDf = infoDf[~infoDf['Metric'].isin(['Bid Size', 'Ask Size'])]
-        st.dataframe(infoDf, use_container_width = True)
+        st.dataframe(infoDf, hide_index = True, use_container_width = True)
     
     def holder_chooser(self) -> None:
         holderOption = st.selectbox("Select an option:", ['Major Holders', 'Institutional Holders', 'Mutual Fund Holders'])
@@ -153,7 +153,7 @@ class StockInformation:
                 details = '^RUT'
             if detailOption == 'NASDAQ Composite':
                 details = '^IXIC'
-
+            
             if not details:
                 st.write(" ")
             elif not details.isascii():
@@ -162,7 +162,7 @@ class StockInformation:
                 st.write("No Company and Industry Information Available for the Ticker")
             else:
                 detail_stock = (df[df['Ticker'] == details])
-                st.dataframe(detail_stock, use_container_width = True)
+                st.dataframe(detail_stock, hide_index = True, use_container_width = True)
             try:
                 userStock = StockInformation(yf.Ticker(details))
                 StockInformation.stock_info(userStock)
@@ -177,16 +177,16 @@ class StockInformation:
             industry_filter = filterCol.text_input("Filter industries by alphabet (A-Z):").lower()
             alpha_list = [element for element in df_sort if element.startswith(f"{industry_filter}")]
             df_alpha_list = pd.DataFrame({'Industry Name': alpha_list}).reset_index(drop = True)
-            filterCol.dataframe(df_alpha_list, use_container_width = True)
+            filterCol.dataframe(df_alpha_list, hide_index = True, use_container_width = True)
             
             industryChoice = searchCol.text_input("Enter an industry name: ").lower()
             if industryChoice:
                 detailIndustry = (df[df['Industry'] == industryChoice])
-                searchCol.dataframe(detailIndustry[['Ticker', 'Company Name']], use_container_width = True)
+                searchCol.dataframe(detailIndustry[['Ticker', 'Company Name']], hide_index = True, use_container_width = True)
 
         elif detailChoose == 'Filter by Company':
             company_filter = st.text_input("Filter companies by alphabet (A-Z):").title()
 
             filtered_df = df[df['Company Name'].str.startswith(company_filter)]
             sorted_df = filtered_df.sort_values('Company Name').reset_index(drop = True)
-            st.dataframe(sorted_df[['Company Name', 'Ticker']], use_container_width = True)
+            st.dataframe(sorted_df[['Company Name', 'Ticker']], hide_index = True, use_container_width = True)
