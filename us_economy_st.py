@@ -28,7 +28,7 @@ class USEconomy:
                                    label_visibility = 'collapsed', horizontal = True)
 
         if inflationOption == 'Inflation Rate':
-            inflationData = fred.get_series('PCEPI', units = 'pc1', observation_start = '1/1/1970')
+            inflationData = fred.get_series('CPIAUCSL', units = 'pc1', observation_start = '1/1/1970')
             inflationDf = pd.DataFrame(inflationData).dropna(how = 'all')
             inflationDf.index = pd.to_datetime(inflationDf.index)
             inflationDf.columns = ['inflation_rate']
@@ -62,7 +62,7 @@ class USEconomy:
                                                                                                'drawopenpath',
                                                                                                'eraseshape']})
         if inflationOption == 'Core Inflation Rate':
-            coreInflationData = fred.get_series('PCEPILFE', units = 'pc1', observation_start = '1/1/1970')
+            coreInflationData = fred.get_series('CPILFESL', units = 'pc1', observation_start = '1/1/1970')
             coreInflationDf = pd.DataFrame(coreInflationData).dropna(how = 'all')
             coreInflationDf.index = pd.to_datetime(coreInflationDf.index)
             coreInflationDf.columns = ['core_inflation_rate']
