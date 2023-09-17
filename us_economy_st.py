@@ -24,7 +24,7 @@ class USEconomy:
         return recessionPeriods
 
     def inflation_rate() -> None:
-        cpiInfo, pceInfo = st.tabs(['Consumer Price Index', 'Personal Consumption Expenditure'])
+        cpiInfo, pceInfo = st.tabs(['Consumer Price Index', 'Personal Consumption Expenditures'])
 
         with cpiInfo:
             cpiInflationOption = st.radio("Select an option:", ['CPI Inflation Rate', 'Core CPI Inflation Rate'],
