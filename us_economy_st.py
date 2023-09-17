@@ -101,7 +101,7 @@ class USEconomy:
             pceInflationOption = st.radio("Select an option:", ['PCE Inflation Rate', 'Core PCE Inflation Rate'],
                                           label_visibility = 'collapsed', horizontal = True)
             if pceInflationOption == 'PCE Inflation Rate':
-                pceInflationData = fred.get_series('CPILFESL', units = 'pc1', observation_start = '1/1/1970')
+                pceInflationData = fred.get_series('PCEPI', units = 'pc1', observation_start = '1/1/1970')
                 pceInflationDf = pd.DataFrame(pceInflationData).dropna(how = 'all')
                 pceInflationDf.index = pd.to_datetime(pceInflationDf.index)
                 pceInflationDf.columns = ['pce_inflation_rate']
