@@ -24,145 +24,149 @@ class USEconomy:
         return recessionPeriods
 
     def inflation_rate() -> None:
-        inflationOption = st.radio("Select an option:", ['CPI Inflation Rate', 'Core CPI Inflation Rate',
-                                                         'PCE Inflation Rate', 'Core PCE Inflation Rate'],
-                                   label_visibility = 'collapsed', horizontal = True)
+        cpiInfo, pceInfo = st.tabs(['Consumer Price Index', 'Personal Consumption Expenditure'])
 
-        if inflationOption == 'CPI Inflation Rate':
-            cpiInflationData = fred.get_series('CPIAUCSL', units = 'pc1', observation_start = '1/1/1970')
-            cpiInflationDf = pd.DataFrame(cpiInflationData).dropna(how = 'all')
-            cpiInflationDf.index = pd.to_datetime(cpiInflationDf.index)
-            cpiInflationDf.columns = ['inflation_rate']
+        with cpiInfo:
+            cpiInflationOption = st.radio("Select an option:", ['CPI Inflation Rate', 'Core CPI Inflation Rate'],
+                                          label_visibility = 'collapsed', horizontal = True)
+            if cpiInflationOption == 'CPI Inflation Rate':
+                cpiInflationData = fred.get_series('CPIAUCSL', units = 'pc1', observation_start = '1/1/1970')
+                cpiInflationDf = pd.DataFrame(cpiInflationData).dropna(how = 'all')
+                cpiInflationDf.index = pd.to_datetime(cpiInflationDf.index)
+                cpiInflationDf.columns = ['inflation_rate']
 
-            fig = go.Figure(data = go.Scatter(x = cpiInflationDf.index, y = cpiInflationDf['inflation_rate']))
-            
-            recessionPeriods = USEconomy.recession_periods()
-            for startDate, endDate in recessionPeriods:
-                fig.add_shape(
-                    type = 'rect',
-                    xref = 'x',
-                    yref = 'paper',
-                    x0 = startDate,
-                    x1 = endDate,
-                    y0 = 0,
-                    y1 = 1,
-                    fillcolor = 'rgba(169, 169, 169, 0.25)',
-                    layer = 'below',
-                    line_width = 0
-                )
+                fig = go.Figure(data = go.Scatter(x = cpiInflationDf.index, y = cpiInflationDf['inflation_rate']))
+                
+                recessionPeriods = USEconomy.recession_periods()
+                for startDate, endDate in recessionPeriods:
+                    fig.add_shape(
+                        type = 'rect',
+                        xref = 'x',
+                        yref = 'paper',
+                        x0 = startDate,
+                        x1 = endDate,
+                        y0 = 0,
+                        y1 = 1,
+                        fillcolor = 'rgba(169, 169, 169, 0.25)',
+                        layer = 'below',
+                        line_width = 0
+                    )
 
-            fig.update_layout(xaxis_title = 'Date',
-                              title = 'Inflation Rate',
-                              newshape = dict(line_color = 'white'))
-            st.metric(label = f"Latest Inflation Rate ({cpiInflationDf.index[-1].strftime('%Y-%m')}):", 
-                      value = f"{cpiInflationDf['inflation_rate'].iloc[-1]:.3f}%", 
-                      delta = f"{cpiInflationDf['inflation_rate'].iloc[-1] - cpiInflationDf['inflation_rate'].iloc[-2]:.3f} From Previous Month",
-                      delta_color = 'inverse')
-            st.plotly_chart(fig, use_container_width = True, config = {'displaylogo': False, 
-                                                                       'modeBarButtonsToAdd': ['drawline',
-                                                                                               'drawopenpath',
-                                                                                               'eraseshape']})
-        if inflationOption == 'Core CPI Inflation Rate':
-            coreCpiInflationData = fred.get_series('CPILFESL', units = 'pc1', observation_start = '1/1/1970')
-            coreCpiInflationDf = pd.DataFrame(coreCpiInflationData).dropna(how = 'all')
-            coreCpiInflationDf.index = pd.to_datetime(coreCpiInflationDf.index)
-            coreCpiInflationDf.columns = ['core_inflation_rate']
-            
-            fig = go.Figure(data = go.Scatter(x = coreCpiInflationDf.index, y = coreCpiInflationDf['core_inflation_rate']))
-            recessionPeriods = USEconomy.recession_periods()
-            for startDate, endDate in recessionPeriods:
-                fig.add_shape(
-                    type = 'rect',
-                    xref = 'x',
-                    yref = 'paper',
-                    x0 = startDate,
-                    x1 = endDate,
-                    y0 = 0,
-                    y1 = 1,
-                    fillcolor = 'rgba(169, 169, 169, 0.25)',
-                    layer = 'below',
-                    line_width = 0,
-                )
+                fig.update_layout(xaxis_title = 'Date',
+                                title = 'Inflation Rate',
+                                newshape = dict(line_color = 'white'))
+                st.metric(label = f"Latest Inflation Rate ({cpiInflationDf.index[-1].strftime('%Y-%m')}):", 
+                          value = f"{cpiInflationDf['inflation_rate'].iloc[-1]:.3f}%", 
+                          delta = f"{cpiInflationDf['inflation_rate'].iloc[-1] - cpiInflationDf['inflation_rate'].iloc[-2]:.3f} From Previous Month",
+                          delta_color = 'inverse')
+                st.plotly_chart(fig, use_container_width = True, config = {'displaylogo': False, 
+                                                                        'modeBarButtonsToAdd': ['drawline',
+                                                                                                'drawopenpath',
+                                                                                                'eraseshape']})
+            if cpiInflationOption == 'Core CPI Inflation Rate':
+                coreCpiInflationData = fred.get_series('CPILFESL', units = 'pc1', observation_start = '1/1/1970')
+                coreCpiInflationDf = pd.DataFrame(coreCpiInflationData).dropna(how = 'all')
+                coreCpiInflationDf.index = pd.to_datetime(coreCpiInflationDf.index)
+                coreCpiInflationDf.columns = ['core_inflation_rate']
+                
+                fig = go.Figure(data = go.Scatter(x = coreCpiInflationDf.index, y = coreCpiInflationDf['core_inflation_rate']))
+                recessionPeriods = USEconomy.recession_periods()
+                for startDate, endDate in recessionPeriods:
+                    fig.add_shape(
+                        type = 'rect',
+                        xref = 'x',
+                        yref = 'paper',
+                        x0 = startDate,
+                        x1 = endDate,
+                        y0 = 0,
+                        y1 = 1,
+                        fillcolor = 'rgba(169, 169, 169, 0.25)',
+                        layer = 'below',
+                        line_width = 0,
+                    )
 
-            fig.update_layout(xaxis_title = 'Date',
-                              title = 'Core Inflation Rate',
-                              newshape = dict(line_color = 'white'))
-            st.metric(label = f"Latest Core Inflation Rate ({coreCpiInflationDf.index[-1].strftime('%Y-%m')}):", 
-                      value = f"{coreCpiInflationDf['core_inflation_rate'].iloc[-1]:.3f}%", 
-                      delta = f"{coreCpiInflationDf['core_inflation_rate'].iloc[-1] - coreCpiInflationDf['core_inflation_rate'].iloc[-2]:.3f} From Previous Month",
-                      delta_color = 'inverse')
-            st.plotly_chart(fig, use_container_width = True, config = {'displaylogo': False, 
-                                                                       'modeBarButtonsToAdd': ['drawline',
-                                                                                               'drawopenpath',
-                                                                                               'eraseshape']})
+                fig.update_layout(xaxis_title = 'Date',
+                                title = 'Core Inflation Rate',
+                                newshape = dict(line_color = 'white'))
+                st.metric(label = f"Latest Core Inflation Rate ({coreCpiInflationDf.index[-1].strftime('%Y-%m')}):", 
+                          value = f"{coreCpiInflationDf['core_inflation_rate'].iloc[-1]:.3f}%", 
+                          delta = f"{coreCpiInflationDf['core_inflation_rate'].iloc[-1] - coreCpiInflationDf['core_inflation_rate'].iloc[-2]:.3f} From Previous Month",
+                          delta_color = 'inverse')
+                st.plotly_chart(fig, use_container_width = True, config = {'displaylogo': False, 
+                                                                            'modeBarButtonsToAdd': ['drawline',
+                                                                                                    'drawopenpath',
+                                                                                                    'eraseshape']})
         
-        if inflationOption == 'PCE Inflation Rate':
-            pceInflationData = fred.get_series('CPILFESL', units = 'pc1', observation_start = '1/1/1970')
-            pceInflationDf = pd.DataFrame(pceInflationData).dropna(how = 'all')
-            pceInflationDf.index = pd.to_datetime(pceInflationDf.index)
-            pceInflationDf.columns = ['core_inflation_rate']
-            
-            fig = go.Figure(data = go.Scatter(x = pceInflationDf.index, y = pceInflationDf['core_inflation_rate']))
-            recessionPeriods = USEconomy.recession_periods()
-            for startDate, endDate in recessionPeriods:
-                fig.add_shape(
-                    type = 'rect',
-                    xref = 'x',
-                    yref = 'paper',
-                    x0 = startDate,
-                    x1 = endDate,
-                    y0 = 0,
-                    y1 = 1,
-                    fillcolor = 'rgba(169, 169, 169, 0.25)',
-                    layer = 'below',
-                    line_width = 0,
-                )
+        with pceInfo:
+            pceInflationOption = st.radio("Select an option:", ['PCE Inflation Rate', 'Core PCE Inflation Rate'],
+                                          label_visibility = 'collapsed', horizontal = True)
+            if pceInflationOption == 'PCE Inflation Rate':
+                pceInflationData = fred.get_series('CPILFESL', units = 'pc1', observation_start = '1/1/1970')
+                pceInflationDf = pd.DataFrame(pceInflationData).dropna(how = 'all')
+                pceInflationDf.index = pd.to_datetime(pceInflationDf.index)
+                pceInflationDf.columns = ['core_inflation_rate']
+                
+                fig = go.Figure(data = go.Scatter(x = pceInflationDf.index, y = pceInflationDf['core_inflation_rate']))
+                recessionPeriods = USEconomy.recession_periods()
+                for startDate, endDate in recessionPeriods:
+                    fig.add_shape(
+                        type = 'rect',
+                        xref = 'x',
+                        yref = 'paper',
+                        x0 = startDate,
+                        x1 = endDate,
+                        y0 = 0,
+                        y1 = 1,
+                        fillcolor = 'rgba(169, 169, 169, 0.25)',
+                        layer = 'below',
+                        line_width = 0,
+                    )
 
-            fig.update_layout(xaxis_title = 'Date',
-                              title = 'Core Inflation Rate',
-                              newshape = dict(line_color = 'white'))
-            st.metric(label = f"Latest Core Inflation Rate ({pceInflationDf.index[-1].strftime('%Y-%m')}):", 
-                      value = f"{pceInflationDf['core_inflation_rate'].iloc[-1]:.3f}%", 
-                      delta = f"{pceInflationDf['core_inflation_rate'].iloc[-1] - pceInflationDf['core_inflation_rate'].iloc[-2]:.3f} From Previous Month",
-                      delta_color = 'inverse')
-            st.plotly_chart(fig, use_container_width = True, config = {'displaylogo': False, 
-                                                                       'modeBarButtonsToAdd': ['drawline',
-                                                                                               'drawopenpath',
-                                                                                               'eraseshape']})
-        
-        if inflationOption == 'Core PCE Inflation Rate':
-            corePceInflationData = fred.get_series('PCEPILFE', units = 'pc1', observation_start = '1/1/1970')
-            corePceInflationDf = pd.DataFrame(corePceInflationData).dropna(how = 'all')
-            corePceInflationDf.index = pd.to_datetime(corePceInflationDf.index)
-            corePceInflationDf.columns = ['core_inflation_rate']
+                fig.update_layout(xaxis_title = 'Date',
+                                title = 'Core Inflation Rate',
+                                newshape = dict(line_color = 'white'))
+                st.metric(label = f"Latest Core Inflation Rate ({pceInflationDf.index[-1].strftime('%Y-%m')}):", 
+                          value = f"{pceInflationDf['core_inflation_rate'].iloc[-1]:.3f}%", 
+                          delta = f"{pceInflationDf['core_inflation_rate'].iloc[-1] - pceInflationDf['core_inflation_rate'].iloc[-2]:.3f} From Previous Month",
+                          delta_color = 'inverse')
+                st.plotly_chart(fig, use_container_width = True, config = {'displaylogo': False, 
+                                                                        'modeBarButtonsToAdd': ['drawline',
+                                                                                                'drawopenpath',
+                                                                                                'eraseshape']})
             
-            fig = go.Figure(data = go.Scatter(x = corePceInflationDf.index, y = corePceInflationDf['core_inflation_rate']))
-            recessionPeriods = USEconomy.recession_periods()
-            for startDate, endDate in recessionPeriods:
-                fig.add_shape(
-                    type = 'rect',
-                    xref = 'x',
-                    yref = 'paper',
-                    x0 = startDate,
-                    x1 = endDate,
-                    y0 = 0,
-                    y1 = 1,
-                    fillcolor = 'rgba(169, 169, 169, 0.25)',
-                    layer = 'below',
-                    line_width = 0,
-                )
+            if pceInflationOption == 'Core PCE Inflation Rate':
+                corePceInflationData = fred.get_series('PCEPILFE', units = 'pc1', observation_start = '1/1/1970')
+                corePceInflationDf = pd.DataFrame(corePceInflationData).dropna(how = 'all')
+                corePceInflationDf.index = pd.to_datetime(corePceInflationDf.index)
+                corePceInflationDf.columns = ['core_inflation_rate']
+                
+                fig = go.Figure(data = go.Scatter(x = corePceInflationDf.index, y = corePceInflationDf['core_inflation_rate']))
+                recessionPeriods = USEconomy.recession_periods()
+                for startDate, endDate in recessionPeriods:
+                    fig.add_shape(
+                        type = 'rect',
+                        xref = 'x',
+                        yref = 'paper',
+                        x0 = startDate,
+                        x1 = endDate,
+                        y0 = 0,
+                        y1 = 1,
+                        fillcolor = 'rgba(169, 169, 169, 0.25)',
+                        layer = 'below',
+                        line_width = 0,
+                    )
 
-            fig.update_layout(xaxis_title = 'Date',
-                              title = 'Core Inflation Rate',
-                              newshape = dict(line_color = 'white'))
-            st.metric(label = f"Latest Core Inflation Rate ({corePceInflationDf.index[-1].strftime('%Y-%m')}):", 
-                      value = f"{corePceInflationDf['core_inflation_rate'].iloc[-1]:.3f}%", 
-                      delta = f"{corePceInflationDf['core_inflation_rate'].iloc[-1] - corePceInflationDf['core_inflation_rate'].iloc[-2]:.3f} From Previous Month",
-                      delta_color = 'inverse')
-            st.plotly_chart(fig, use_container_width = True, config = {'displaylogo': False, 
-                                                                       'modeBarButtonsToAdd': ['drawline',
-                                                                                               'drawopenpath',
-                                                                                               'eraseshape']})
+                fig.update_layout(xaxis_title = 'Date',
+                                title = 'Core Inflation Rate',
+                                newshape = dict(line_color = 'white'))
+                st.metric(label = f"Latest Core Inflation Rate ({corePceInflationDf.index[-1].strftime('%Y-%m')}):", 
+                          value = f"{corePceInflationDf['core_inflation_rate'].iloc[-1]:.3f}%", 
+                          delta = f"{corePceInflationDf['core_inflation_rate'].iloc[-1] - corePceInflationDf['core_inflation_rate'].iloc[-2]:.3f} From Previous Month",
+                          delta_color = 'inverse')
+                st.plotly_chart(fig, use_container_width = True, config = {'displaylogo': False, 
+                                                                            'modeBarButtonsToAdd': ['drawline',
+                                                                                                    'drawopenpath',
+                                                                                                    'eraseshape']})
 
     def unemployment_rate() -> None:
         unemploymentData = fred.get_series('UNRATE', observation_start = '1/1/1970')
