@@ -299,7 +299,7 @@ class USEconomy:
                                                                                             'drawopenpath',
                                                                                             'eraseshape']})
         if gdpOption == "GDP Percent Change":
-            gdpDataPC = fred.get_series('GDPC1', units = 'pc', observation_start = '1/1/1970')
+            gdpDataPC = fred.get_series('GDPC1', units = 'pch', observation_start = '1/1/1970')
             gdpDfPC = pd.DataFrame(gdpDataPC).dropna(how = 'all')
             gdpDfPC.index = pd.to_datetime(gdpDfPC.index)
             gdpDfPC.columns = ['gdp_percent']
