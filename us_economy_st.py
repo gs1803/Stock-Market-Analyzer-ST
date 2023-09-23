@@ -263,38 +263,75 @@ class USEconomy:
                 st.write("No States selected. Please select at least one State.")
 
     def gdp_information() -> None:
-        gdpData = fred.get_series('GDPC1', units = 'pc1', observation_start = '1/1/1970')
-        gdpDf = pd.DataFrame(gdpData).dropna(how = 'all')
-        gdpDf.index = pd.to_datetime(gdpDf.index)
-        gdpDf.columns = ['gdp_percent']
-
-        fig = go.Figure(data = go.Scatter(x = gdpDf.index, y = gdpDf['gdp_percent']))
-        recessionPeriods = USEconomy.recession_periods()
-        for startDate, endDate in recessionPeriods:
-            fig.add_shape(
-                type = 'rect',
-                xref = 'x',
-                yref = 'paper',
-                x0 = startDate,
-                x1 = endDate,
-                y0 = 0,
-                y1 = 1,
-                fillcolor = 'rgba(169, 169, 169, 0.25)',
-                layer = 'below',
-                line_width = 0,
-            )
-
-        fig.update_layout(xaxis_title = 'Date',
-                        title = 'GDP Percent Change',
-                        newshape = dict(line_color = 'white'))
-        st.metric(label = f"Latest GDP Percent Change ({gdpDf.index[-1].strftime('%Y-%m')}):", 
-                    value = f"{gdpDf['gdp_percent'].iloc[-1]:.3f}%", 
-                    delta = f"{gdpDf['gdp_percent'].iloc[-1] - gdpDf['gdp_percent'].iloc[-2]:.3f} From Previous Month",
-                    delta_color = 'inverse')
-        st.plotly_chart(fig, use_container_width = True, config = {'displaylogo': False, 
-                                                                'modeBarButtonsToAdd': ['drawline',
-                                                                                        'drawopenpath',
-                                                                                        'eraseshape']})
+        gdpOption = st.radio("Select an option:", ['GDP Percent Change From Year Ago', 'GDP Percent Change'],
+                             label_visibility = 'collapsed', horizontal = True)
+        if gdpOption == "GDP Percent Change From Year Ago":
+            gdpData = fred.get_series('GDPC1', units = 'pc1', observation_start = '1/1/1970')
+            gdpDf = pd.DataFrame(gdpData).dropna(how = 'all')
+            gdpDf.index = pd.to_datetime(gdpDf.index)
+            gdpDf.columns = ['gdp_percent']
+    
+            fig = go.Figure(data = go.Scatter(x = gdpDf.index, y = gdpDf['gdp_percent']))
+            recessionPeriods = USEconomy.recession_periods()
+            for startDate, endDate in recessionPeriods:
+                fig.add_shape(
+                    type = 'rect',
+                    xref = 'x',
+                    yref = 'paper',
+                    x0 = startDate,
+                    x1 = endDate,
+                    y0 = 0,
+                    y1 = 1,
+                    fillcolor = 'rgba(169, 169, 169, 0.25)',
+                    layer = 'below',
+                    line_width = 0,
+                )
+    
+            fig.update_layout(xaxis_title = 'Date',
+                            title = 'GDP Percent Change From Year Ago',
+                            newshape = dict(line_color = 'white'))
+            st.metric(label = f"Latest GDP Percent Change From Year Ago ({gdpDf.index[-1].strftime('%Y-%m')}):", 
+                        value = f"{gdpDf['gdp_percent'].iloc[-1]:.3f}%", 
+                        delta = f"{gdpDf['gdp_percent'].iloc[-1] - gdpDf['gdp_percent'].iloc[-2]:.3f} From Previous Month",
+                        delta_color = 'inverse')
+            st.plotly_chart(fig, use_container_width = True, config = {'displaylogo': False, 
+                                                                    'modeBarButtonsToAdd': ['drawline',
+                                                                                            'drawopenpath',
+                                                                                            'eraseshape']})
+        if gdpOption == "GDP Percent Change":
+            gdpDataPC = fred.get_series('GDPC1', units = 'pc', observation_start = '1/1/1970')
+            gdpDfPC = pd.DataFrame(gdpDataPC).dropna(how = 'all')
+            gdpDfPC.index = pd.to_datetime(gdpDfPC.index)
+            gdpDfPC.columns = ['gdp_percent']
+    
+            fig = go.Figure(data = go.Scatter(x = gdpDfPC.index, y = gdpDfPC['gdp_percent']))
+            recessionPeriods = USEconomy.recession_periods()
+            for startDate, endDate in recessionPeriods:
+                fig.add_shape(
+                    type = 'rect',
+                    xref = 'x',
+                    yref = 'paper',
+                    x0 = startDate,
+                    x1 = endDate,
+                    y0 = 0,
+                    y1 = 1,
+                    fillcolor = 'rgba(169, 169, 169, 0.25)',
+                    layer = 'below',
+                    line_width = 0,
+                )
+    
+            fig.update_layout(xaxis_title = 'Date',
+                            title = 'GDP Percent Change',
+                            newshape = dict(line_color = 'white'))
+            st.metric(label = f"Latest GDP Percent Change ({gdpDfPC.index[-1].strftime('%Y-%m')}):", 
+                        value = f"{gdpDfPC['gdp_percent'].iloc[-1]:.3f}%", 
+                        delta = f"{gdpDfPC['gdp_percent'].iloc[-1] - gdpDfPC['gdp_percent'].iloc[-2]:.3f} From Previous Month",
+                        delta_color = 'inverse')
+            st.plotly_chart(fig, use_container_width = True, config = {'displaylogo': False, 
+                                                                    'modeBarButtonsToAdd': ['drawline',
+                                                                                            'drawopenpath',
+                                                                                            'eraseshape']})
+            
     
     def interest_rates() -> None:
         interestOption = st.radio("Select an option:", ['Federal Funds Effective Rate', 
