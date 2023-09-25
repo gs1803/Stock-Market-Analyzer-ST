@@ -444,7 +444,7 @@ class USEconomy:
 
         exchangeCleanDf = pd.DataFrame([exchangeDict.values(), exchangeDict.keys()]).transpose()
         exchangeCleanDf.columns = ['id', 'name']
-        isoCodeList = ['YEN', 'CNY', 'KRW', 'CAD', 'MXN', 'INR', 'VEF', 
+        isoCodeList = ['YEN', 'CNY', 'KRW', 'CAD', 'MXN', 'VEF', 'INR',
                        'BRL', 'LKR', 'CHF', 'MYR', 'THB', 'ZAR', 'TWD', 
                        'HKD','NOK', 'DKK', 'SEK', 'SGD']
         exchangeCleanDf['iso_code'] = isoCodeList
