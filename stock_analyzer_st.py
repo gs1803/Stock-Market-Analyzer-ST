@@ -21,7 +21,7 @@ class StockAnalyzer:
         except:
             self.mktCap = ('')
             
-        self.dayStock = yf.download(titleStock, period = '3d', progress = False)
+        self.dayStock = yf.download(titleStock, period = '7d', progress = False)
         self.etNow = datetime.now(pytz.timezone('US/Eastern')).date()
         self.config = {'displaylogo': False, 'modeBarButtonsToAdd': ['drawline', 'drawopenpath', 'eraseshape']}
         
