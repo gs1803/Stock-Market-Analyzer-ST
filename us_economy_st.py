@@ -445,16 +445,18 @@ class USEconomy:
         exchangeCleanDf = pd.DataFrame([exchangeDict.values(), exchangeDict.keys()]).transpose()
         exchangeCleanDf.columns = ['id', 'name']
         
-        euroRate = {'id': 'DEXUSEU', 'name': 'Euro to U.S. Dollars'}
-        ukRate = {'id': 'DEXUSUK', 'name': 'Pound Sterling to U.S. Dollars'}
+        euroRate = {'id': 'DEXUSEU', 'name': 'Euro to U.S. Dollars', 'isoCode': 'EUR'}
+        ukRate = {'id': 'DEXUSUK', 'name': 'Pound Sterling to U.S. Dollars', 'isoCode': 'GBP'}
+        
+        isoCodeList = ['BRL', 'CAD', 'CNY', 'DKK', 'HKD', 'INR', 'YEN',
+                       'MYR', 'MXN', 'NOK', 'SGD', 'ZAR', 'KRW', 'LKR',
+                       'SEK', 'CHF', 'TWD', 'THB', 'VEF']
         exchangeCleanDf['iso_code'] = isoCodeList
-        isoCodeList = ['YEN', 'CNY', 'KRW', 'MXN', 'VEF', 'INR', 'CAD',
-                       'BRL', 'CHF', 'THB', 'LKR', 'MYR', 'ZAR', 'HKD', 
-                       'TWD','NOK', 'SGD', 'DKK', 'SEK', 'EUR', 'GBP']
-        exchangeCleanDf['iso_code'] = isoCodeList
+        
         exchangeCleanDf = exchangeCleanDf.sort_values(['name'])
         exchangeCleanDf = pd.concat([pd.DataFrame(ukRate, index = [0]), exchangeCleanDf]).reset_index(drop = True)
         exchangeCleanDf = pd.concat([pd.DataFrame(euroRate, index = [0]), exchangeCleanDf]).reset_index(drop = True)
+        
         selectedName = st.selectbox('Select an exchange rate', exchangeCleanDf['name'])
 
         selectedId = exchangeCleanDf.loc[exchangeCleanDf['name'] == selectedName, 'id'].values[0]
