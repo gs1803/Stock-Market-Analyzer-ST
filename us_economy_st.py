@@ -444,12 +444,14 @@ class USEconomy:
 
         exchangeCleanDf = pd.DataFrame([exchangeDict.values(), exchangeDict.keys()]).transpose()
         exchangeCleanDf.columns = ['id', 'name']
+        
+        euroRate = {'id': 'DEXUSEU', 'name': 'Euro to U.S. Dollars'}
+        ukRate = {'id': 'DEXUSUK', 'name': 'Pound Sterling to U.S. Dollars'}
+        exchangeCleanDf['iso_code'] = isoCodeList
         isoCodeList = ['YEN', 'CNY', 'KRW', 'MXN', 'VEF', 'INR', 'CAD',
                        'BRL', 'CHF', 'THB', 'LKR', 'MYR', 'ZAR', 'HKD', 
-                       'TWD','NOK', 'SGD', 'DKK', 'SEK']
+                       'TWD','NOK', 'SGD', 'DKK', 'SEK', 'EUR', 'GBP']
         exchangeCleanDf['iso_code'] = isoCodeList
-        euroRate = {'id': 'DEXUSEU', 'name': 'Euro to U.S. Dollars', 'iso_code': 'EUR'}
-        ukRate = {'id': 'DEXUSUK', 'name': 'Pound Sterling to U.S. Dollars', 'iso_code': 'GBP'}
         exchangeCleanDf = exchangeCleanDf.sort_values(['name'])
         exchangeCleanDf = pd.concat([pd.DataFrame(ukRate, index = [0]), exchangeCleanDf]).reset_index(drop = True)
         exchangeCleanDf = pd.concat([pd.DataFrame(euroRate, index = [0]), exchangeCleanDf]).reset_index(drop = True)
