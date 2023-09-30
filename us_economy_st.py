@@ -499,6 +499,7 @@ class USEconomy:
                                                                                                'drawopenpath',
                                                                                                'eraseshape']})
 
+        st.dataframe(exchangeCleanDf)
     def mortgage_rates() -> None:
         mortgage15Data = fred.get_series('MORTGAGE15US', observation_start = '1/1/1992')
         mortgage15Df = pd.DataFrame(mortgage15Data).dropna(how = 'all')
