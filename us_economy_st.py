@@ -453,7 +453,7 @@ class USEconomy:
                        'SEK', 'CHF', 'TWD', 'THB', 'VEF']
         exchangeCleanDf['iso_code'] = isoCodeList
         
-        exchangeCleanDf = exchangeCleanDf.sort_values(['name'])
+        exchangeCleanDf = exchangeCleanDf.sort_values(['name', 'iso_code'])
         exchangeCleanDf = pd.concat([pd.DataFrame(ukRate, index = [0]), exchangeCleanDf]).reset_index(drop = True)
         exchangeCleanDf = pd.concat([pd.DataFrame(euroRate, index = [0]), exchangeCleanDf]).reset_index(drop = True)
         
