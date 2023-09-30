@@ -450,9 +450,9 @@ class USEconomy:
         exchangeCleanDf['iso_code'] = isoCodeList
         euroRate = {'id': 'DEXUSEU', 'name': 'Euro to U.S. Dollars', 'iso_code': 'EUR'}
         ukRate = {'id': 'DEXUSUK', 'name': 'Pound Sterling to U.S. Dollars', 'iso_code': 'GBP'}
+        exchangeCleanDf = exchangeCleanDf.sort_values(['name'])
         exchangeCleanDf = pd.concat([pd.DataFrame(ukRate, index = [0]), exchangeCleanDf]).reset_index(drop = True)
         exchangeCleanDf = pd.concat([pd.DataFrame(euroRate, index = [0]), exchangeCleanDf]).reset_index(drop = True)
-        exchangeCleanDf = exchangeCleanDf.sort_values(['name'])
         selectedName = st.selectbox('Select an exchange rate', exchangeCleanDf['name'])
 
         selectedId = exchangeCleanDf.loc[exchangeCleanDf['name'] == selectedName, 'id'].values[0]
