@@ -445,8 +445,8 @@ class USEconomy:
         exchangeCleanDf = pd.DataFrame([exchangeDict.values(), exchangeDict.keys()]).transpose()
         exchangeCleanDf.columns = ['id', 'name']
         
-        euroRate = {'id': 'DEXUSEU', 'name': 'Euro to U.S. Dollars', 'isoCode': 'EUR'}
-        ukRate = {'id': 'DEXUSUK', 'name': 'Pound Sterling to U.S. Dollars', 'isoCode': 'GBP'}
+        euroRate = {'id': 'DEXUSEU', 'name': 'Euro to U.S. Dollars', 'iso_code': 'EUR'}
+        ukRate = {'id': 'DEXUSUK', 'name': 'Pound Sterling to U.S. Dollars', 'iso_code': 'GBP'}
         
         isoCodeList = ['BRL', 'CAD', 'CNY', 'DKK', 'HKD', 'INR', 'YEN',
                        'MYR', 'MXN', 'NOK', 'SGD', 'ZAR', 'KRW', 'LKR',
