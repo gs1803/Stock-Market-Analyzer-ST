@@ -448,6 +448,7 @@ class USEconomy:
         euroRate = {'id': 'DEXUSEU', 'name': 'Euro to U.S. Dollars', 'iso_code': 'EUR'}
         ukRate = {'id': 'DEXUSUK', 'name': 'Pound Sterling to U.S. Dollars', 'iso_code': 'GBP'}
         
+        exchangeCleanDf = exchangeCleanDf.sort_values(['name'])
         isoCodeList = ['BRL', 'CAD', 'CNY', 'DKK', 'HKD', 'INR', 'YEN',
                        'MYR', 'MXN', 'NOK', 'SGD', 'ZAR', 'KRW', 'LKR',
                        'SEK', 'CHF', 'TWD', 'THB', 'VEF']
@@ -455,8 +456,6 @@ class USEconomy:
         
         exchangeCleanDf = pd.concat([pd.DataFrame(ukRate, index = [0]), exchangeCleanDf]).reset_index(drop = True)
         exchangeCleanDf = pd.concat([pd.DataFrame(euroRate, index = [0]), exchangeCleanDf]).reset_index(drop = True)
-
-        exchangeCleanDf = exchangeCleanDf.sort_values(['name']).reset_index(drop = True)
         
         selectedName = st.selectbox('Select an exchange rate', exchangeCleanDf['name'])
 
@@ -500,7 +499,6 @@ class USEconomy:
                                                                                                'drawopenpath',
                                                                                                'eraseshape']})
 
-        st.dataframe(exchangeCleanDf)
     def mortgage_rates() -> None:
         mortgage15Data = fred.get_series('MORTGAGE15US', observation_start = '1/1/1992')
         mortgage15Df = pd.DataFrame(mortgage15Data).dropna(how = 'all')
