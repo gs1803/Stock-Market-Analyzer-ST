@@ -1,6 +1,12 @@
 import streamlit as st
 import pandas as pd
 import yfinance as yf
+from pymongo.mongo_client import MongoClient
+from pymongo.server_api import ServerApi
+
+uri = st.secrets['URI_STR']
+client = MongoClient(uri, server_api = ServerApi('1'))
+db = client["ticker_details"]
 
 class StockInformation:
     def __init__(self, stock) -> None:
@@ -131,9 +137,10 @@ class StockInformation:
             StockInformation.stock_splits(self)
 
     def stock_details() -> None:
-        names_head = ['Company Name', 'Ticker', 'Industry']
-        data = pd.read_csv("stock_details.csv", encoding = 'utf-8', usecols = names_head)
-        df = pd.DataFrame(data)
+        data = db['stock_ticker_info']
+        df = pd.DataFrame(list(data.find()))
+        df.drop("_id", axis = 1, inplace = True)
+        
         df['Ticker'] = df['Ticker'].str.replace('.', '-', regex = False)
         detailChoose = st.selectbox("Select an option:", ['Ticker Details', 
                                                           'Filter by Industry', 
