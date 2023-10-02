@@ -4,7 +4,7 @@ import yfinance as yf
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 
-uri = st.secrets['URI_STR']
+uri = "mongodb+srv://guhans03:mysma@stockmarketanalyzerclus.baole73.mongodb.net/?retryWrites=true&w=majority&appName=AtlasApp"
 client = MongoClient(uri, server_api = ServerApi('1'))
 db = client["ticker_details"]
 
