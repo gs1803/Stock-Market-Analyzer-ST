@@ -10,4 +10,5 @@ class DatabaseConnector:
             cls._instance = super(DatabaseConnector, cls).__new__(cls)
             uri = st.secrets['URI_STR']
             cls._instance.client = MongoClient(uri, server_api = ServerApi('1'))
+            
         return cls._instance
