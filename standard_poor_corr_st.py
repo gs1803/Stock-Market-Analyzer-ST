@@ -5,6 +5,12 @@ import pandas as pd
 import requests
 import yfinance as yf
 import plotly.graph_objects as go
+from pymongo.mongo_client import MongoClient
+from pymongo.server_api import ServerApi
+
+uri = st.secrets['URI_STR']
+client = MongoClient(uri, server_api = ServerApi('1'))
+db = client["ticker_details"]
 
 class StandardPoorCorr:
     def save_sp500_tickers() -> list:
@@ -39,7 +45,13 @@ class StandardPoorCorr:
         main_df.to_csv('sp500_joined_closes.csv')
 
     def visualize_data() -> None:
-        df = pd.read_csv('sp500_joined_closes.csv')
+        datadb = db['sp500_joined_closes']
+        df = pd.DataFrame(list(datadb.find()))
+        df.drop("_id", axis = 1, inplace = True)
+        
+        for col in df.columns[1:]:
+            df[col] = pd.to_numeric(df[col], errors='coerce')
+        
         df_corr = df.corr(numeric_only = True)
         data = df_corr.values
 
