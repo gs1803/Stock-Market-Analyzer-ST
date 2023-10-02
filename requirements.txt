@@ -10,3 +10,4 @@ keras==2.13.1rc0
 scikit-learn==1.2.2
 xgboost==1.7.5
 millify==0.1.1
+pymongo==4.5.0
