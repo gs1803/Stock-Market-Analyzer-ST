@@ -5,11 +5,10 @@ import pandas as pd
 import requests
 import yfinance as yf
 import plotly.graph_objects as go
-from pymongo.mongo_client import MongoClient
-from pymongo.server_api import ServerApi
+from stock_db_connector import DatabaseConnector
 
-uri = st.secrets['URI_STR']
-client = MongoClient(uri, server_api = ServerApi('1'))
+db_connector = DatabaseConnector()
+client = db_connector.client
 db = client["ticker_details"]
 
 class StandardPoorCorr:
