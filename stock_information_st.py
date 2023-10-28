@@ -82,7 +82,7 @@ class StockInformation:
     
     def stock_info(self) -> None:
         infoDictionary = f"https://query2.finance.yahoo.com/v6/finance/quoteSummary/AAPL?modules=financialData&modules=quoteType&modules=defaultKeyStatistics&modules=assetProfile&modules=summaryDetail&ssl=true"
-        #infoDictionary = self.stock.info
+        infoDictionary = self.stock.info
         st.write(infoDictionary)
         data = {
             'Metric': [],
