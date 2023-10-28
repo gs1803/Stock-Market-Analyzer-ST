@@ -171,7 +171,7 @@ class StockInformation:
                 st.dataframe(detail_stock, hide_index = True, use_container_width = True)
             # try:
             userStock = StockInformation(yf.Ticker(details))
-            StockInformation.stock_info(userStock)
+            # StockInformation.stock_info(userStock)
             StockInformation.stock_news(userStock)
             # except Exception:
             #     st.write(" ")
