@@ -90,7 +90,6 @@ def stock_info():
 def industry_info():
     st.header("Ticker Information")
     StockInformation.stock_details()
-    yf.Ticker('AAPL').news
 
 def holder_info():
     st.header("Holders Information")
