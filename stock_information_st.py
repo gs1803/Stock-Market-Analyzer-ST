@@ -60,25 +60,25 @@ class StockInformation:
         except KeyError:
             st.write(" ")
 
-    def stock_news(self) -> None:
-        newsList = self.stock.news
-        relevantInfo = []
-        relatedStocks = []
+    # def stock_news(self) -> None:
+    #     newsList = self.stock.news
+    #     relevantInfo = []
+    #     relatedStocks = []
 
-        st.subheader("Related News Articles")
-        for news in newsList:
-            title = news['title'].rstrip('\\').replace(':', '\:').replace('$', '\$')
-            link = news['link']
-            relatedTicker = news['relatedTickers']
-            relevantInfo.append({'title': title, 'link': link})
-            relatedStocks.extend(relatedTicker)
+    #     st.subheader("Related News Articles")
+    #     for news in newsList:
+    #         title = news['title'].rstrip('\\').replace(':', '\:').replace('$', '\$')
+    #         link = news['link']
+    #         relatedTicker = news['relatedTickers']
+    #         relevantInfo.append({'title': title, 'link': link})
+    #         relatedStocks.extend(relatedTicker)
         
-        for item in relevantInfo:
-            st.markdown("- [{}]({})".format(item['title'], item['link']))
+    #     for item in relevantInfo:
+    #         st.markdown("- [{}]({})".format(item['title'], item['link']))
 
-        st.subheader("Related Tickers")
-        uniqueTickers = list(set(relatedStocks))
-        st.markdown("- " + ", ".join(uniqueTickers))
+    #     st.subheader("Related Tickers")
+    #     uniqueTickers = list(set(relatedStocks))
+    #     st.markdown("- " + ", ".join(uniqueTickers))
     
     def stock_info(self) -> None:
         infoDictionary = self.stock.info
