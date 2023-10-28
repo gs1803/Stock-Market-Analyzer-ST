@@ -81,7 +81,7 @@ class StockInformation:
         st.markdown("- " + ", ".join(uniqueTickers))
     
     def stock_info(self) -> None:
-        infoDictionary = f"https://query2.finance.yahoo.com/v6/finance/quoteSummary/{self.stock}?modules=financialData&modules=quoteType&modules=defaultKeyStatistics&modules=assetProfile&modules=summaryDetail&ssl=true"
+        infoDictionary = f"https://query2.finance.yahoo.com/v8/finance/quoteSummary/{self.stock}?modules=financialData&modules=quoteType&modules=defaultKeyStatistics&modules=assetProfile&modules=summaryDetail&ssl=true"
         #infoDictionary = self.stock.info
         print(infoDictionary)
         data = {
