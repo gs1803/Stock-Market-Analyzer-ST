@@ -61,6 +61,7 @@ class StockInformation:
             st.write(" ")
 
     def stock_news(self) -> None:
+        print('Test')
         newsList = self.stock.news
         relevantInfo = []
         relatedStocks = []
@@ -81,6 +82,7 @@ class StockInformation:
         st.markdown("- " + ", ".join(uniqueTickers))
     
     def stock_info(self) -> None:
+        print('Test')
         infoDictionary = self.stock.info
         data = {
             'Metric': [],
