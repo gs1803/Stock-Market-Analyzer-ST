@@ -172,7 +172,7 @@ class StockInformation:
             try:
                 userStock = StockInformation(yf.Ticker(details))
                 StockInformation.stock_info(userStock)
-                StockInformation.stock_news('AAPL')
+                StockInformation.stock_news(userStock)
             except Exception:
                 st.write(" ")
 
