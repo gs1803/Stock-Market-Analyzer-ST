@@ -169,12 +169,17 @@ class StockInformation:
             else:
                 detail_stock = (df[df['Ticker'] == details])
                 st.dataframe(detail_stock, hide_index = True, use_container_width = True)
-            # try:
-            userStock = StockInformation(yf.Ticker(details))
-            StockInformation.stock_info(userStock)
-            StockInformation.stock_news(userStock)
-            # except Exception:
-            #     st.write(" ")
+            try:
+                userStock = StockInformation(yf.Ticker(details))
+                StockInformation.stock_info(userStock)
+            except Exception:
+                 st.write(" ")
+
+            try:
+                userStock = StockInformation(yf.Ticker(details))
+                StockInformation.stock_news(userStock)
+            except Exception:
+                 st.write(" ")
 
         elif detailChoose == 'Filter by Industry':
             filterCol, searchCol = st.columns([5, 5])
