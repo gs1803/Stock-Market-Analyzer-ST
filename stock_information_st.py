@@ -171,9 +171,11 @@ class StockInformation:
                 st.dataframe(detail_stock, hide_index = True, use_container_width = True)
             try:
                 userStock = StockInformation(yf.Ticker(details))
+                print(test)
                 StockInformation.stock_info(userStock)
                 StockInformation.stock_news(userStock)
             except Exception:
+                print(Exception)
                 st.write(" ")
 
         elif detailChoose == 'Filter by Industry':
