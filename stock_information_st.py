@@ -172,11 +172,6 @@ class StockInformation:
             try:
                 userStock = StockInformation(yf.Ticker(details))
                 StockInformation.stock_info(userStock)
-            except Exception:
-                 st.write(" ")
-
-            try:
-                userStock = StockInformation(yf.Ticker(details))
                 StockInformation.stock_news(userStock)
             except Exception:
                  st.write(" ")
