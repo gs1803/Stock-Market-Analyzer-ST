@@ -292,10 +292,9 @@ class USEconomy:
                             newshape = dict(line_color = 'white'))
             st.metric(label = f"Latest GDP Percent Change From Year Ago ({gdpDf.index[-1].strftime('%Y-%m')}):", 
                         value = f"{gdpDf['gdp_percent'].iloc[-1]:.3f}%", 
-                        delta = f"{gdpDf['gdp_percent'].iloc[-1] - gdpDf['gdp_percent'].iloc[-2]:.3f} From Previous Month",
-                        delta_color = 'inverse')
+                        delta = f"{gdpDf['gdp_percent'].iloc[-1] - gdpDf['gdp_percent'].iloc[-2]:.3f} From Previous Month")
             st.plotly_chart(fig, use_container_width = True, config = {'displaylogo': False, 
-                                                                    'modeBarButtonsToAdd': ['drawline',
+                                                                       'modeBarButtonsToAdd': ['drawline',
                                                                                             'drawopenpath',
                                                                                             'eraseshape']})
         if gdpOption == "GDP Percent Change":
@@ -325,8 +324,7 @@ class USEconomy:
                             newshape = dict(line_color = 'white'))
             st.metric(label = f"Latest GDP Percent Change ({gdpDfPC.index[-1].strftime('%Y-%m')}):", 
                         value = f"{gdpDfPC['gdp_percent'].iloc[-1]:.3f}%", 
-                        delta = f"{gdpDfPC['gdp_percent'].iloc[-1] - gdpDfPC['gdp_percent'].iloc[-2]:.3f} From Previous Month",
-                        delta_color = 'inverse')
+                        delta = f"{gdpDfPC['gdp_percent'].iloc[-1] - gdpDfPC['gdp_percent'].iloc[-2]:.3f} From Previous Month")
             st.plotly_chart(fig, use_container_width = True, config = {'displaylogo': False, 
                                                                     'modeBarButtonsToAdd': ['drawline',
                                                                                             'drawopenpath',
