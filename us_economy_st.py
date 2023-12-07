@@ -183,7 +183,7 @@ class USEconomy:
         unempStateDf = unempStateDf[~unempStateDf['title'].str.contains(',')]
         unempStateDf = unempStateDf[~unempStateDf['title'].str.contains('Region')]
         unempStateDf = unempStateDf[~unempStateDf['title'].str.contains('Puerto Rico')]
-        unempStateDf = unempStateDf[~unempStateDf['title'].str.contains('Census Division')]
+        unempStateDf = unempStateDf[~unempStateDf['title'].str.contains('Division')]
         unempStateDf = unempStateDf[~unempStateDf['title'].str.contains('DISCONTINUED')]
 
         cleanUnempStateDf = unempStateDf[['id', 'title']].reset_index(drop = True)
