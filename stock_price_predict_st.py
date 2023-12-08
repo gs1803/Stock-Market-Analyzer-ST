@@ -41,8 +41,8 @@ class StockPricePredictor:
         scaledPrices = scaler.fit_transform(df)
         x_train = []
         y_train = []
-        for i in range(120, len(scaledPrices)):
-            x_train.append(scaledPrices[i - 120:i, 0])
+        for i in range(240, len(scaledPrices)):
+            x_train.append(scaledPrices[i - 240:i, 0])
             y_train.append(scaledPrices[i, 0])
         x_train, y_train = np.array(x_train), np.array(y_train)
 
@@ -62,20 +62,20 @@ class StockPricePredictor:
                 model.fit(x_train, y_train, batch_size = 32, epochs = 1, verbose = 0)
             progressBar.empty()
 
-        x_test = scaledPrices[-120:]
-        x_test = np.reshape(x_test, (1, 120, 1))
+        x_test = scaledPrices[-240:]
+        x_test = np.reshape(x_test, (1, 240, 1))
 
         predictions = model.predict(x_test, verbose = 0)
         predictions = scaler.inverse_transform(predictions)
 
         rmse = np.sqrt(mean_squared_error(df[-1], predictions))
 
-        predicted = np.concatenate((df[-120:], predictions))
-        predictedDf = pd.DataFrame(predicted, index = self.stock.index[-121:], columns = ['predicted_values'])
+        predicted = np.concatenate((df[-240:], predictions))
+        predictedDf = pd.DataFrame(predicted, index = self.stock.index[-241:], columns = ['predicted_values'])
 
         fig = go.Figure()
-        fig.add_trace(go.Scatter(x = self.stock.index[:-120], y = self.stock['Adj Close'], name = 'Actual'))
-        fig.add_trace(go.Scatter(x = predictedDf.index, y = self.stock['Adj Close'][-121:], name = 'Actual', showlegend = False))
+        fig.add_trace(go.Scatter(x = self.stock.index[:-240], y = self.stock['Adj Close'], name = 'Actual'))
+        fig.add_trace(go.Scatter(x = predictedDf.index, y = self.stock['Adj Close'][-241:], name = 'Actual', showlegend = False))
         fig.add_trace(go.Scatter(x = predictedDf.index, y = predictedDf['predicted_values'], name = 'Predictions',
                                  line = dict(color = 'red')))
         
