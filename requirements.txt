@@ -1,5 +1,5 @@
 streamlit==1.29.0
-yfinance==0.2.32
+yfinance==0.2.33
 tensorflow==2.13.0rc0
 plotly==5.14.1
 fredapi==0.5.0
