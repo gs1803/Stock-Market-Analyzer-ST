@@ -62,7 +62,6 @@ class StockInformation:
 
     def stock_news(self) -> None:
         newsList = self.stock.news
-        st.write(newsList)
         relevantInfo = []
         relatedStocks = []
 
@@ -173,10 +172,9 @@ class StockInformation:
             try:
                 userStock = StockInformation(yf.Ticker(details))
                 StockInformation.stock_info(userStock)
-                # StockInformation.stock_news(userStock)
+                StockInformation.stock_news(userStock)
             except Exception:
                  st.write(" ")
-            StockInformation.stock_news(userStock)
 
         elif detailChoose == 'Filter by Industry':
             filterCol, searchCol = st.columns([5, 5])
