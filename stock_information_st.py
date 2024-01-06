@@ -62,6 +62,7 @@ class StockInformation:
 
     def stock_news(self) -> None:
         newsList = self.stock.news
+        st.write(newsList)
         relevantInfo = []
         relatedStocks = []
 
