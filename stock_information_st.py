@@ -7,6 +7,20 @@ db_connector = DatabaseConnector()
 client = db_connector.client
 db = client["ticker_details"]
 
+def stock_ticker_list() -> None:
+    data = db['all_ticker_info']
+    df = pd.DataFrame(list(data.find()))
+    df = df.drop("_id", axis = 1)
+
+    df['symbol'] = df['symbol'].str.replace('.', '-', regex = False)
+    ticker_list = list(df['symbol'])
+    ticker_list.append('^GSPC')
+    ticker_list.append('^DJI')
+    ticker_list.append('^RUT')
+    ticker_list.append('^IXIC')
+    
+    return ticker_list
+
 class StockInformation:
     def __init__(self, stock) -> None:
         self.stock = stock
@@ -81,7 +95,9 @@ class StockInformation:
         st.markdown("- " + ", ".join(uniqueTickers))
     
     def stock_info(self) -> None:
-        infoDictionary = self.stock.info
+        if self.stock:
+            infoDictionary = self.stock.info
+
         data = {
             'Metric': [],
             'Value': []
@@ -136,11 +152,11 @@ class StockInformation:
             StockInformation.stock_splits(self)
 
     def stock_details() -> None:
-        data = db['stock_ticker_info']
+        data = db['all_ticker_info']
         df = pd.DataFrame(list(data.find()))
-        df.drop("_id", axis = 1, inplace = True)
-        
-        df['Ticker'] = df['Ticker'].str.replace('.', '-', regex = False)
+        df = df.drop("_id", axis = 1)
+
+        df['symbol'] = df['symbol'].str.replace('.', '-', regex = False)
         detailChoose = st.selectbox("Select an option:", ['Ticker Details', 
                                                           'Filter by Industry', 
                                                           'Filter by Company'])
@@ -160,25 +176,29 @@ class StockInformation:
             if detailOption == 'NASDAQ Composite':
                 details = '^IXIC'
             
-            if not details:
+            if details == '':
                 st.write(" ")
             elif not details.isascii():
                 st.write(" ")
-            elif (df[df['Ticker'] == details].empty):
-                st.write("No Company and Industry Information Available for the Ticker")
             else:
-                detail_stock = (df[df['Ticker'] == details])
-                st.dataframe(detail_stock, hide_index = True, use_container_width = True)
-            try:
-                userStock = StockInformation(yf.Ticker(details))
-                StockInformation.stock_info(userStock)
-                StockInformation.stock_news(userStock)
-            except Exception:
-                 st.write(" ")
+                detail_stock = (df[df['symbol'] == details])
+                if detail_stock.empty:
+                    st.write("No Company and Industry Information Available for the Ticker")
+                else:
+                    st.dataframe(detail_stock[['symbol', 'name', 'industry']], hide_index = True, use_container_width = True)
+                try:
+                    userStock = StockInformation(yf.Ticker(details))
+                    StockInformation.stock_info(userStock)
+                    StockInformation.stock_news(userStock)
+                except:
+                    st.write(" ")
 
         elif detailChoose == 'Filter by Industry':
             filterCol, searchCol = st.columns([5, 5])
-            df_sort = sorted(set(df['Industry']))
+            df['industry'] = df['industry'].str.lstrip()
+            df['industry'] = df['industry'].str.rstrip()
+            df['industry'] = df['industry'].str.lower()
+            df_sort = sorted(set(df['industry']))[1:]
 
             industry_filter = filterCol.text_input("Filter industries by alphabet (A-Z):").lower()
             alpha_list = [element for element in df_sort if element.startswith(f"{industry_filter}")]
@@ -187,12 +207,12 @@ class StockInformation:
             
             industryChoice = searchCol.text_input("Enter an industry name: ").lower()
             if industryChoice:
-                detailIndustry = (df[df['Industry'] == industryChoice])
-                searchCol.dataframe(detailIndustry[['Ticker', 'Company Name']], hide_index = True, use_container_width = True)
+                detailIndustry = (df[df['industry'] == industryChoice])
+                searchCol.dataframe(detailIndustry[['symbol', 'name']], hide_index = True, use_container_width = True)
 
         elif detailChoose == 'Filter by Company':
             company_filter = st.text_input("Filter companies by alphabet (A-Z):").title()
 
-            filtered_df = df[df['Company Name'].str.startswith(company_filter)]
-            sorted_df = filtered_df.sort_values('Company Name').reset_index(drop = True)
-            st.dataframe(sorted_df[['Company Name', 'Ticker']], hide_index = True, use_container_width = True)
+            filtered_df = df[df['name'].str.startswith(company_filter)]
+            sorted_df = filtered_df.sort_values('name').reset_index(drop = True)
+            st.dataframe(sorted_df[['name', 'symbol']], hide_index = True, use_container_width = True)
