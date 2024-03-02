@@ -6,7 +6,9 @@ import pytz
 from datetime import datetime
 from millify import millify
 from plotly.subplots import make_subplots
+from stock_information_st import stock_ticker_list
 from technical_analysis_st import TechnicalAnalysis
+from stock_downloader_st import download_stock_data
 
 class StockAnalyzer:
     def __init__(self, stock, titleStock) -> None:
@@ -20,7 +22,7 @@ class StockAnalyzer:
             self.mktCap = yf.Ticker(titleStock).info['marketCap']
         except:
             self.mktCap = ('')
-        
+            
         self.dayStock = yf.download(titleStock, period = '7d', progress = False)
         self.etNow = datetime.now(pytz.timezone('US/Eastern')).date()
         self.config = {'displaylogo': False, 'modeBarButtonsToAdd': ['drawline', 'drawopenpath', 'eraseshape']}
@@ -160,6 +162,34 @@ class StockAnalyzer:
                           yaxis2 = dict(title = 'Volume'),
                           newshape = dict(line_color = 'white'))
         fig.update_layout(xaxis_rangeslider_visible = False)
+        st.plotly_chart(fig, use_container_width = True, config = self.config)
+
+    def stock_comparer(self) -> None:
+        fig = make_subplots(specs=[[{"secondary_y": True}]])
+        selected_names = st.multiselect('Select up to 5 Stocks:', 
+                                        options=stock_ticker_list(),
+                                        default = self.titleStock,
+                                        max_selections=5)
+
+        if selected_names:
+            selected_names.sort()
+            st.write(f"Latest Stock Adjusted Close Price ({self.stock.index[-1].date()})")
+            columns = st.columns([2, 2, 2, 2, 2])
+            fig = go.Figure()
+
+            for name, column in zip(selected_names, columns):
+                stock_data = download_stock_data(name, self.stock.index[0], self.stock.index[-1])
+                fig.add_trace(go.Scatter(x=stock_data.index, y=stock_data['Adj Close'], name=name))
+
+                column.metric(label = f"{name}",
+                              value = f"{stock_data['Adj Close'].iloc[-1]:.2f}", 
+                              delta = f"{stock_data['Adj Close'].iloc[-1] - stock_data['Adj Close'].iloc[-2]:.2f}")
+
+            fig.update_layout(title='Stock Price Comparison',
+                              xaxis_title='Date',
+                              yaxis_title='Adjusted Close Price',
+                              legend_title='Stocks')
+        
         st.plotly_chart(fig, use_container_width = True, config = self.config)
 
     def stock_moving_average(self) -> None:
@@ -440,10 +470,12 @@ class StockAnalyzer:
             'RSI Strategy': self.stock_rsi,
             'MACD Strategy': self.stock_macd,
             'Bollinger Bands Strategy': self.stock_bollinger,
-            'Donchian Breakout Strategy': self.stock_donchian}
+            'Donchian Breakout Strategy': self.stock_donchian,
+            'Stock Comparer': self.stock_comparer}
 
         graphOptionList = list(graphOptions.keys())
-        graphTab1, graphTab2 = st.tabs(['Information Graphs', 'Technical Analysis Graphs'])
+        graphTab1, graphTab2, graphTab3 = st.tabs(['Information Graphs', 'Technical Analysis Graphs',
+                                                   'Stock Comparer'])
         selectedGraphOption1 = graphTab1.selectbox("Select an option:", graphOptionList[0:5])
         selectedGraphOption2 = graphTab2.selectbox("Select an option:", graphOptionList[5:10])
 
@@ -454,3 +486,7 @@ class StockAnalyzer:
         with graphTab2:
             selectedGraphFunction2 = graphOptions.get(selectedGraphOption2)
             selectedGraphFunction2()
+
+        with graphTab3:
+            selectedGraphFunction3 = graphOptions.get(graphOptionList[10])
+            selectedGraphFunction3()
