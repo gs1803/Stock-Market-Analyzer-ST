@@ -7,6 +7,7 @@ from stock_information_st import StockInformation
 from standard_poor_corr_st import StandardPoorCorr
 from us_economy_st import USEconomy
 from stock_price_predict_st import StockPricePredictor
+from stock_downloader_st import download_stock_data
 
 etNow = datetime.now(pytz.timezone('US/Eastern')).date()
 
@@ -25,10 +26,9 @@ def stock_info():
                              max_value = etNow)
     end = end + timedelta(days = 1)
     end = str(end).replace('/', '-')
-       
+
     startDate = datetime.strptime(start, '%Y-%m-%d')
     endDate = datetime.strptime(end, '%Y-%m-%d')
-    dateDiff = abs((startDate - endDate).days) - 1
 
     if not start:
         pass
@@ -52,35 +52,7 @@ def stock_info():
         elif not userStock.isascii():
             st.write(" ")
         else:
-            if dateDiff == 0:
-                if startDate.isoweekday() == 6:
-                    start = startDate - timedelta(days = 1)                    
-                    end = endDate - timedelta(days = 1)
-                    inputStock = yf.download(f"{userStock}", start, end, interval = '1m', progress = False)
-                elif startDate.isoweekday() == 7:
-                    start = startDate - timedelta(days = 2)                    
-                    end = endDate - timedelta(days = 2)
-                    inputStock = yf.download(f"{userStock}", start, end, interval = '1m', progress = False)
-                elif etNow - startDate.date() >= timedelta(days = 30):
-                    inputStock = yf.download(f"{userStock}", start, end, progress = False)
-                else:
-                    inputStock = yf.download(f"{userStock}", start, end, interval = '1m', progress = False)
-            elif dateDiff == 1:
-                if startDate.isoweekday() == 6 or startDate.isoweekday() == 7 or endDate.isoweekday() - 1 == 6 or endDate.isoweekday() - 1 == 7:
-                    if startDate.isoweekday() == 5:
-                        end = endDate - timedelta(days = 1)
-                        inputStock = yf.download(f"{userStock}", start, end, interval = '1m', progress = False)
-                    else:
-                        start = startDate - timedelta(days = 1)                    
-                        end = endDate - timedelta(days = 1)
-                        inputStock = yf.download(f"{userStock}", start, end, interval = '1m', progress = False)
-                else:
-                    inputStock = yf.download(f"{userStock}", start, end, progress = False)
-            elif dateDiff == 2 and startDate.isoweekday() == 5:
-                end = endDate - timedelta(days = 2)
-                inputStock = yf.download(f"{userStock}", start, end, interval = '1m', progress = False)
-            else:
-                inputStock = yf.download(f"{userStock}", start, end, progress = False)
+            inputStock = download_stock_data(userStock, startDate, endDate)
             if inputStock.empty:
                 st.write("No Information Available for the Ticker.")
             else:
