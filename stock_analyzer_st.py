@@ -166,8 +166,15 @@ class StockAnalyzer:
 
     def stock_comparer(self) -> None:
         fig = make_subplots(specs=[[{"secondary_y": True}]])
+        ticker_list = stock_ticker_list()
+
+        if self.titleStock not in ticker_list:
+            ticker_list.append(self.titleStock)
+
+        ticker_list = ticker_list.sort()
+
         selected_names = st.multiselect('Select up to 5 Stocks:', 
-                                        options=stock_ticker_list(),
+                                        options=ticker_list,
                                         default = self.titleStock,
                                         max_selections=5)
 
