@@ -18,6 +18,7 @@ def stock_ticker_list() -> None:
     ticker_list.append('^DJI')
     ticker_list.append('^RUT')
     ticker_list.append('^IXIC')
+    ticker_list.append('GOOGL')
     
     return ticker_list
 
