@@ -171,7 +171,7 @@ class StockAnalyzer:
         if self.titleStock not in ticker_list:
             ticker_list.append(self.titleStock)
 
-        ticker_list = ticker_list.sort()
+        ticker_list = sorted(ticker_list)
 
         selected_names = st.multiselect('Select up to 5 Stocks:', 
                                         options=ticker_list,
