@@ -10,9 +10,35 @@ from millify import millify
 from plotly.subplots import make_subplots
 from stock_downloader_st import download_stock_data
 
-import ctypes
-technical_analysis_module = ctypes.CDLL('./technical_analysis_module.so')
-TechnicalAnalysis = technical_analysis_module.TechnicalAnalysis()
+import sys
+import os
+import pkg_resources
+
+# Find Python Include Directory
+python_include_dir = os.path.join(os.path.dirname(sys.executable), 'include')
+
+# Find Pybind11 Include Directory
+pybind11_include_dir = pkg_resources.resource_filename('pybind11', 'include')
+
+st.write("Python Include Directory:", python_include_dir)
+st.write("Pybind11 Include Directory:", pybind11_include_dir)
+
+# import subprocess
+
+# cpp_file = "technical_analysis.cpp"
+# output_so_file = "technical_analysis_module.so"
+# compile_command = "g++ -Wall -shared -std=c++20 -fPIC -I/path/to/python/include/python3.11 -I/path/to/pybind11/include -o technical_analysis_module.so technical_analysis.cpp"
+
+# # Execute the compilation command
+# try:
+#     subprocess.run(compile_command, shell=True, check=True)
+#     print("Compilation successful")
+# except subprocess.CalledProcessError as e:
+#     print(f"Compilation failed: {e}")
+
+# import ctypes
+# technical_analysis_module = ctypes.CDLL('./technical_analysis_module.so')
+# TechnicalAnalysis = technical_analysis_module.TechnicalAnalysis()
 
 class StockAnalyzer:
     def __init__(self, stock, titleStock) -> None:
