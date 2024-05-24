@@ -8,8 +8,15 @@ from stock_information_st import stock_ticker_list
 from datetime import datetime
 from millify import millify
 from plotly.subplots import make_subplots
-import technical_analysis_module
 from stock_downloader_st import download_stock_data
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(current_dir)
+
+try:
+    import import technical_analysis_module
+except ImportError as e:
+    st.error(f"Error importing module: {e}")
 
 TechnicalAnalysis = technical_analysis_module.TechnicalAnalysis()
 
