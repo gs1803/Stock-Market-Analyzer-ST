@@ -16,7 +16,8 @@ import pkg_resources
 
 import subprocess
 
-command = ["python", "-m", "pybind11", "--includes"]
+# command = ["python", "-m", "pybind11", "--includes"]
+commans = "pip show pybind11"
 try:
     result = subprocess.run(command, capture_output=True, text=True, check=True)
     output = result.stdout
