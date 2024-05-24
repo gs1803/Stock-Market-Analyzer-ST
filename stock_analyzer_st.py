@@ -10,6 +10,9 @@ from millify import millify
 from plotly.subplots import make_subplots
 from stock_downloader_st import download_stock_data
 
+import os
+import sys
+
 current_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(current_dir)
 st.write(current_dir)
