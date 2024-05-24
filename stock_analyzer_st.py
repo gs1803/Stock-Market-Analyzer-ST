@@ -23,8 +23,8 @@ python_include_dir = distutils.sysconfig.get_python_inc()
 # Find Pybind11 Include Directory
 pybind11_include_dir = pybind11.get_include()
 
-st.write("Python Include Directory:", python_include_dir)
-st.write("Pybind11 Include Directory:", pybind11_include_dir)
+print("Python Include Directory:", python_include_dir)
+print("Pybind11 Include Directory:", pybind11_include_dir)
 
 # import subprocess
 
