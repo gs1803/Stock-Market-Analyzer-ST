@@ -12,7 +12,7 @@ from stock_downloader_st import download_stock_data
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(current_dir)
-
+st.write(current_dir)
 try:
     import import technical_analysis_module
 except ImportError as e:
