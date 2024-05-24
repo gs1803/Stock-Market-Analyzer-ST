@@ -16,12 +16,13 @@ import pkg_resources
 
 import subprocess
 
-# Run the command
 command = ["python3", "-m", "pybind11", "--includes"]
-output = subprocess.check_output(command).decode('utf-8')
-
-# Display the output in Streamlit
-st.code(output)
+try:
+    result = subprocess.run(command, capture_output=True, text=True, check=True)
+    output = result.stdout
+    st.code(output)
+except subprocess.CalledProcessError as e:
+    st.error(f"Command '{' '.join(command)}' returned non-zero exit status {e.returncode}")
 
 # import subprocess
 
