@@ -10,17 +10,8 @@ from millify import millify
 from plotly.subplots import make_subplots
 from stock_downloader_st import download_stock_data
 
-import os
-import sys
-
-current_dir = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(current_dir)
-st.write(current_dir)
-try:
-    import technical_analysis_module
-except ImportError as e:
-    st.error(f"Error importing module: {e}")
-
+import ctypes
+technical_analysis_module = ctypes.CDLL('./technical_analysis_module.so')
 TechnicalAnalysis = technical_analysis_module.TechnicalAnalysis()
 
 class StockAnalyzer:
