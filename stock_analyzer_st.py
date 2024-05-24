@@ -14,11 +14,14 @@ import sys
 import os
 import pkg_resources
 
+import distutils.sysconfig
+import pybind11
+
 # Find Python Include Directory
-python_include_dir = os.path.join(os.path.dirname(sys.executable), 'include')
+python_include_dir = distutils.sysconfig.get_python_inc()
 
 # Find Pybind11 Include Directory
-pybind11_include_dir = pkg_resources.resource_filename('pybind11', 'include')
+pybind11_include_dir = pybind11.get_include()
 
 st.write("Python Include Directory:", python_include_dir)
 st.write("Pybind11 Include Directory:", pybind11_include_dir)
