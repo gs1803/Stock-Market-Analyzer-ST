@@ -14,17 +14,14 @@ import sys
 import os
 import pkg_resources
 
-import distutils.sysconfig
-import pybind11
+import subprocess
 
-# Find Python Include Directory
-python_include_dir = distutils.sysconfig.get_python_inc()
+# Run the command
+command = ["python3", "-m", "pybind11", "--includes"]
+output = subprocess.check_output(command).decode('utf-8')
 
-# Find Pybind11 Include Directory
-pybind11_include_dir = pybind11.get_include()
-
-print("Python Include Directory:", python_include_dir)
-print("Pybind11 Include Directory:", pybind11_include_dir)
+# Display the output in Streamlit
+st.code(output)
 
 # import subprocess
 
