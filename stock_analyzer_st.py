@@ -4,17 +4,12 @@ import plotly.graph_objects as go
 import numpy as np
 import pandas as pd
 import pytz
+import technical_analysis_module
 from stock_information_st import stock_ticker_list
 from datetime import datetime
 from millify import millify
 from plotly.subplots import make_subplots
 from stock_downloader_st import download_stock_data
-
-import ctypes
-try:
-    technical_analysis_module = ctypes.CDLL('./technical_analysis_module.so')
-except OSError as e:
-    st.error(f"Error loading shared object file: {e}")
 
 TechnicalAnalysis = technical_analysis_module.TechnicalAnalysis()
 
