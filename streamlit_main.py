@@ -8,7 +8,6 @@ from standard_poor_corr_st import StandardPoorCorr
 from us_economy_st import USEconomy
 from stock_price_predict_st import StockPricePredictor
 from stock_downloader_st import download_stock_data
-import subprocess
 
 etNow = datetime.now(pytz.timezone('US/Eastern')).date()
 
