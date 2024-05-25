@@ -9,7 +9,6 @@ from us_economy_st import USEconomy
 from stock_price_predict_st import StockPricePredictor
 from stock_downloader_st import download_stock_data
 import subprocess
-import pybind11
 
 etNow = datetime.now(pytz.timezone('US/Eastern')).date()
 
@@ -152,7 +151,7 @@ def main():
 if __name__ == "__main__":
     main()
         # Command to get the pybind11 includes
-    command = ["python3", "-m", "pybind11", "--includes"]
+    command = ["python3", "-m", "numpy", "--includes"]
 
     # Execute the command
     try:
