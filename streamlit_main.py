@@ -156,6 +156,6 @@ if __name__ == "__main__":
     # Execute the command
     try:
         output = subprocess.check_output(command, stderr=subprocess.STDOUT, text=True)
-        print(output.strip())  # Print the includes path
+        st.write(output.strip())  # Print the includes path
     except subprocess.CalledProcessError as e:
-        print("Error:", e.output)
+        st.write("Error:", e.output)
