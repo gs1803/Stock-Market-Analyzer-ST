@@ -150,27 +150,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-        # Command to get the pybind11 includes
-    command = [
-        "g++",
-        "-Wall",
-        "-shared",
-        "-std=c++20",
-        "-fPIC",
-        "-I/usr/local/include/python3.11",
-        "-I/home/appuser/.local/lib/python3.11/site-packages/pybind11/include",
-        "-o",
-        "technical_analysis_module.so",
-        "technical_analysis.cpp"
-    ]
-    # Execute the command
-    try:
-        subprocess.run(command, check=True)
-        print("Compilation successful!")
-    except subprocess.CalledProcessError as e:
-        print("Compilation failed:", e)
-
-    with open("technical_analysis_module.so", "rb") as f:
-        data = f.read()
-    st.download_button(label="Download Compiled File", data=data, file_name="technical_analysis_module.so", mime="application/octet-stream")
- 
