@@ -9,6 +9,7 @@ from us_economy_st import USEconomy
 from stock_price_predict_st import StockPricePredictor
 from stock_downloader_st import download_stock_data
 import subprocess
+import pybind11
 
 etNow = datetime.now(pytz.timezone('US/Eastern')).date()
 
