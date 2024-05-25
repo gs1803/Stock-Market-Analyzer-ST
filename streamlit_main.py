@@ -161,8 +161,6 @@ if __name__ == "__main__":
         "-I/home/appuser/.local/lib/python3.11/site-packages/pybind11/includee",
         "-o",
         "technical_analysis_module.so",
-        "-undefined",
-        "dynamic_lookup",
         "technical_analysis.cpp"
     ]
     # Execute the command
