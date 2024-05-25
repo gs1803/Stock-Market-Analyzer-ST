@@ -158,7 +158,7 @@ if __name__ == "__main__":
         "-std=c++20",
         "-fPIC",
         "-I/usr/local/include/python3.11",
-        "-I/home/appuser/.local/lib/python3.11/site-packages/pybind11/includee",
+        "-I/home/appuser/.local/lib/python3.11/site-packages/pybind11/include",
         "-o",
         "technical_analysis_module.so",
         "technical_analysis.cpp"
