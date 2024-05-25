@@ -2,16 +2,13 @@ import streamlit as st
 import yfinance as yf
 import plotly.graph_objects as go
 import numpy as np
-import pandas as pd
 import pytz
-import technical_analysis_module
 from stock_information_st import stock_ticker_list
 from datetime import datetime
 from millify import millify
 from plotly.subplots import make_subplots
+from technical_analysis_st import TechnicalAnalysis
 from stock_downloader_st import download_stock_data
-
-TechnicalAnalysis = technical_analysis_module.TechnicalAnalysis()
 
 class StockAnalyzer:
     def __init__(self, stock, titleStock) -> None:
@@ -21,7 +18,6 @@ class StockAnalyzer:
             self.companyStock = yf.Ticker(titleStock).info['longName']
         except:
             self.companyStock = ('')
-            
         try:
             self.mktCap = yf.Ticker(titleStock).info['marketCap']
         except:
@@ -282,17 +278,13 @@ class StockAnalyzer:
         st.plotly_chart(fig, use_container_width = True, config = self.config)
 
     def stock_macd(self) -> None:
-        df_macd_cpp = TechnicalAnalysis.macd_calculations(self.stock['Adj Close'], 26, 12, 9)
-        macd_buy_price, macd_sell_price = TechnicalAnalysis.implement_macd(self.stock['Adj Close'], df_macd_cpp)
+        df_macd = TechnicalAnalysis.macd_calculations(self.stock['Adj Close'], 26, 12, 9)
+        macd_buy_price, macd_sell_price = TechnicalAnalysis.implement_macd(self.stock['Adj Close'], df_macd)        
         fig = make_subplots(rows = 2, cols = 1, 
                             shared_xaxes = True, 
                             vertical_spacing = 0.1, 
                             row_heights = [0.75, 0.25])
         
-        df_macd = pd.DataFrame(df_macd_cpp).T
-        df_macd = df_macd.rename(columns={0: 'macd', 1: 'signal', 2: 'hist'})
-        df_macd = df_macd.drop(0)
-
         fig.add_trace(go.Scatter(
             x = self.stock.index,
             y = self.stock['Adj Close'],
@@ -367,8 +359,8 @@ class StockAnalyzer:
         ))
     
         fig.add_trace(go.Scatter(
-            x = self.stock.index[20:],
-            y = self.stock['upper_bb'][20:],
+            x = self.stock.index,
+            y = self.stock['upper_bb'],
             mode = 'lines',
             name = 'Upper Band',
             line = dict(color = '#ffa8b5', dash = 'dash'),
@@ -376,8 +368,8 @@ class StockAnalyzer:
         ))
 
         fig.add_trace(go.Scatter(
-            x = self.stock.index[20:],
-            y = self.stock['sma_20'][20:],
+            x = self.stock.index,
+            y = self.stock['sma_20'],
             mode = 'lines',
             name = 'Middle Band',
             line = dict(color = '#808080', dash = 'dash'),
@@ -385,8 +377,8 @@ class StockAnalyzer:
         ))
 
         fig.add_trace(go.Scatter(
-            x = self.stock.index[20:],
-            y = self.stock['lower_bb'][20:],
+            x = self.stock.index,
+            y = self.stock['lower_bb'],
             mode = 'lines',
             name = 'Lower Band',
             line = dict(color = '#ffa8b5', dash = 'dash'),
@@ -434,8 +426,8 @@ class StockAnalyzer:
         ))
 
         fig.add_trace(go.Scatter(
-            x = self.stock.index[20:],
-            y = self.stock['upper_db'][20:],
+            x = self.stock.index,
+            y = self.stock['upper_db'],
             mode = 'lines',
             name = 'Upper Channel',
             line = dict(color = '#ffa8b5', dash = 'dash'),
@@ -443,8 +435,8 @@ class StockAnalyzer:
         ))
 
         fig.add_trace(go.Scatter(
-            x = self.stock.index[20:],
-            y = self.stock['lower_db'][20:],
+            x = self.stock.index,
+            y = self.stock['lower_db'],
             mode = 'lines',
             name = 'Lower Channel',
             line = dict(color = '#ffa8b5', dash = 'dash'),
