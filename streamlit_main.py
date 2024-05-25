@@ -8,6 +8,7 @@ from standard_poor_corr_st import StandardPoorCorr
 from us_economy_st import USEconomy
 from stock_price_predict_st import StockPricePredictor
 from stock_downloader_st import download_stock_data
+import subprocess
 
 etNow = datetime.now(pytz.timezone('US/Eastern')).date()
 
@@ -149,3 +150,12 @@ def main():
 
 if __name__ == "__main__":
     main()
+        # Command to get the pybind11 includes
+    command = ["python3", "-m", "pybind11", "--includes"]
+
+    # Execute the command
+    try:
+        output = subprocess.check_output(command, stderr=subprocess.STDOUT, text=True)
+        print(output.strip())  # Print the includes path
+    except subprocess.CalledProcessError as e:
+        print("Error:", e.output)
