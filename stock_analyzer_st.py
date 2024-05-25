@@ -4,11 +4,11 @@ import plotly.graph_objects as go
 import numpy as np
 import pandas as pd
 import pytz
+import technical_analysis_module
 from stock_information_st import stock_ticker_list
 from datetime import datetime
 from millify import millify
 from plotly.subplots import make_subplots
-import technical_analysis_module
 from stock_downloader_st import download_stock_data
 
 TechnicalAnalysis = technical_analysis_module.TechnicalAnalysis()
@@ -228,7 +228,7 @@ class StockAnalyzer:
 
     def stock_rsi(self) -> None:
         self.stock['rsi_14'] = TechnicalAnalysis.rsi_calculation(self.stock['Adj Close'], 14)
-        rsi_buy_price, rsi_sell_price = TechnicalAnalysis.implement_rsi(self.stock['Adj Close'], self.stock['rsi_14'])
+        rsi_buy_price, rsi_sell_price = TechnicalAnalysis.implement_rsi(self.stock['Adj Close'][4:], self.stock['rsi_14'][4:])
         fig = make_subplots(rows = 2, cols = 1, 
                             shared_xaxes = True, 
                             vertical_spacing = 0.1, 
@@ -243,7 +243,7 @@ class StockAnalyzer:
         ), row = 1, col = 1)
 
         fig.add_trace(go.Scatter(
-            x = self.stock.index,
+            x = self.stock.index[4:],
             y = rsi_buy_price,
             mode = 'markers',
             marker = dict(symbol = 'triangle-up', size = 20, color = 'green'),
@@ -251,7 +251,7 @@ class StockAnalyzer:
         ), row = 1, col = 1)
 
         fig.add_trace(go.Scatter(
-            x = self.stock.index,
+            x = self.stock.index[4:],
             y = rsi_sell_price,
             mode = 'markers',
             marker = dict(symbol = 'triangle-down', size = 20, color = 'red'),
@@ -266,8 +266,8 @@ class StockAnalyzer:
         )
 
         fig.add_trace(go.Scatter(
-            x = self.stock.index,
-            y = self.stock['rsi_14'],
+            x = self.stock.index[4:],
+            y = self.stock['rsi_14'][4:],
             mode = 'lines',
             name = 'RSI',
             line = dict(color = 'orange', width = 1.5),
@@ -275,9 +275,9 @@ class StockAnalyzer:
             showlegend = False
         ), row = 2, col = 1)
 
-        fig.add_shape(type = 'line', x0 = self.stock.index[0], x1 = self.stock.index[-1], y0 = 30, y1 = 30,
+        fig.add_shape(type = 'line', x0 = self.stock.index[4], x1 = self.stock.index[-1], y0 = 30, y1 = 30,
                       line = dict(color = 'green', width = 1, dash = 'dash'), yref = 'y2', row = 2, col = 1)
-        fig.add_shape(type = 'line', x0 = self.stock.index[0], x1 = self.stock.index[-1], y0 = 70, y1 = 70,
+        fig.add_shape(type = 'line', x0 = self.stock.index[4], x1 = self.stock.index[-1], y0 = 70, y1 = 70,
                       line = dict(color = 'red', width = 1, dash='dash'), yref = 'y2', row = 2, col = 1)
         st.plotly_chart(fig, use_container_width = True, config = self.config)
 
