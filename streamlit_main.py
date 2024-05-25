@@ -151,7 +151,8 @@ def main():
 if __name__ == "__main__":
     main()
         # Command to get the pybind11 includes
-    command = ["python", "-m", "pybind11", "--includes"]
+    # command = ["python", "-m", "pybind11", "--includes"]
+    command = ["python", "--version"]
 
     # Execute the command
     try:
