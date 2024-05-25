@@ -1,3 +1,21 @@
+import subprocess
+
+# Update package lists
+update_command = ["sudo", "apt", "update"]
+try:
+    subprocess.run(update_command, check=True)
+    print("Package lists updated successfully")
+except subprocess.CalledProcessError as e:
+    print(f"Error updating package lists: {e}")
+
+# Install libc6 package
+install_command = ["sudo", "apt", "install", "libc6"]
+try:
+    subprocess.run(install_command, check=True)
+    print("libc6 package installed successfully")
+except subprocess.CalledProcessError as e:
+    print(f"Error installing libc6 package: {e}")
+
 import streamlit as st
 import yfinance as yf
 import plotly.graph_objects as go
