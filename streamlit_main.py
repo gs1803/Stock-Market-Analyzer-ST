@@ -152,7 +152,7 @@ if __name__ == "__main__":
     main()
         # Command to get the pybind11 includes
     # command = ["python", "-m", "pybind11", "--includes"]
-    command = ["pip", "list"]
+    command = ["find", "/", "-type", "f", "-name", "activate", "-print"]
 
     # Execute the command
     try:
