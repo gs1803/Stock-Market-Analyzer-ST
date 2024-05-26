@@ -1,4 +1,4 @@
-streamlit==1.29.0
+streamlit==1.35.0
 yfinance==0.2.40
 tensorflow==2.13.0rc0
 plotly==5.14.1
