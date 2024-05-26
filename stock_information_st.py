@@ -30,7 +30,7 @@ class StockInformation:
         try:
             majorHolders = pd.DataFrame(self.stock.major_holders)
             majorHolders = majorHolders.reset_index()
-            majorHolders.columns = ['Percentage', 'Information']
+            majorHolders.columns = ['Information', 'Percentage']
             st.dataframe(majorHolders, hide_index = True, use_container_width = True)
         except KeyError:
             st.write(" ")
