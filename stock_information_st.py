@@ -71,6 +71,14 @@ class StockInformation:
         except KeyError:
             st.write(" ")
 
+    def stock_recommendations(self) -> None:
+        try:
+            df_rec = pd.DataFrame(self.stock.recommendations_summary)
+            df_rec.columns = ['Period', 'Strong Buy', 'Buy', 'Hold', 'Sell', 'Strong Sell']
+            st.dataframe(df_rec, hide_index = True, use_container_width = True)
+        except KeyError:
+            st.write(" ")
+
     def stock_news(self) -> None:
         newsList = self.stock.news
         relevantInfo = []
