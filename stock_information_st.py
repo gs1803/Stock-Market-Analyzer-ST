@@ -29,7 +29,7 @@ class StockInformation:
     def stock_major_holders(self) -> None:
         try:
             majorHolders = pd.DataFrame(self.stock.major_holders)
-            majorHolders = majorHolders.reset_index(drop = True)
+            majorHolders = majorHolders.reset_index()
             majorHolders.columns = ['Percentage', 'Information']
             st.dataframe(majorHolders, hide_index = True, use_container_width = True)
         except KeyError:
@@ -38,8 +38,6 @@ class StockInformation:
     def stock_institutional_holders(self) -> None:
         try:
             institutionalHolders = pd.DataFrame(self.stock.institutional_holders)
-            institutionalHolders = institutionalHolders.reset_index(drop = True)
-            institutionalHolders.columns = ['Holder', 'Shares', 'Date Reported', '% Out', 'Value']
             institutionalHolders['Date Reported'] = pd.to_datetime(institutionalHolders['Date Reported']).dt.date
             st.dataframe(institutionalHolders, hide_index = True, use_container_width = True)
         except KeyError:
@@ -48,8 +46,6 @@ class StockInformation:
     def stock_mutualfund_holders(self) -> None:
         try:
             mutualfundHolders = pd.DataFrame(self.stock.mutualfund_holders)
-            mutualfundHolders = mutualfundHolders.reset_index(drop = True)
-            mutualfundHolders.columns = ['Holder', 'Shares', 'Date Reported', '% Out', 'Value']
             mutualfundHolders['Date Reported'] = pd.to_datetime(mutualfundHolders['Date Reported']).dt.date
             st.dataframe(mutualfundHolders, hide_index = True, use_container_width = True)
         except KeyError:
