@@ -92,6 +92,20 @@ def div_or_split():
     except ValueError:
         st.write("No Information Available for the Ticker.")
 
+def stock_analyst_recommendations():
+    st.header("Analyst Recommendations")
+    try:
+        userStock = st.text_input("Enter the Stock Ticker:").upper().replace(" ", "")
+        if not userStock:
+            st.write(" ")
+        elif not userStock.isascii():
+            st.write(" ")
+        else:
+            recomStock = StockInformation(yf.Ticker(userStock))
+            StockInformation.stock_recommendations(recomStock)
+    except ValueError:
+        st.write("No Information Available for the Ticker.")
+
 def corr_table():
     st.header('Correlation Heatmap of S&P 500 Adj Closes')
     st.write("Data from 2015-01-01 to 2022-12-31")
@@ -138,6 +152,7 @@ def main():
         'Market Graphs and Analysis': stock_info,
         'Ticker Information': industry_info,
         'Holders Information': holder_info,
+        'Analyst Recommendations': stock_analyst_recommendations,
         'Dividends and Splits': div_or_split,
         'Correlation Matrix (S&P 500)': corr_table,
         'US Economy Graphs': us_economy,
