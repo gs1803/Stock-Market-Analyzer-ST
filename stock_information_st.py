@@ -37,7 +37,7 @@ class StockInformation:
 
     def stock_institutional_holders(self) -> None:
         try:
-            institutionalHolders = pd.DataFrame(self.stock.get_institutional_holders())
+            institutionalHolders = pd.DataFrame(self.stock.institutional_holders)
             institutionalHolders['Date Reported'] = pd.to_datetime(institutionalHolders['Date Reported']).dt.date
             st.dataframe(institutionalHolders, hide_index = True, use_container_width = True)
         except KeyError:
