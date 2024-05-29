@@ -216,7 +216,7 @@ class StockInformation:
                 searchCol.dataframe(detailIndustry[['symbol', 'name']], hide_index = True, use_container_width = True)
 
         elif detailChoose == 'Filter by Company':
-            company_filter = st.text_input("Filter companies by alphabet (A-Z):").title()
+            company_filter = st.text_input("Filter companies by alphabet (A-Z):").lower()
 
             filtered_df = df[(df['name'].str.lower()).str.contains(company_filter)]
             sorted_df = filtered_df.sort_values('name').reset_index(drop = True)
