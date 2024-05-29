@@ -218,6 +218,6 @@ class StockInformation:
         elif detailChoose == 'Filter by Company':
             company_filter = st.text_input("Filter companies by alphabet (A-Z):").title()
 
-            filtered_df = df[df['name'].str.startswith(company_filter)]
+            filtered_df = df[(df['name'].str.lower()).str.contains(company_filter)]
             sorted_df = filtered_df.sort_values('name').reset_index(drop = True)
             st.dataframe(sorted_df[['name', 'symbol']], hide_index = True, use_container_width = True)
