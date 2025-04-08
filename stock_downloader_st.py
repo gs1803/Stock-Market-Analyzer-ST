@@ -17,7 +17,7 @@ def download_stock_data(userStock, startDate, endDate):
             end = endDate - timedelta(days = 2)
             inputStock = yf.download(f"{userStock}", start, end, interval = '1m', progress = False, auto_adjust=False)
         elif etNow - startDate.date() >= timedelta(days = 30):
-            inputStock = yf.download(f"{userStock}", start, end, progress = False, auto_adjust=False))
+            inputStock = yf.download(f"{userStock}", start, end, progress = False, auto_adjust=False)
         else:
             inputStock = yf.download(f"{userStock}", startDate, endDate, interval = '1m', progress = False, auto_adjust=False)
     elif dateDiff == 1:
