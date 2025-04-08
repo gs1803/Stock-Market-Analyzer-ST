@@ -37,4 +37,5 @@ def download_stock_data(userStock, startDate, endDate):
     else:
         inputStock = yf.download(f"{userStock}", startDate, endDate, progress = False)
 
+    inputStock = inputStock.xs(f"{userStock}", axis=1, level="Ticker").reset_index()
     return inputStock
